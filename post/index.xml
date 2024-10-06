@@ -7,7 +7,90 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>Herb</copyright>
-        <lastBuildDate>Sat, 05 Oct 2024 16:22:55 +0800</lastBuildDate><atom:link href="https://zhangherbal.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Sun, 06 Oct 2024 14:27:00 +0800</lastBuildDate><atom:link href="https://zhangherbal.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>机器学习-支持向量机</title>
+        <link>https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/</link>
+        <pubDate>Sun, 06 Oct 2024 14:27:00 +0800</pubDate>
+        
+        <guid>https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/</guid>
+        <description>&lt;h1 id=&#34;支持向量机&#34;&gt;支持向量机
+&lt;/h1&gt;&lt;h2 id=&#34;前言&#34;&gt;前言
+&lt;/h2&gt;&lt;p&gt;本篇文章对B站一些高质量视频，看过的高质量文章，西瓜书等著作进行白话总结&lt;/p&gt;
+&lt;h2 id=&#34;支持向量机-线性模型&#34;&gt;支持向量机-线性模型
+&lt;/h2&gt;&lt;h3 id=&#34;知识补充&#34;&gt;知识补充
+&lt;/h3&gt;&lt;h4 id=&#34;补充1超平面的定义&#34;&gt;补充1:超平面的定义
+&lt;/h4&gt;&lt;p&gt;超平面是指\(n\)维线性空间中维度为\(n-1\)的子空间。它可以把线性空间分割成不相交的两部分。比如二维空间中，一条直线是一维的，它把平面分成了两块；三维空间中，一个平面是二维的，它把空间分成了两块。&lt;/p&gt;
+&lt;h3 id=&#34;问题引出&#34;&gt;问题引出
+&lt;/h3&gt;&lt;p&gt;支持向量机可以用作分类算法&lt;br&gt;
+分类算法的思想：给定训练样本集 \( D = \{ (x_1, y_1),(x_2,y_2),...(x_m,y_m) \} \) ,\(y_i∈\{-1,+1\},\) ，基于训练集\(D\)在样本空间中找到一个划分超平面，将不同类别的样本分开，但是有很多超平面都能将训练样本分开，因此我们要找到一个最优的超平面完成分类任务。&lt;br&gt;&lt;/p&gt;
+&lt;p&gt;训练样本集分为线性可分训练集和非线性可分训练集，线性可分样本集意味着我们可以用一个超平面把样本集分成两个部分&lt;br&gt;
+&lt;img src=&#34;https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/image.png&#34;
+	width=&#34;500&#34;
+	height=&#34;365&#34;
+	srcset=&#34;https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/image_hu1920060315870742382.png 480w, https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/image_hu13622350253323309373.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;alt text&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;136&#34;
+		data-flex-basis=&#34;328px&#34;
+	
+&gt;&lt;br&gt;
+图中共有五个超平面对我们的样本集进行划分，在这五个超平面中哪一个是最优秀的超平面呢，通过观察可以发现，超平面\(3\)对误差容忍性最好，为什么呢？为了验证误差的容忍性，我们首先假设存在误差，数据集中的向量的位置可能发生错误，观察图中的箭头，平面\(1\)和平面\(5\)无法容忍向量发生误差导致变化(因为导致了分类错误)，通过观察可以发现其余平面(特别偏向某一侧数据点)对误差的容忍性相对较弱，非常容易出现分类错误。而平面\(3\)受到的影响最小，因此我们选择了超平面\(3\)，那么我们该如何去描述我们刚刚决策的过程呢？&lt;br&gt;&lt;/p&gt;
+&lt;p&gt;我们要定义一个性能指标来帮助我们去寻找这个超平面。在下图中我们将\(1\)号超平面向两侧进行平移，直到擦到两侧数据集中的圆圈和叉叉停下，这也说明了被擦中的向量离\(1\)号超平面最近，我们称这些向量为支持向量\((support vector)\)。停下后此时又生成了平面\(2\)和平面\(3\)，我们将平面\(2\)和平面\(3\)之间的距离\(d\)称为间隔\(margin\)，将其作为我们的性能指标，我们要做的事情就是将\(d\)最大化，除此之外，我们会发现一个问题，跟这个超平面平行的超平面其实都能做到让\(margin\)最大化，因此它们都能实现到平面\(2\)和平面\(3\)的距离之和为\(d\),因此我们设置限定条件，即这个超平面到平面\(2\)和平面\(3\)的距离都是\(d/2\)。
+&lt;img src=&#34;https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/image2.jpg&#34;
+	width=&#34;500&#34;
+	height=&#34;395&#34;
+	srcset=&#34;https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/image2_hu3035024813569727855.jpg 480w, https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/image2_hu14719782905743434002.jpg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;alt text&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;126&#34;
+		data-flex-basis=&#34;303px&#34;
+	
+&gt;&lt;br&gt;
+接下来我们就进入数学世界来进行推导。&lt;/p&gt;
+&lt;h3 id=&#34;数学描述&#34;&gt;数学描述
+&lt;/h3&gt;&lt;h4 id=&#34;定义&#34;&gt;定义
+&lt;/h4&gt;&lt;h5 id=&#34;定义1训练数据及标签&#34;&gt;定义1：训练数据及标签
+&lt;/h5&gt;&lt;p&gt;\( D = \{ (x_1, y_1),(x_2,y_2),...(x_m,y_m) \} \) ,\(y_i∈\{-1,+1\},\)，\(x_i是多维向量,y_i是标签\)，\(y_i\)通常取\(+1\)或者\(-1\)。&lt;/p&gt;
+&lt;h5 id=&#34;定义2-超平面方程&#34;&gt;定义2： 超平面方程
+&lt;/h5&gt;&lt;p&gt;超平面方程为\(w^Tx+b=0\),其中\(w\)也是向量，与\(x\)的维度相同。&lt;/p&gt;
+&lt;h5 id=&#34;定义3-线性模型的任务&#34;&gt;定义3： 线性模型的任务
+&lt;/h5&gt;&lt;p&gt;即确定超平面方程中的\(w\)和\(b\)，确定最终的超平面方程。&lt;/p&gt;
+&lt;h5 id=&#34;定义4训练集的线性可分&#34;&gt;定义4：训练集的线性可分
+&lt;/h5&gt;&lt;p&gt;对于\( (x_i, y_i), \, i \in \{1, 2, \ldots, N\} \)，\(\exists(w,b)\)，使\(\forall i \in \{1, 2, \ldots, N\}\)有&lt;br&gt;
+a.若\(y_i=+1\)，则\(w^Tx+b≥0\)&lt;br&gt;
+b.若\(y_i=-1\)，则\(w^Tx+b&lt;0\)&lt;br&gt;
+将上述两式进行结合可得 \(y_i(w^Tx+b)≥0\)  \((1)\)&lt;/p&gt;
+&lt;h4 id=&#34;推导过程&#34;&gt;推导过程
+&lt;/h4&gt;&lt;h5 id=&#34;条件1&#34;&gt;条件1：
+&lt;/h5&gt;&lt;p&gt;\(w^Tx+b=0\) 与 \(aw^Tx+ab=0\)是同一个平面，\(a\)是正整数，如果前者满足公式\((1)\)，后者也满足。&lt;/p&gt;
+&lt;h5 id=&#34;条件2&#34;&gt;条件2：
+&lt;/h5&gt;&lt;p&gt;平面 \(w_1x+w_2y+b=0\)&lt;br&gt;
+则\((x_0,y_0)\)到此平面距离d的值为
+\(
+d= \frac{|w_1 x_0 + w_2 y_0 + b|}{\sqrt{w_1^2 + w_2^2}}\)&lt;br&gt;
+向量\(x_0\)到超平面\(w^Tx+b=0\)的距离为\( \frac{|w^T x_0 + b|}{\|w\|}\)&lt;/p&gt;
+&lt;h5 id=&#34;推导开始&#34;&gt;推导开始
+&lt;/h5&gt;&lt;p&gt;假设支持向量为\(x_0\)，我们的任务是最大化间隔\((margin)\)，也就是最大化\(d\)，\(d\)由向量到超平面距离公式可得，但是观察公式我们貌似无法解出值，此时我们让\(w^T x_0+b=1\)，那么支持向量所在超平面方程变为\(w^T x_0+b=1\)和\(w^T x_0+b=-1\)且距离直接就变成了\( \frac{2}{\|w\|}\)，但是凭啥呢？
+假设\(d_0=|w^T x_0+b|\)，根据条件1，同时缩放\(w,b\)后平面不变，因此得到\(d_0=|a(w^T x_0+b)|\)，a可以通过取值使\(w^T x_0+b=1\)。因为要最大化间隔，因此只要最小化分母即可。&lt;br&gt;&lt;/p&gt;
+&lt;p&gt;除此之外，我们发现终极目标中的限制条件也发生了变化，支持向量所在平面都是\(w^T x_0+b=1\)，那么其他的向量确定的平面肯定是大于等于\(1\)，乘以\(y_i\)是为了保证(1)的成立。&lt;/p&gt;
+&lt;h4 id=&#34;终极目标&#34;&gt;终极目标
+&lt;/h4&gt;&lt;p&gt;最小化 \((minimise)\)&lt;br&gt;
+\( \|w\|^2 \)&lt;br&gt;
+限制条件\((subject\ to)\)&lt;br&gt;
+\(y_i (w^T x_i + b) \geq 1, \quad \forall i \in \{1, 2, \ldots, N\}\)
+&lt;br&gt;&lt;/p&gt;
+&lt;h3 id=&#34;如何优化&#34;&gt;如何优化
+&lt;/h3&gt;</description>
+        </item>
+        <item>
         <title>Newnew</title>
         <link>https://zhangherbal.github.io/p/newnew/</link>
         <pubDate>Sat, 05 Oct 2024 16:22:55 +0800</pubDate>

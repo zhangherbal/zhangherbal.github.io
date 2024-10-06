@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="zh-cn" dir="ltr">
     <head><meta charset='utf-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="A brief guide to setup KaTeX">
-<title>Math Typesetting</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="支持向量机 前言 本篇文章对B站一些高质量视频，看过的高质量文章，西瓜书等著作进行白话总结\n支持向量机-线性模型 知识补充 补充1:超平面的定义 超平面是指\\(n\\)维线性空间中维度为\\(n-1\\)的子空间。它可以把线性空间分割成不相交的两部分。比如二维空间中，一条直线是一维的，它把平面分成了两块；三维空间中，一个平面是二维的，它把空间分成了两块。\n">
+<title>机器学习-支持向量机</title>
 
-<link rel='canonical' href='https://zhangherbal.github.io/p/math-typesetting/'>
+<link rel='canonical' href='https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/'>
 
-<link rel="stylesheet" href="/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css"><meta property='og:title' content="Math Typesetting">
-<meta property='og:description' content="A brief guide to setup KaTeX">
-<meta property='og:url' content='https://zhangherbal.github.io/p/math-typesetting/'>
+<link rel="stylesheet" href="/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css"><meta property='og:title' content="机器学习-支持向量机">
+<meta property='og:description' content="支持向量机 前言 本篇文章对B站一些高质量视频，看过的高质量文章，西瓜书等著作进行白话总结\n支持向量机-线性模型 知识补充 补充1:超平面的定义 超平面是指\\(n\\)维线性空间中维度为\\(n-1\\)的子空间。它可以把线性空间分割成不相交的两部分。比如二维空间中，一条直线是一维的，它把平面分成了两块；三维空间中，一个平面是二维的，它把空间分成了两块。\n">
+<meta property='og:url' content='https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/'>
 <meta property='og:site_name' content='Herb'>
-<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2019-03-08T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2019-03-08T00:00:00&#43;00:00'/>
-<meta name="twitter:title" content="Math Typesetting">
-<meta name="twitter:description" content="A brief guide to setup KaTeX">
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2024-10-06T14:27:00&#43;08:00'/><meta property='article:modified_time' content='2024-10-06T14:27:00&#43;08:00'/>
+<meta name="twitter:title" content="机器学习-支持向量机">
+<meta name="twitter:description" content="支持向量机 前言 本篇文章对B站一些高质量视频，看过的高质量文章，西瓜书等著作进行白话总结\n支持向量机-线性模型 知识补充 补充1:超平面的定义 超平面是指\\(n\\)维线性空间中维度为\\(n-1\\)的子空间。它可以把线性空间分割成不相交的两部分。比如二维空间中，一条直线是一维的，它把平面分成了两块；三维空间中，一个平面是二维的，它把空间分成了两块。\n">
     </head>
     <body class="
     article-page
@@ -265,9 +265,23 @@
         <div class="widget--toc">
             <nav id="TableOfContents">
   <ol>
-    <li>
+    <li><a href="#前言">前言</a></li>
+    <li><a href="#支持向量机-线性模型">支持向量机-线性模型</a>
       <ol>
-        <li><a href="#examples">Examples</a></li>
+        <li><a href="#知识补充">知识补充</a>
+          <ol>
+            <li><a href="#补充1超平面的定义">补充1:超平面的定义</a></li>
+          </ol>
+        </li>
+        <li><a href="#问题引出">问题引出</a></li>
+        <li><a href="#数学描述">数学描述</a>
+          <ol>
+            <li><a href="#定义">定义</a></li>
+            <li><a href="#推导过程">推导过程</a></li>
+            <li><a href="#终极目标">终极目标</a></li>
+          </ol>
+        </li>
+        <li><a href="#如何优化">如何优化</a></li>
       </ol>
     </li>
   </ol>
@@ -289,13 +303,9 @@
 
     <div class="article-title-wrapper">
         <h2 class="article-title">
-            <a href="/p/math-typesetting/">Math Typesetting</a>
+            <a href="/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/">机器学习-支持向量机</a>
         </h2>
     
-        
-        <h3 class="article-subtitle">
-            A brief guide to setup KaTeX
-        </h3>
         
     </div>
 
@@ -315,7 +325,7 @@
   <path d="M3 11h16" />
   <path d="M18 16.496v1.504l1 1" />
 </svg>
-                <time class="article-time--published">2019-03-08</time>
+                <time class="article-time--published">2024-10-06</time>
             </div>
         
 
@@ -331,41 +341,82 @@
     <section class="article-content">
     
     
-    <p>Mathematical notation in a Hugo project can be enabled by using third party JavaScript libraries.</p>
-<p>In this example we will be using <a class="link" href="https://katex.org/"  target="_blank" rel="noopener"
-    >KaTeX</a></p>
-<ul>
-<li>Create a partial under <code>/layouts/partials/math.html</code></li>
-<li>Within this partial reference the <a class="link" href="https://katex.org/docs/autorender.html"  target="_blank" rel="noopener"
-    >Auto-render Extension</a> or host these scripts locally.</li>
-<li>Include the partial in your templates like so:</li>
-</ul>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span><span class="lnt">2
-</span><span class="lnt">3
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="o">{{</span> <span class="k">if</span> or .Params.math .Site.Params.math <span class="o">}}</span>
-</span></span><span class="line"><span class="cl"><span class="o">{{</span> partial <span class="s2">&#34;math.html&#34;</span> . <span class="o">}}</span>
-</span></span><span class="line"><span class="cl"><span class="o">{{</span> end <span class="o">}}</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><ul>
-<li>To enable KaTeX globally set the parameter <code>math</code> to <code>true</code> in a project&rsquo;s configuration</li>
-<li>To enable KaTeX on a per page basis include the parameter <code>math: true</code> in content files</li>
-</ul>
-<p><strong>Note:</strong> Use the online reference of <a class="link" href="https://katex.org/docs/supported.html"  target="_blank" rel="noopener"
-    >Supported TeX Functions</a></p>
-
-<h3 id="examples">Examples
-</h3><p>Inline math: $\varphi = \dfrac{1+\sqrt5}{2}= 1.6180339887…$</p>
-<p>Block math:
-</p>
-$$
- \varphi = 1+\frac{1} {1+\frac{1} {1+\frac{1} {1+\cdots} } } 
-$$
+    <h1 id="支持向量机">支持向量机
+</h1><h2 id="前言">前言
+</h2><p>本篇文章对B站一些高质量视频，看过的高质量文章，西瓜书等著作进行白话总结</p>
+<h2 id="支持向量机-线性模型">支持向量机-线性模型
+</h2><h3 id="知识补充">知识补充
+</h3><h4 id="补充1超平面的定义">补充1:超平面的定义
+</h4><p>超平面是指\(n\)维线性空间中维度为\(n-1\)的子空间。它可以把线性空间分割成不相交的两部分。比如二维空间中，一条直线是一维的，它把平面分成了两块；三维空间中，一个平面是二维的，它把空间分成了两块。</p>
+<h3 id="问题引出">问题引出
+</h3><p>支持向量机可以用作分类算法<br>
+分类算法的思想：给定训练样本集 \( D = \{ (x_1, y_1),(x_2,y_2),...(x_m,y_m) \} \) ,\(y_i∈\{-1,+1\},\) ，基于训练集\(D\)在样本空间中找到一个划分超平面，将不同类别的样本分开，但是有很多超平面都能将训练样本分开，因此我们要找到一个最优的超平面完成分类任务。<br></p>
+<p>训练样本集分为线性可分训练集和非线性可分训练集，线性可分样本集意味着我们可以用一个超平面把样本集分成两个部分<br>
+<img src="/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/image.png"
+	width="500"
+	height="365"
+	srcset="/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/image_hu1920060315870742382.png 480w, /p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/image_hu13622350253323309373.png 1024w"
+	loading="lazy"
+	
+		alt="alt text"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="136"
+		data-flex-basis="328px"
+	
+><br>
+图中共有五个超平面对我们的样本集进行划分，在这五个超平面中哪一个是最优秀的超平面呢，通过观察可以发现，超平面\(3\)对误差容忍性最好，为什么呢？为了验证误差的容忍性，我们首先假设存在误差，数据集中的向量的位置可能发生错误，观察图中的箭头，平面\(1\)和平面\(5\)无法容忍向量发生误差导致变化(因为导致了分类错误)，通过观察可以发现其余平面(特别偏向某一侧数据点)对误差的容忍性相对较弱，非常容易出现分类错误。而平面\(3\)受到的影响最小，因此我们选择了超平面\(3\)，那么我们该如何去描述我们刚刚决策的过程呢？<br></p>
+<p>我们要定义一个性能指标来帮助我们去寻找这个超平面。在下图中我们将\(1\)号超平面向两侧进行平移，直到擦到两侧数据集中的圆圈和叉叉停下，这也说明了被擦中的向量离\(1\)号超平面最近，我们称这些向量为支持向量\((support vector)\)。停下后此时又生成了平面\(2\)和平面\(3\)，我们将平面\(2\)和平面\(3\)之间的距离\(d\)称为间隔\(margin\)，将其作为我们的性能指标，我们要做的事情就是将\(d\)最大化，除此之外，我们会发现一个问题，跟这个超平面平行的超平面其实都能做到让\(margin\)最大化，因此它们都能实现到平面\(2\)和平面\(3\)的距离之和为\(d\),因此我们设置限定条件，即这个超平面到平面\(2\)和平面\(3\)的距离都是\(d/2\)。
+<img src="/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/image2.jpg"
+	width="500"
+	height="395"
+	srcset="/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/image2_hu3035024813569727855.jpg 480w, /p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/image2_hu14719782905743434002.jpg 1024w"
+	loading="lazy"
+	
+		alt="alt text"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="126"
+		data-flex-basis="303px"
+	
+><br>
+接下来我们就进入数学世界来进行推导。</p>
+<h3 id="数学描述">数学描述
+</h3><h4 id="定义">定义
+</h4><h5 id="定义1训练数据及标签">定义1：训练数据及标签
+</h5><p>\( D = \{ (x_1, y_1),(x_2,y_2),...(x_m,y_m) \} \) ,\(y_i∈\{-1,+1\},\)，\(x_i是多维向量,y_i是标签\)，\(y_i\)通常取\(+1\)或者\(-1\)。</p>
+<h5 id="定义2-超平面方程">定义2： 超平面方程
+</h5><p>超平面方程为\(w^Tx+b=0\),其中\(w\)也是向量，与\(x\)的维度相同。</p>
+<h5 id="定义3-线性模型的任务">定义3： 线性模型的任务
+</h5><p>即确定超平面方程中的\(w\)和\(b\)，确定最终的超平面方程。</p>
+<h5 id="定义4训练集的线性可分">定义4：训练集的线性可分
+</h5><p>对于\( (x_i, y_i), \, i \in \{1, 2, \ldots, N\} \)，\(\exists(w,b)\)，使\(\forall i \in \{1, 2, \ldots, N\}\)有<br>
+a.若\(y_i=+1\)，则\(w^Tx+b≥0\)<br>
+b.若\(y_i=-1\)，则\(w^Tx+b<0\)<br>
+将上述两式进行结合可得 \(y_i(w^Tx+b)≥0\)  \((1)\)</p>
+<h4 id="推导过程">推导过程
+</h4><h5 id="条件1">条件1：
+</h5><p>\(w^Tx+b=0\) 与 \(aw^Tx+ab=0\)是同一个平面，\(a\)是正整数，如果前者满足公式\((1)\)，后者也满足。</p>
+<h5 id="条件2">条件2：
+</h5><p>平面 \(w_1x+w_2y+b=0\)<br>
+则\((x_0,y_0)\)到此平面距离d的值为
+\(
+d= \frac{|w_1 x_0 + w_2 y_0 + b|}{\sqrt{w_1^2 + w_2^2}}\)<br>
+向量\(x_0\)到超平面\(w^Tx+b=0\)的距离为\( \frac{|w^T x_0 + b|}{\|w\|}\)</p>
+<h5 id="推导开始">推导开始
+</h5><p>假设支持向量为\(x_0\)，我们的任务是最大化间隔\((margin)\)，也就是最大化\(d\)，\(d\)由向量到超平面距离公式可得，但是观察公式我们貌似无法解出值，此时我们让\(w^T x_0+b=1\)，那么支持向量所在超平面方程变为\(w^T x_0+b=1\)和\(w^T x_0+b=-1\)且距离直接就变成了\( \frac{2}{\|w\|}\)，但是凭啥呢？
+假设\(d_0=|w^T x_0+b|\)，根据条件1，同时缩放\(w,b\)后平面不变，因此得到\(d_0=|a(w^T x_0+b)|\)，a可以通过取值使\(w^T x_0+b=1\)。因为要最大化间隔，因此只要最小化分母即可。<br></p>
+<p>除此之外，我们发现终极目标中的限制条件也发生了变化，支持向量所在平面都是\(w^T x_0+b=1\)，那么其他的向量确定的平面肯定是大于等于\(1\)，乘以\(y_i\)是为了保证(1)的成立。</p>
+<h4 id="终极目标">终极目标
+</h4><p>最小化 \((minimise)\)<br>
+\( \|w\|^2 \)<br>
+限制条件\((subject\ to)\)<br>
+\(y_i (w^T x_i + b) \geq 1, \quad \forall i \in \{1, 2, \ldots, N\}\)
+<br></p>
+<h3 id="如何优化">如何优化
+</h3>
 </section>
 
 
@@ -375,30 +426,6 @@ $$
     </footer>
 
 
-    
-        <link 
-                rel="stylesheet" 
-                href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI&#43;WdtXRGWt2kTvGFasHpSy3SV"crossorigin="anonymous"
-            ><script 
-                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG&#43;vnGctmUb0ZY0l8"crossorigin="anonymous"
-                defer
-                >
-            </script><script 
-                src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"integrity="sha384-&#43;VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4&#43;/RRE05"crossorigin="anonymous"
-                defer
-                >
-            </script><script>
-    window.addEventListener("DOMContentLoaded", () => {
-        renderMathInElement(document.body, {
-            delimiters: [
-                { left: "$$", right: "$$", display: true },
-                { left: "$", right: "$", display: false },
-                { left: "\\(", right: "\\)", display: false },
-                { left: "\\[", right: "\\]", display: true }
-            ],
-            ignoredClasses: ["gist"]
-        });})
-</script>
     
 </article>
 
