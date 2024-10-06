@@ -25,17 +25,17 @@
 分类算法的思想：给定训练样本集 \( D = \{ (x_1, y_1),(x_2,y_2),...(x_m,y_m) \} \) ,\(y_i∈\{-1,+1\},\) ，基于训练集\(D\)在样本空间中找到一个划分超平面，将不同类别的样本分开，但是有很多超平面都能将训练样本分开，因此我们要找到一个最优的超平面完成分类任务。&lt;br&gt;&lt;/p&gt;
 &lt;p&gt;训练样本集分为线性可分训练集和非线性可分训练集，线性可分样本集意味着我们可以用一个超平面把样本集分成两个部分&lt;br&gt;
 &lt;img src=&#34;https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/image.png&#34;
-	width=&#34;500&#34;
-	height=&#34;365&#34;
-	srcset=&#34;https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/image_hu1920060315870742382.png 480w, https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/image_hu13622350253323309373.png 1024w&#34;
+	width=&#34;348&#34;
+	height=&#34;249&#34;
+	srcset=&#34;https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/image_hu9006986759882617678.png 480w, https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/image_hu17398794476000836033.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;alt text&#34;
 	
 	
 		class=&#34;gallery-image&#34; 
-		data-flex-grow=&#34;136&#34;
-		data-flex-basis=&#34;328px&#34;
+		data-flex-grow=&#34;139&#34;
+		data-flex-basis=&#34;335px&#34;
 	
 &gt;&lt;br&gt;
 图中共有五个超平面对我们的样本集进行划分，在这五个超平面中哪一个是最优秀的超平面呢，通过观察可以发现，超平面\(3\)对误差容忍性最好，为什么呢？为了验证误差的容忍性，我们首先假设存在误差，数据集中的向量的位置可能发生错误，观察图中的箭头，平面\(1\)和平面\(5\)无法容忍向量发生误差导致变化(因为导致了分类错误)，通过观察可以发现其余平面(特别偏向某一侧数据点)对误差的容忍性相对较弱，非常容易出现分类错误。而平面\(3\)受到的影响最小，因此我们选择了超平面\(3\)，那么我们该如何去描述我们刚刚决策的过程呢？&lt;br&gt;&lt;/p&gt;
