@@ -31,7 +31,16 @@
 设 \( a \) 为拉格朗日乘子，\(KKT\)条件为：&lt;/p&gt;
 \[
 g(x) \leq 0, \quad a \geq 0, \quad a \cdot g(x) = 0
-\]&lt;h3 id=&#34;问题引出&#34;&gt;问题引出
+\]&lt;h4 id=&#34;优化理论&#34;&gt;优化理论
+&lt;/h4&gt;&lt;h6 id=&#34;原问题&#34;&gt;原问题
+&lt;/h6&gt;&lt;p&gt;原问题(\(prime\ problem\)):&lt;br&gt;
+最小化: \(f(w)\)&lt;br&gt;
+限制条件:&lt;br&gt; \({g_i(w)&lt;=0,h_i(w)=0}\)
+\(\quad \forall i \in \{1, 2, \ldots, N\}\)&lt;/p&gt;
+&lt;h5 id=&#34;对偶问题dual-problem&#34;&gt;对偶问题(dual problem)
+&lt;/h5&gt;&lt;p&gt;定义:&lt;br&gt;
+\(L(w,α,β)=\)&lt;/p&gt;
+&lt;h3 id=&#34;问题引出&#34;&gt;问题引出
 &lt;/h3&gt;&lt;p&gt;支持向量机可以用作分类算法&lt;br&gt;
 分类算法的思想：给定训练样本集 \( D = \{ (x_1, y_1),(x_2,y_2),...(x_m,y_m) \} \) ,\(y_i∈\{-1,+1\},\) ，基于训练集\(D\)在样本空间中找到一个划分超平面，将不同类别的样本分开，但是有很多超平面都能将训练样本分开，因此我们要找到一个最优的超平面完成分类任务。&lt;br&gt;&lt;/p&gt;
 &lt;p&gt;训练样本集分为线性可分训练集和非线性可分训练集，线性可分样本集意味着我们可以用一个超平面把样本集分成两个部分&lt;br&gt;
@@ -151,7 +160,68 @@ $$&lt;p&gt;
 \(α&gt;=0,y_if(x_i)-1&gt;=0,α_i(y_if(x_i)-1)=0\)&lt;br&gt;
 通过观察\(α_i(y_if(x_i)-1)=0\)得出结论要么\(α_i=0\)，要么\(y_if(x_i)=1\)，又因为\(|y_i|=1\)得出\(|f(x)|=1\),也就是满足\(α_i&gt;0\)的点即为支持向量，我们在式\((4)\)中已经得出了\(w\),若知道支持向量\((x_k,y_k)\)代回即可得出
 \(b=y_k-\sum_{i=1}^{m}α_ix_i^Ty_ix_k\)&lt;/p&gt;
-</description>
+&lt;h2 id=&#34;支持向量机-非线性模型&#34;&gt;支持向量机-非线性模型
+&lt;/h2&gt;&lt;h3 id=&#34;模型修正&#34;&gt;模型修正
+&lt;/h3&gt;&lt;p&gt;如果训练集样本是非线性可分样本集，那么我们按照线性模型进行操作就无法找出对应的\(w,b\)。因此我们要对模型进行改进。&lt;br&gt;&lt;/p&gt;
+&lt;h4 id=&#34;修正1&#34;&gt;修正1
+&lt;/h4&gt;&lt;p&gt;最小化 \((minimise)(7)\)&lt;br&gt;
+\(\frac{1}{2} \|w\|^2 + C \sum_{i=1}^N \xi_i\)&lt;br&gt;
+限制条件\((subject\ to)(8)\)&lt;br&gt;
+\(\quad y_i (w^T x_i + b) \geq 1 - \xi_i, \quad \forall i \in \{1, 2, \ldots, N\}\)&lt;br&gt;
+\(\xi_i \geq 0, \quad \forall i \in \{1, 2, \ldots, N\}\)&lt;br&gt;
+通过观察我们可以发现，如果\(\xi_i\)足够大，那么式\((8)\)一定会得到满足，而我们在式\((7)\)中最小化目标函数又保证了\(\xi_i\)不会特别大。在式\((7)\)中\(C\)是预设好的未知常数，需要提前设置，具体值要根据实践确定。我们通常称\(\xi_i\)为松弛变量，
+\(C \sum_{i=1}^N \xi_i\)为正则项。&lt;/p&gt;
+&lt;h4 id=&#34;修正2&#34;&gt;修正2
+&lt;/h4&gt;&lt;p&gt;我们做到第一步修正其实还不够，如下图，真正能成功分类样本的其实是一个椭圆，但是我们的模型决定了它是一条直线或者是超平面。因此我们需要将低维的x向高维映射，这样线性可分的概率就变大。&lt;br&gt;
+高维映射&lt;br&gt;
+\(x-&gt;\phi(x)\)&lt;br&gt;
+最小化 \((minimise)(7)\)&lt;br&gt;
+\(\frac{1}{2} \|w\|^2 + C \sum_{i=1}^N \xi_i\)&lt;br&gt;
+限制条件\((subject\ to)(8)\)&lt;br&gt;
+\(\quad y_i (w^T \phi(x_i) + b) \geq 1 - \xi_i, \quad \forall i \in \{1, 2, \ldots, N\}\)&lt;br&gt;
+\(\xi_i \geq 0, \quad \forall i \in \{1, 2, \ldots, N\}\)&lt;br&gt;
+现在的\(w\)维度也将发生变化。&lt;br&gt;&lt;/p&gt;
+&lt;h4 id=&#34;核函数&#34;&gt;核函数
+&lt;/h4&gt;&lt;p&gt;那么我们该如何去选取这个\(\phi(x)\)呢，根据SVM的原理，我们假设\(\phi(x)\)是无限维，那么我们发现我们的问题将会变得不可做，那么该如何解决这个问题呢。
+SVM精妙之处将被引出：
+我们可以不知道\(\phi(x)\)的显式表达，但是我们可以通过核函数(\(Kernal\ function\))把这个问题变得可做。&lt;br&gt;
+\(k(x1,x2)=\phi(x_1)^T \phi(x_2)\)(后面两者相乘明显是一个数值)&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;线性核:
+&lt;/p&gt;
+\[
+   K(x, y) = x^T y=\phi(x_1)^T \phi(x_2)
+\]&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;多项式核:
+&lt;/p&gt;
+\[
+   K(x, y) = (x^T y + c)^d=\phi(x_1)^T \phi(x_2)
+\]&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;高斯（RBF）核:
+&lt;/p&gt;
+\[
+   K(x, y) = \exp\left(-\frac{\|x - y\|^2}{2\sigma^2}\right)=\phi(x_1)^T \phi(x_2)
+\]&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Sigmoid核:
+&lt;/p&gt;
+\[
+   K(x, y) = \tanh(\alpha x^T y + c)=\phi(x_1)^T \phi(x_2)
+\]&lt;p&gt;&lt;br&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h5 id=&#34;充要条件&#34;&gt;充要条件
+&lt;/h5&gt;&lt;p&gt;\(k(x_1,x_2)=\phi(x_1)^T \phi(x_2)\)的充要条件是：(推导暂无)&lt;br&gt;
+交换性：\(k(x_1,x_2)=k(x_2,x_1)\)&lt;br&gt;
+半正定性:\(\forall c_i&gt;0,x_i&gt;0 (\sum_{i=1}^N \sum_{j=1}^N c_ic_jk(x_1,x_2)&gt;=0) \)
+\(\quad \forall i \in \{1, 2, \ldots, N\}\)&lt;/p&gt;
+&lt;p&gt;我们最常用的就是高斯核，我们可以通过继续转化问题来使用核函数去解决这个问题，把这个优化问题变得可做。&lt;/p&gt;
+&lt;h4 id=&#34;数学推导&#34;&gt;数学推导
+&lt;/h4&gt;&lt;h5 id=&#34;kkt条件的完整推导&#34;&gt;KKT条件的完整推导
+&lt;/h5&gt;</description>
         </item>
         <item>
         <title>About</title>
