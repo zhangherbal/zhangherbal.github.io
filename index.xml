@@ -281,7 +281,7 @@ SVM精妙之处将被引出：
 若\(w^T(\phi(x))+b &lt; 0\),则 \(y=-1\)。&lt;br&gt;
 \(w^T\phi(x)=\sum_{i=1}^{N}α_iy_i \phi(x_i)^T\phi(x)\)&lt;br&gt;
 \(w^T\phi(x)=\sum_{i=1}^{N}α_iy_i k(x_1,x)\)&lt;br&gt;
-根据KKT条件求出b的值即可，类似线性模型推导&lt;/p&gt;
+根据\(KKT\)条件求出\(b\)的值即可，类似线性模型推导&lt;/p&gt;
 </description>
         </item>
         <item>
