@@ -272,7 +272,6 @@
           <ol>
             <li><a href="#补充1超平面的定义">补充1:超平面的定义</a></li>
             <li><a href="#补充2拉格朗日乘子法">补充2：拉格朗日乘子法</a></li>
-            <li><a href="#优化理论">优化理论</a></li>
           </ol>
         </li>
         <li><a href="#问题引出">问题引出</a></li>
@@ -297,9 +296,14 @@
             <li><a href="#修正1">修正1</a></li>
             <li><a href="#修正2">修正2</a></li>
             <li><a href="#核函数">核函数</a></li>
-            <li><a href="#数学推导">数学推导</a></li>
           </ol>
         </li>
+        <li><a href="#数学推导">数学推导</a>
+          <ol>
+            <li><a href="#拉格朗日乘子法-1">拉格朗日乘子法</a></li>
+          </ol>
+        </li>
+        <li><a href="#测试过程">测试过程</a></li>
       </ol>
     </li>
   </ol>
@@ -377,16 +381,7 @@
 设 \( a \) 为拉格朗日乘子，\(KKT\)条件为：</p>
 \[
 g(x) \leq 0, \quad a \geq 0, \quad a \cdot g(x) = 0
-\]<h4 id="优化理论">优化理论
-</h4><h6 id="原问题">原问题
-</h6><p>原问题(\(prime\ problem\)):<br>
-最小化: \(f(w)\)<br>
-限制条件:<br> \({g_i(w)<=0,h_i(w)=0}\)
-\(\quad \forall i \in \{1, 2, \ldots, N\}\)</p>
-<h5 id="对偶问题dual-problem">对偶问题(dual problem)
-</h5><p>定义:<br>
-\(L(w,α,β)=\)</p>
-<h3 id="问题引出">问题引出
+\]<h3 id="问题引出">问题引出
 </h3><p>支持向量机可以用作分类算法<br>
 分类算法的思想：给定训练样本集 \( D = \{ (x_1, y_1),(x_2,y_2),...(x_m,y_m) \} \) ,\(y_i∈\{-1,+1\},\) ，基于训练集\(D\)在样本空间中找到一个划分超平面，将不同类别的样本分开，但是有很多超平面都能将训练样本分开，因此我们要找到一个最优的超平面完成分类任务。<br></p>
 <p>训练样本集分为线性可分训练集和非线性可分训练集，线性可分样本集意味着我们可以用一个超平面把样本集分成两个部分<br>
@@ -519,6 +514,20 @@ $$<p>
 \(C \sum_{i=1}^N \xi_i\)为正则项。</p>
 <h4 id="修正2">修正2
 </h4><p>我们做到第一步修正其实还不够，如下图，真正能成功分类样本的其实是一个椭圆，但是我们的模型决定了它是一条直线或者是超平面。因此我们需要将低维的x向高维映射，这样线性可分的概率就变大。<br>
+<img src="/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/image5.jpg"
+	width="779"
+	height="676"
+	srcset="/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/image5_hu16261833024279252221.jpg 480w, /p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/image5_hu1360069595390600958.jpg 1024w"
+	loading="lazy"
+	
+		alt="alt text"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="115"
+		data-flex-basis="276px"
+	
+><br>
 高维映射<br>
 \(x->\phi(x)\)<br>
 最小化 \((minimise)(7)\)<br>
@@ -565,9 +574,65 @@ SVM精妙之处将被引出：
 半正定性:\(\forall c_i>0,x_i>0 (\sum_{i=1}^N \sum_{j=1}^N c_ic_jk(x_1,x_2)>=0) \)
 \(\quad \forall i \in \{1, 2, \ldots, N\}\)</p>
 <p>我们最常用的就是高斯核，我们可以通过继续转化问题来使用核函数去解决这个问题，把这个优化问题变得可做。</p>
-<h4 id="数学推导">数学推导
-</h4><h5 id="kkt条件的完整推导">KKT条件的完整推导
-</h5>
+<h3 id="数学推导">数学推导
+</h3><h4 id="拉格朗日乘子法-1">拉格朗日乘子法
+</h4><p>此问题还是二次规划问题，与线性模型的推导方法相同。
+因为存在两个限制条件，因此引入两个拉格朗日乘子，\(a_i>=0,u_i>=0\),那么拉格朗日函数为<br>
+</p>
+\[
+\mathcal{L}(\mathbf{w}, b, \boldsymbol{\alpha}, \boldsymbol{\xi},u) = \frac{1}{2} \|\mathbf{w}\|^2 + C \sum_{i=1}^{m} \xi_i - \sum_{i=1}^{m} \alpha_i \left( y_i (\mathbf{w}^T \phi(x_i) + b) - 1 + \xi_i \right) - 
+\]<p>
+\(\sum_{i=1}^{n} \mu_i \xi_i\)<br>
+对 \(\mathbf{w}\) 求导并设置为零：
+</p>
+\[
+\frac{\partial \mathcal{L}}{\partial \mathbf{w}} = \mathbf{w} - \sum_{i=1}^{m} \alpha_i y_i \phi(x_i) = 0
+\]<p>
+得到：
+</p>
+\[
+\mathbf{w} = \sum_{i=1}^{m} \alpha_i y_i \phi(x_i)
+\]<p>
+对 \(b\) 求导并设置为零：
+</p>
+\[
+\frac{\partial \mathcal{L}}{\partial b} = -\sum_{i=1}^{m} \alpha_i y_i = 0
+\]<p>
+对 \(\xi_i\) 求导并设置为零：
+</p>
+\[
+\frac{\partial \mathcal{L}}{\partial \xi_i} = C - \alpha_i - \mu_i = 0
+\]<p>
+联立上述式子代回拉格朗日函数得到最终结果(推导过程跟线性基本一样)
+</p>
+\[
+\mathcal{L}(\boldsymbol{\alpha}) = \sum_{i=1}^{m} \alpha_i - \frac{1}{2} \sum_{i=1}^{m} \sum_{j=1}^{m} \alpha_i \alpha_j y_i y_j \phi(\mathbf{x}_i)^T \phi(\mathbf{x}_j)
+\]<p>
+将核函数代入得到
+</p>
+\[
+\mathcal{L}(\boldsymbol{\alpha}) = \sum_{i=1}^{m} \alpha_i - \frac{1}{2} \sum_{i=1}^{m} \sum_{j=1}^{m} \alpha_i \alpha_j y_i y_j k(x_i,x_j)
+\]<p>
+至此引出对偶问题
+最大化:
+</p>
+\[
+\mathcal{L}(\boldsymbol{\alpha}) = \sum_{i=1}^{m} \alpha_i - \frac{1}{2} \sum_{i=1}^{m} \sum_{j=1}^{m} \alpha_i \alpha_j y_i y_j k(x_i,x_j)
+\]<p>
+限制条件:
+\(0 \leq a_i \leq c\)\(\quad \forall i \in \{1, 2, \ldots, m\}\)<br>
+\( \sum_{i=1}^{m} \alpha_i y_i = 0\)
+现在我们\(y_i,y_j,k(x_i,x_j)\)都能求出，只剩\(α\)的值，这还是一个凸优化问题，我们要SMO算法进行解决，还有其他的一些算法，可以选择一种去学习。
+以上就是SVM非线性模型的理论内容。</p>
+<h3 id="测试过程">测试过程
+</h3><p>我们发现我们无法直接求出\(w\),但我们只要知道分类完毕的结果就好<br>
+给出测试样本\(X\)
+若\(w^T(\phi(x))+b \geq 0\),则 \(y=1\)。
+若\(w^T(\phi(x))+b < 0\),则 \(y=-1\)。<br>
+\(w^T\phi(x)=\sum_{i=1}^{N}α_iy_i \phi(x_i)^T\phi(x)\)<br>
+\(w^T\phi(x)=\sum_{i=1}^{N}α_iy_i k(x_1,x)\)<br>
+根据KKT条件求出b的值即可，类似线性模型推导</p>
+
 </section>
 
 
