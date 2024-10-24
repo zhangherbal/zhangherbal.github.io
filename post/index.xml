@@ -7,7 +7,625 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>Herb</copyright>
-        <lastBuildDate>Sun, 06 Oct 2024 14:27:00 +0800</lastBuildDate><atom:link href="https://zhangherbal.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Sun, 20 Oct 2024 15:19:41 +0800</lastBuildDate><atom:link href="https://zhangherbal.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>机器学习-集成学习</title>
+        <link>https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/</link>
+        <pubDate>Sun, 20 Oct 2024 15:19:41 +0800</pubDate>
+        
+        <guid>https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/</guid>
+        <description>&lt;h1 id=&#34;集成学习&#34;&gt;集成学习
+&lt;/h1&gt;&lt;h2 id=&#34;知识补充&#34;&gt;知识补充
+&lt;/h2&gt;&lt;h3 id=&#34;弱学习器&#34;&gt;弱学习器
+&lt;/h3&gt;&lt;p&gt;在给定任务中，其性能略好于随机猜测的学习模型，但是显著弱于强学习器。&lt;/p&gt;
+&lt;h3 id=&#34;强学习器&#34;&gt;强学习器
+&lt;/h3&gt;&lt;p&gt;在给定任务中，性能远超随机猜测的学习模型。它能够有效地从数据中学习并做出准确的预测，通常具有较高的准确率和较好的泛化能力。&lt;/p&gt;
+&lt;h3 id=&#34;串行&#34;&gt;串行
+&lt;/h3&gt;&lt;p&gt;下一个分类器只在前一个分类器预测不够准确的实例上进行训练或者检验。&lt;br&gt;&lt;/p&gt;
+&lt;h3 id=&#34;并行&#34;&gt;并行
+&lt;/h3&gt;&lt;p&gt;所有的弱分类器都给出各自的预测结果，通过组合把这些预测结果转化为最终结果。&lt;br&gt;&lt;/p&gt;
+&lt;h2 id=&#34;定义&#34;&gt;定义
+&lt;/h2&gt;&lt;p&gt;集成学习是使用一系列学习器进行学习，并使用某种规则把各个学习结果进行整合从而获得比单个学习器更好的学习效果的一种机器学习方法。&lt;br&gt;
+集成学习通过将多个学习器进行结合，可获得比单一学习器显著卓越的泛化性能，对弱学习器最明显，因此集成学习的很多理论学习都是针对弱学习器进行的。&lt;/p&gt;
+&lt;h2 id=&#34;相关问题&#34;&gt;相关问题
+&lt;/h2&gt;&lt;h3 id=&#34;问题1弱学习器之间的关系&#34;&gt;问题1：弱学习器之间的关系
+&lt;/h3&gt;&lt;p&gt;第一种就是所有个体学习器都是一个种类的，也可以称为同质的。例如决策树的集成全是决策树，神经网络集成中全是神经网络。&lt;br&gt;
+第二种就是所有个体学习器不全是一个种类的，也可以称为异质的。例如同时包含决策树和神经网络。&lt;br&gt;
+其中同质个体学习器按照个体学习器之间的依赖关系又分两类。一类是当一系列个体学习器存在强依赖关系，都要串行生成，代表为\(Boosting\)系列算法，第二类是个体学习器之间不存在强依赖关系，一系列个体学习器可以并行生成，代表算法是\(bagging\)和随机森林。&lt;/p&gt;
+&lt;h3 id=&#34;问题2学习器的选择&#34;&gt;问题2：学习器的选择
+&lt;/h3&gt;&lt;p&gt;我们在选择学习器时要秉持好而不同的原则。既要考虑准确性，也要考虑多样性。&lt;br&gt;
+准确性：是指个体学习器不能太差，要有一定的准确度。&lt;br&gt;
+多样性：是指个体学习器之间的输出要有差异性。&lt;br&gt;
+简单举例，下图是一个二分类任务的结果，对号表示分类正确。集成结果少数服从多数。
+&lt;img src=&#34;https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image1.png&#34;
+	width=&#34;620&#34;
+	height=&#34;200&#34;
+	srcset=&#34;https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image1_hu1351982106612280065.png 480w, https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image1_hu4371385821505748623.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;alt text&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;310&#34;
+		data-flex-basis=&#34;744px&#34;
+	
+&gt;&lt;br&gt;&lt;/p&gt;
+&lt;h3 id=&#34;问题3怎样组合弱学习器&#34;&gt;问题3：怎样组合弱学习器
+&lt;/h3&gt;&lt;p&gt;假定集成包含T个基学习器\(\{ h_1,h_2,……h_T \}\)，其中\(h_i\)在示例\(x\)上的输出为\(h_i(x)\)。&lt;/p&gt;
+&lt;h4 id=&#34;平均法&#34;&gt;平均法
+&lt;/h4&gt;&lt;p&gt;对数值型输出，数值类的回归预测问题比较常用。&lt;/p&gt;
+&lt;h5 id=&#34;简单平均法&#34;&gt;简单平均法
+&lt;/h5&gt;\[
+  H(x) = \frac{1}{T} \sum_{i=1}^{T} h_i(x)
+\]&lt;h5 id=&#34;加权平均法&#34;&gt;加权平均法
+&lt;/h5&gt;\[
+  H(x) = \sum_{i=1}^{T} w_i \cdot h_i(x)
+  \]&lt;p&gt;
+其中 \( w_i \) 是第 \( i \) 个个体学习器的权重，满足 \( \sum_{i=1}^{T} w_i = 1，w_i \geq 0 \)。&lt;/p&gt;
+&lt;h4 id=&#34;投票法&#34;&gt;投票法
+&lt;/h4&gt;&lt;p&gt;对于分类问题比较常见。&lt;br&gt;
+常见的投票方法有绝对多数投票法(若某标记记得票数超过半数，则预测为该标记)，相对多数投票法(预测为得票最多的标记，若有多个标记获得最高票，则从中随机选取)，加权投票法等。&lt;/p&gt;
+&lt;h4 id=&#34;学习法&#34;&gt;学习法
+&lt;/h4&gt;&lt;p&gt;当训练数据很多时，我们可以采取学习法，即通过另一个学习器来进行结合，\(Stacking\)是学习法的典型代表，我们将个体学习器称为初级学习器，用于结合的学习器称为元学习器。&lt;br&gt;
+步骤如下&lt;br&gt;
+\(1\).将训练数据集划分为多个子集，通常是两个或更多个。&lt;br&gt;
+\(2\).对于每个子集，使用不同的初级学习器进行训练和预测，得到每个初级学习器的预测结果。&lt;br&gt;
+\(3\).将这些预测结果作为新的特征，组合成一个新的训练数据集。&lt;br&gt;
+\(4\).使用这个新的训练数据集来训练一个元学习器，例如逻辑回归、决策树等。&lt;br&gt;
+\(5\).最后，使用训练好的元学习器来对测试数据进行预测。&lt;br&gt;&lt;/p&gt;
+&lt;h2 id=&#34;boosting&#34;&gt;Boosting
+&lt;/h2&gt;&lt;h3 id=&#34;算法介绍&#34;&gt;算法介绍
+&lt;/h3&gt;&lt;p&gt;Boosting是可以将弱学习器提升为强学习器的算法：先从初始训练集训练出一个基学习器，再根据基学习器的表现对训练样本分布进行调整，使得先前基学习器做错的训练样本在后续收到更多关注，然后基于调整后的样本分布来训练下一个基学习器，如此反复进行，直至
+基学习器数目达到事先指定的值T，最终将这T个基学习器进行加权结合。&lt;br&gt;
+即采用了重赋权法：即在训练过程的每一轮中，根据样本分布为每一个训练样本重新赋予一个权重。对无法接受带权样本的
+基学习算法，则可以通过重采样法来处理，即在每一轮的学习中，根据样本分布对训练集重新进行采样，在对重采样而来的样本集对基学习器进行训练。
+&lt;img src=&#34;https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image2.png&#34;
+	width=&#34;1412&#34;
+	height=&#34;662&#34;
+	srcset=&#34;https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image2_hu4778031569442016601.png 480w, https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image2_hu12172636537052933245.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;alt text&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;213&#34;
+		data-flex-basis=&#34;511px&#34;
+	
+&gt;&lt;br&gt;&lt;/p&gt;
+&lt;h3 id=&#34;算法补充&#34;&gt;算法补充
+&lt;/h3&gt;&lt;p&gt;1.准确率越高的弱学习机权重越高。&lt;br&gt;&lt;/p&gt;
+&lt;h3 id=&#34;adaboost&#34;&gt;Adaboost
+&lt;/h3&gt;&lt;p&gt;\(Adaboost\)全称为\((adaptive \ boosting)\),\(adaptive\)的意思是自适应，那么与\(boosting\)相比，\(Adaboost\)是如何去实现自适应的呢？\(Adaboost\)需要解决两个问题。&lt;br&gt;
+1.在每一轮训练中，如何对训练样本的权值分布进行调整？&lt;br&gt;
+2.如何确定各个基学习器“加权”结合的权重？&lt;br&gt;&lt;/p&gt;
+&lt;h4 id=&#34;adaboost的解决思路&#34;&gt;AdaBoost的解决思路
+&lt;/h4&gt;&lt;p&gt;通过分类器权重公式来确定各个基学习器的权重；通过样本分布更新公式来确定各轮训练中的样本分布。&lt;br&gt;
+1.在确定各个基学习器的权重时：&lt;br&gt;
+加大“分类误差率”小的弱分类器的权值，使其在表决中发挥较大作用；减小“分类误差率”大的弱分类器的权值，使其在表决中发挥较小作用。&lt;br&gt;
+2.在确定各轮训练中的样本分布时：&lt;br&gt;
+提高那些被前一轮弱分类器错误分类样本的权值，降低那些被正确分类的样本的权值。&lt;/p&gt;
+&lt;h4 id=&#34;算法流程&#34;&gt;算法流程
+&lt;/h4&gt;&lt;p&gt;&lt;img src=&#34;https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image5.png&#34;
+	width=&#34;570&#34;
+	height=&#34;411&#34;
+	srcset=&#34;https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image5_hu9209690453702848560.png 480w, https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image5_hu15183132805961146882.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;138&#34;
+		data-flex-basis=&#34;332px&#34;
+	
+&gt;&lt;br&gt;&lt;/p&gt;
+&lt;h4 id=&#34;adaboost公式推导&#34;&gt;Adaboost公式推导
+&lt;/h4&gt;&lt;h5 id=&#34;推导前置说明&#34;&gt;推导前置说明
+&lt;/h5&gt;&lt;p&gt;\(Adaboost\)有多种推导方式，我们以基于加法模型来进行推导。
+推导的目标是最小化目标损失函数。&lt;br&gt;
+注意，我们在这里讨论的是二分类问题，其中训练样本集的 \(y_i∈\{−1,+1\}\)，\(f\) 是真实函数。对于样本\(x\)来说，真实值\(f(x)\)∈\(\{−1,+1\}\)，每个基学习器的预测值 \(h_i(x)∈\{−1,+1\}\)，假定基分类器的错误率为 \(ϵ\)，即对每个基分类器\(h_i\)有： &lt;/p&gt;
+$$ P(h_i(x)\neq f(x))=\epsilon \tag{8.1} $$&lt;p&gt; 假设集成通过简单投票法结合
+T个基分类器，若有超过半数的基分类器正确，则集成分类就正确；集成分类的结果 F简单投票(x)
+为： &lt;/p&gt;
+$$ F_{简单投票}(x)=\mathrm{sign}\Big(\sum\limits_{i=1}^{T}h_i(x)\Big) \tag{8.2} $$&lt;p&gt; “加法模型”（\(additive model\)），即基学习器的线性组合
+\(H(x)\)： &lt;/p&gt;
+$$ H(x)=\sum\limits_{t=1}^T\alpha_{t}h_{t}(x) \tag{8.4} $$&lt;p&gt; 其中，\(\alpha_t\) 表示基分类器的权重，因为 AdaBoost 并不使用简单投票法，而是“加权表决法”，即让基学习器具有不同的权值： &lt;/p&gt;
+$$ F(x)=\mathrm{sign}(H(x))=\mathrm{sign}\Big(\sum\limits_{t=1}^T\alpha_{t}h_{t}(x)\Big) $$&lt;p&gt; &lt;br&gt;
+指数损失函数”的定义为： &lt;/p&gt;
+$$ \mathscr{l}_{exp}(H\mid D)=\mathbb{E}{x\sim D}[e^{-f(x)H(x)}]\tag{8.5} $$&lt;p&gt; 其中，\(x\sim D\) 表示概率分布
+D(x)，\(\mathbb{E}\) 表示期望。&lt;br&gt;
+这个指数损失函数为什么合理：当对于某一学习器而言，\(Adaboost\)的优点就是给予其权重，我们注意到\(e\)的指数为\(-H(x)*f(x)\)，当对于某一样本\(x\)，预测正确时
+\(H(x)\)和\(f(x)\)应该为同号，前面加上符号，指数就变成了负数，同时若\(H(x)\)的值越大(分类器对结果的信任程度就高)，整个函数的值就越小。同时若分类错误，\(H(x)\)与\(f(x)\)
+为异号，那么\(e\)的指数变为一个正数，且\(H(x)\)越大，整个损失函数的值都会变大(分类器错付了，那么损失函数值就要反应出问题)。&lt;br&gt;
+在搞懂前提后，我们还需要借助两个公式。&lt;br&gt;
+\( \mathbb{E}_{x\sim D}[f(x)]=\sum_{x\in D}D(x)f(x)\tag{工具公式1} \)
+\(\sum\limits_{i=1}^{|D|}D(x_i)\mathbb{I}(f(x_i)=1)=p(f(x_i)=1|x_i)\tag{工具公式2}\)&lt;/p&gt;
+&lt;h5 id=&#34;损失函数正确性说明&#34;&gt;损失函数正确性说明
+&lt;/h5&gt;&lt;p&gt;若集成学习器
+\(H(x)\)能令指数损失函数最小化，则考虑式（8.5）对
+\(H(x)\)的偏导： &lt;/p&gt;
+$$ \dfrac{\partial\mathscr{l}_{exp}(H\mid D)}{\partial H(x)}=-e^{-H(x)}P(f(x)=1\mid x)+e^{H(x)}P(f(x)=-1\mid x)\tag{8.6} $$&lt;p&gt;
+令式(8.6)为0
+将工具公式1代入式（8.5）： &lt;/p&gt;
+$$ \mathscr{l}_{exp}(H\mid D)=\mathbb{E}{x\sim D}[e^{-f(x)H(x)}]=\sum\limits_{x\in D}D(x)e^{-f(x)H(x)} $$&lt;p&gt; 由于工具公式2： &lt;/p&gt;
+$$ \sum\limits_{i=1}^{|D|}D(x_i)\mathbb{I}(f(x_i)=1)=P(f(x_i)=1\mid x_i) $$&lt;p&gt; 又注意到
+\(f(x_i)∈−\{1,+1\}\)，所以： &lt;/p&gt;
+$$
+\begin{aligned}
+\dfrac{\partial \mathscr{l}_{exp}(H \mid D)}{\partial H(x)} &amp;= \sum\limits_{i=1}^{|D|} D(x_i) \Big( -e^{-H(x_i)} \mathbb{I}(f(x_i)=1) + e^{H(x_i)} \mathbb{I}(f(x_i)=-1) \Big)
+\end{aligned}&lt;br&gt;
+$$&lt;p&gt;
+\begin{aligned}
+&amp;amp;=-e^{-H(x_i)} P(f(x_i)=1 \mid x_i) + e^{H(x_i)} P(f(x_i)=-1 \mid x_i) \quad \text{(由工具公式2得)}
+\end{aligned}
+式（8.6）的具体推导过程至此结束。
+令式（8.6）为零，进行求解： &lt;/p&gt;
+$$ 
+-e^{-H(x)} P(f(x)=1 \mid x) + e^{H(x)} P(f(x)=-1 \mid x) = 0 
+$$\[
+H(x) + \ln(P(f(x)=-1 \mid x)) = -H(x) + \ln(P(f(x)=1 \mid x)
+\]&lt;p&gt;
+可解得：&lt;/p&gt;
+$$ 
+H(x) = \dfrac{1}{2} \ln \dfrac{P(f(x)=1 \mid x)}{P(f(x)=-1 \mid x)} \tag{8.7} 
+$$&lt;p&gt;因此，有：&lt;/p&gt;
+$$ 
+\begin{aligned} 
+\mathrm{sign}(H(x)) &amp;= \mathrm{sign}\Big(\dfrac{1}{2} \ln \dfrac{P(f(x)=1 \mid x)}{P(f(x)=-1 \mid x)}\Big) \\
+&amp;= \begin{cases} 
+1, &amp; P(f(x)=1 \mid x) &gt; P(f(x)=-1 \mid x) \\ 
+-1, &amp; P(f(x)=1 \mid x) &lt; P(f(x)=-1 \mid x) 
+\end{cases} \\
+&amp;= \mathop{\mathrm{argmax}}\limits_{y \in \{-1, 1\}} P(f(x)=y \mid x) 
+\end{aligned} \tag{8.8} 
+$$&lt;p&gt;
+这意味着 \(\mathrm{sign}(H(x))\)
+达到了贝叶斯最优错误率（即对于每个样本\(x\)
+都选择后验概率最大的类别）。换言之，若指数损失函数最小化，则分类错误率也将最小化；这说明指数损失函数是分类任务原本 0/1 损失函数的一致的\(（consistent）\)替代损失函数。由于这个替代损失函数有更好的数学性质，例如它是连续可微函数，因此我们用它替代 0/1 损失函数作为优化目标。
+至此，我们知道了使用“指数损失函数”的原因及其正确性。&lt;/p&gt;
+&lt;h5 id=&#34;分类器权重公式&#34;&gt;分类器权重公式
+&lt;/h5&gt;&lt;p&gt;下面，我们将从指数损失函数入手，推导\(AdaBoost\)算法的分类器权重公式。在\(AdaBoost\)算法中，第一个基分类器\(h_1\)是通过直接将基学习器算法用于初始数据分布而得；此后迭代地生成\(h_t\)和\(\alpha_t\)，当基分类器\(h_t\)基于分布\(D_t\)产生后，该基分类器的权重\(\alpha_t\)应使得 \(\alpha_th_t\)最小化指数损失函数。
+此时的指数损失函数： &lt;br&gt;
+由定义式(8.5)得到
+&lt;/p&gt;
+$$
+\begin{aligned}
+\mathscr{l}_{exp}(\alpha_t h_t \mid D_t) &amp;= \mathbb{E}_{x \sim D_t}[e^{-f(x) \alpha_t h_t(x)}]
+\end{aligned}
+$$&lt;p&gt;
+分类讨论（两种情形）：
+&lt;/p&gt;
+$$
+\begin{aligned}
+&amp;=\mathbb{E}_{x \sim D_t}\left[e^{-\alpha_t} \mathbb{I}(f(x) = h_t(x)) + e^{\alpha_t} \mathbb{I}(f(x) \neq h_t(x))\right]
+\end{aligned}
+$$&lt;p&gt;
+由工具公式1得到：
+&lt;/p&gt;
+$$
+\begin{aligned}
+&amp;=\sum\limits_{x \in D_t} D_t(x) \left[e^{-\alpha_t} \mathbb{I}(f(x) = h_t(x)) + e^{\alpha_t} \mathbb{I}(f(x) \neq h_t(x))\right]
+\end{aligned}
+$$&lt;p&gt;
+由工具公式2得到：
+&lt;/p&gt;
+$$
+\begin{aligned}
+&amp;= e^{-\alpha_t} P_{x \sim D_t}(f(x) = h_t(x)) + e^{\alpha_t} P_{x \sim D_t}(f(x) \neq h_t(x))
+\end{aligned}
+$$$$
+\begin{aligned}
+&amp;= e^{-\alpha_t}(1 - \epsilon_t) + e^{\alpha_t} \epsilon_t \quad \text{错误率的定义推出}
+\end{aligned} \tag{8.9}
+$$&lt;p&gt;
+其中，错误率 \(\epsilon_t = P_{x \sim D_t}(h_t(x) \neq f(x))\)。
+考虑指数损失函数的导数： &lt;/p&gt;
+$$ \begin{aligned} &amp;\dfrac{\partial\mathscr{l}_{exp}(\alpha_th_t\mid D_{t})}{\partial\alpha_t}=-e^{-\alpha_t}(1-\epsilon_t)+e^{\alpha_t}\epsilon_{t} &amp;由式(8.9)对\alpha_{t}求偏导 \end{aligned}\tag{8.10} $$&lt;p&gt; 令式（8.10）为零，进行求解： &lt;/p&gt;
+$$ \begin{aligned} &amp;-e^{-\alpha_{t}}(1-\epsilon_{t})+e^{\alpha_{t}}\epsilon_{t}=0&amp;令式(8.10)为零\ \ &amp;\alpha_{t}+\mathrm{ln}\epsilon_{t}=-\alpha_{t}+\mathrm{ln}(1-\epsilon_{t})&amp;移项后取对数 \end{aligned} $$&lt;p&gt;
+可解得： &lt;/p&gt;
+$$ \alpha_{t}=\dfrac{1}{2}\mathrm{ln}\Big(\dfrac{1-\epsilon_{t}}{\epsilon_{t}}\Big)\tag{8.11} $$&lt;p&gt; 至此，我们求得了 AdaBoost 算法的分类器权重公式。&lt;/p&gt;
+&lt;h5 id=&#34;样本分布更新公式&#34;&gt;样本分布更新公式
+&lt;/h5&gt;&lt;p&gt;下面，我们推导 AdaBoost 算法的样本分布更新公式。&lt;/p&gt;
+&lt;p&gt;AdaBoost 算法在获得 \( H_{t-1} \) 之后样本分布将进行调整，使下一轮的基学习器 \( h_t \) 能纠正 \( H_{t-1} \) 的一些错误。&lt;/p&gt;
+&lt;p&gt;理想的 \( h_t \) 能纠正 \( H_{t-1} \) 的全部错误，由于
+&lt;/p&gt;
+\[
+H(x) = H_{t-1}(x) + \alpha_t h_t(x)
+\]&lt;p&gt;
+因此，我们希望最小化
+\(\mathscr{l}_{exp}(H_{t-1} + \alpha_t h_t \mid D)\)，可以简化为，最小化：
+&lt;/p&gt;
+$$
+\begin{aligned}
+\mathscr{l}_{exp}(H_{t-1} + h_t \mid D) &amp;= \mathbb{E}_{x \sim D}[e^{-f(x)(H_{t-1}(x) + h_t(x))}] \\
+&amp;= \mathbb{E}_{x \sim D}[e^{-f(x)H_{t-1}(x)} e^{-f(x)h_t(x)}]
+\end{aligned} \tag{8.12}
+$$&lt;p&gt;对式（8.12）使用 \( e^{-f(x)h_t(x)} \) 的泰勒展式近似：&lt;/p&gt;
+&lt;p&gt;使用到的泰勒展开式： \( e^x \sim 1 + x + \dfrac{1}{2} x^{2} + o(x^2) \)&lt;/p&gt;
+&lt;p&gt;可得：
+&lt;/p&gt;
+$$
+\mathscr{l}_{exp}(H_{t-1} + h_t \mid D) \simeq \mathbb{E}_{x \sim D}\Big[e^{-f(x)H_{t-1}(x)}\Big(1 - f(x)h_t(x) + \dfrac{f^2(x)h_t^2(x)}{2}\Big)\Big]
+$$&lt;p&gt;又因为 \( f^2(x) = h_t^2(x) = 1 \)，可得：
+&lt;/p&gt;
+$$
+\mathscr{l}_{exp}(H_{t-1} + h_t \mid D) = \mathbb{E}_{x \sim D}\Big[e^{-f(x)H_{t-1}(x)}\Big(1 - f(x)h_t(x) + \dfrac{1}{2}\Big)\Big] \tag{8.13}
+$$&lt;p&gt;因为理想的基学习器 \( h_t(x) \) 要使得指数损失函数最小化，所以：
+&lt;/p&gt;
+$$
+\begin{aligned}
+h_t(x) &amp;= \mathop{\mathrm{argmin}}\limits_{h} \mathscr{l}_{exp}(H_{t-1} + h \mid D) \\
+&amp;= \mathop{\mathrm{argmin}}\limits_{h} \mathbb{E}_{x \sim D}\Big[e^{-f(x)H_{t-1}(x)}\Big(1 - f(x)h(x) + \dfrac{1}{2}\Big)\Big] &amp; \quad \text{由式(8.13)代入得到} \\
+&amp;= \mathop{\mathrm{argmin}}\limits_{h} \mathbb{E}_{x \sim D}\Big[e^{-f(x)H_{t-1}(x)}\Big(-f(x)h(x)\Big)\Big] &amp; \\
+&amp; \text{常数 } 1 + \dfrac{1}{2} \text{ 不影响结果} \\
+&amp;= \mathop{\mathrm{argmax}}\limits_{h} \mathbb{E}_{x \sim D}\Big[e^{-f(x)H_{t-1}(x)}f(x)h(x)\Big] &amp; \text{去负号 } \mathrm{argmin} \text{ 变 } \mathrm{argmax} \\
+&amp;= \mathop{\mathrm{argmax}}\limits_{h} \mathbb{E}_{x \sim D}\Big[\dfrac{e^{-f(x)H_{t-1}(x)}}{\mathbb{E}_{x \sim D}[e^{-f(x)H_{t-1}(x)}]}f(x)h(x)\Big] &amp; \text{新加入的常数不影响结果}
+\end{aligned} \tag{8.14}
+$$&lt;p&gt;注意，式（8.14）中的 \( \mathbb{E}_{x \sim D}[e^{-f(x)H_{t-1}(x)}] \) 是一个常数，之所以添加此常数，是为了构造出下面的 \( D_t \) 分布。&lt;/p&gt;
+&lt;p&gt;令 \( D_t \) 表示一个分布：
+&lt;/p&gt;
+$$
+D_t(x) = \dfrac{D(x)e^{-f(x)H_{t-1}(x)}}{\mathbb{E}_{x \sim D}[e^{-f(x)H_{t-1}(x)}]} \tag{8.15}
+$$&lt;p&gt;根据数学期望的定义，再将式（8.15）代入式（8.14），则理想的基学习器 \( h_t(x) \)：
+&lt;/p&gt;
+$$
+\begin{aligned}
+h_t(x) &amp;= \mathop{\mathrm{argmax}}\limits_{h}\mathbb{E}_{x \sim D}\Big[\dfrac{e^{-f(x)H_{t-1}(x)}}{\mathbb{E}_{x \sim D}[e^{-f(x)H_{t-1}(x)}]}f(x)h(x)\Big] &amp; \text{式(8.14)} \\
+&amp;= \mathop{\mathrm{argmax}}\limits_{h}\sum\limits_{i=1}^{|D|}D(x_i)\Big[\dfrac{e^{-f(x_i)H_{t-1}(x_i)}f(x_i)h(x_i)}{\mathbb{E}_{x \sim D}[e^{-f(x_i)H_{t-1}(x_i)}]}\Big] &amp; \text{数学期望的定义} \\
+&amp;= \mathop{\mathrm{argmax}}\limits_{h}\sum_{i=1}^{|D|}D_t(x_i)f(x_i)h(x_i) &amp; \text{由式(8.15)代入得到} \\
+&amp;= \mathop{\mathrm{argmax}}\limits_{h}\mathbb{E}_{x \sim D_t}[f(x)h(x)]
+\end{aligned} \tag{8.16}
+$$&lt;p&gt;由于 \( f(x), h(x) \in \{-1, +1\} \)，有：
+&lt;/p&gt;
+$$
+f(x)h(x) = 1 - 2\mathbb{I}(f(x) \neq h(x)) \tag{8.17}
+$$&lt;p&gt;则理想的基学习器 \( h_t(x) \)：
+&lt;/p&gt;
+$$
+\begin{aligned}
+h_t(x) &amp;= \mathop{\mathrm{argmax}}\limits_{h}\mathbb{E}_{x \sim D_t}[f(x)h(x)] &amp; \text{式(8.16)} \\
+&amp;= \mathop{\mathrm{argmax}}\limits_{h}\mathbb{E}_{x \sim D_t}[1 - 2\mathbb{I}(f(x) \neq h(x))] &amp; \text{由式(8.17)代入得到} \\
+&amp;= \mathop{\mathrm{argmin}}\limits_{h}\mathbb{E}_{x \sim D_t}[\mathbb{I}(f(x) \neq h(x))] &amp; \text{去掉常数和负号}
+\end{aligned} \tag{8.18}
+$$&lt;p&gt;由此可见，理想的 \( h_t(x) \) 将在分布 \( D_t \) 下最小化分类误差。&lt;/p&gt;
+&lt;p&gt;因此，弱分类器将基于分布 \( D_t \) 进行训练，且针对 \( D_t \) 的分类误差应小于 0.5，这在一定程度上类似“残差逼近”的思想。&lt;/p&gt;
+&lt;p&gt;考虑到 \( D_t \) 与 \( D_{t+1} \) 的关系，有：
+&lt;/p&gt;
+$$
+\begin{aligned}
+D_{t+1}(x) &amp;= \dfrac{D(x)e^{-f(x)H_t(x)}}{\mathbb{E}_{x \sim D}[e^{-f(x)H_t(x)}]} &amp; \text{由式(8.15)可得} \\
+&amp;= \dfrac{D(x)e^{-f(x)H_{t-1}(x)} e^{-f(x)\alpha_th_t(x)}}{\mathbb{E}_{x \sim D}[e^{-f(x)H_t(x)}]} &amp; \text{将 } H_t(x) \text{ 展开得到} \\
+&amp;= D_t(x)e^{-f(x)\alpha_th_t(x)}\dfrac{\mathbb{E}_{x \sim D}[e^{-f(x)H_{t-1}(x)}]}{\mathbb{E}_{x \sim D}[e^{-f(x)H_t(x)}]} &amp; \text{将式(8.15)代入，构造 } D_t(x)
+\end{aligned} \tag{8.19}
+$$&lt;p&gt;
+至此，我们求得了\(AdaBoost\)算法的样本分布更新公式。&lt;/p&gt;
+&lt;h3 id=&#34;xgboost&#34;&gt;XGBOOST
+&lt;/h3&gt;&lt;h2 id=&#34;bagging&#34;&gt;Bagging
+&lt;/h2&gt;&lt;h3 id=&#34;算法介绍-1&#34;&gt;算法介绍
+&lt;/h3&gt;&lt;p&gt;策略：&lt;br&gt;
+从样本集中有放回(使得下次采样时还可选中)的采样出\(m\)个样本，重复操作，我们可以得到\(T\)个数量为\(m\)的训练样本集，然后基于每一个采样集训练出一个基学习器，再将这些基学习器进行结合，然后进行输出的预测。如果是分类任务，通常使用
+简单投票法，对回归任务使用简单平均法。&lt;br&gt;
+&lt;img src=&#34;https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image3.png&#34;
+	width=&#34;1388&#34;
+	height=&#34;678&#34;
+	srcset=&#34;https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image3_hu11103290048620439160.png 480w, https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image3_hu9029925249424189085.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;alt text&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;204&#34;
+		data-flex-basis=&#34;491px&#34;
+	
+&gt;&lt;br&gt;
+采样自助采样法的好处：初始训练集中约有63.2%的样本出现在采样集中，剩下的36.8%的样本可用作验证集。对于这部分大约36.8%的没有被采样到的数据，我们常常称之为袋外数据(\(Out Of Bag, 简称OOB\))。这些数据没有参与训练集模型的拟合，因此可以用来检测模型的泛化能力。&lt;br&gt;&lt;/p&gt;
+&lt;h4 id=&#34;算法流程-1&#34;&gt;算法流程
+&lt;/h4&gt;&lt;p&gt;&lt;img src=&#34;https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image4.png&#34;
+	width=&#34;571&#34;
+	height=&#34;239&#34;
+	srcset=&#34;https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image4_hu278838057141749296.png 480w, https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image4_hu10015664186025117585.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;238&#34;
+		data-flex-basis=&#34;573px&#34;
+	
+&gt;&lt;br&gt;
+用较为通俗的话解释就是在每一轮训练中，通过自助采样获得样本集，使用这个样本集训练一个弱学习器，最后将所有的弱学习器进行结合。&lt;/p&gt;
+&lt;h4 id=&#34;随机森林&#34;&gt;随机森林
+&lt;/h4&gt;&lt;p&gt;随机森林(\(Random Forest,简称RF\))算法在\(bagging\)算法上进行了一点独特的改进，体现在以下几点。&lt;br&gt;
+\(1\).\(RF\)以决策树为基学习器。&lt;br&gt;
+\(2\).在训练过程中引入了随机属性选择。&lt;br&gt;&lt;/p&gt;
+&lt;h5 id=&#34;随机属性选择&#34;&gt;随机属性选择
+&lt;/h5&gt;&lt;p&gt;传统决策树在选择划分属性是在当前结点的属性集合中选择一个最优属性。而\(RF\)有所不同，对基决策树的每个结点，先从该结点的属性集合(假设有\(d\)个属性)中随机选择一个包含\(k\)个属性的子集，然后再从这个子集中选择一个最优属性用于划分。
+若\(K=1\)，相当于随机选择属性，\(k=d\)，则基决策树的构建与传统决策树相同，一般情况下，推荐\(k=log2(d)\)。&lt;br&gt;&lt;/p&gt;
+&lt;h5 id=&#34;算法&#34;&gt;算法
+&lt;/h5&gt;&lt;p&gt;输入为样本集
+\(D={(x_1,y_1),(x_2,y_2),...(x_m,y_m)}\)，弱分类器迭代次数\(T\)。输出为最终的强分类器\(f(x)\)　　　　&lt;br&gt;
+\((1)\)对于\(t=1,2...,T\):&lt;br&gt;
+\((a)\)对训练集进行第\(t\)次随机采样，共采集\(m\)次，得到包含\(m\)个样本的采样集\(D_t\)&lt;br&gt;
+\((b)\)用采样集\(D_t\)训练第t个决策树模型\(G_t (x)\)，在训练决策树模型的节点的时候， 在节点上所有的样本特征中选择一部分样本特征， 在这些随机选择的部分样本特征中选择一个最优的特征来做决策树的左右子树划分&lt;br&gt;
+\((2)\)如果是分类算法预测，则\(T\)个弱学习器投出最多票数的类别或者类别之一为最终类别。如果是回归算法，\(T\)个弱学习器得到的回归结果进行算术平均得到的值为最终的模型输出。&lt;/p&gt;
+&lt;h5 id=&#34;随机森林的优点&#34;&gt;随机森林的优点
+&lt;/h5&gt;&lt;p&gt;1.并行处理：由于每棵树的构建是相互独立的，随机森林可以很容易地实现并行化，提高训练效率。&lt;br&gt;
+2.防止过拟合：随机森林通过引入随机性，降低了模型对训练数据的依赖，从而减少了过拟合的风险。&lt;br&gt;
+3.高准确性：通过构建多个决策树并将结果进行投票或平均，随机森林能够提高模型的整体准确性。&lt;br&gt;&lt;/p&gt;
+&lt;h5 id=&#34;随机森林的缺点&#34;&gt;随机森林的缺点
+&lt;/h5&gt;&lt;p&gt;1.在某些噪音比较大的特征上，\(RF\) 模型容易陷入过拟合；&lt;br&gt;
+2.取值比较多的划分特征对\(RF\)的决策会产生更大的影响，从而有可能影响模型的效果。&lt;br&gt;&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>数据结构-线性表</title>
+        <link>https://zhangherbal.github.io/p/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-%E7%BA%BF%E6%80%A7%E8%A1%A8/</link>
+        <pubDate>Tue, 15 Oct 2024 18:46:53 +0800</pubDate>
+        
+        <guid>https://zhangherbal.github.io/p/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84-%E7%BA%BF%E6%80%A7%E8%A1%A8/</guid>
+        <description>&lt;h1 id=&#34;线性表&#34;&gt;线性表
+&lt;/h1&gt;&lt;p&gt;线性表是由\(n\)个数据特性相同的元素构成的有限序列。&lt;/p&gt;
+&lt;h2 id=&#34;线性表-顺序表&#34;&gt;线性表-顺序表
+&lt;/h2&gt;&lt;h3 id=&#34;定义&#34;&gt;定义
+&lt;/h3&gt;&lt;p&gt;线性表的顺序表示指的是用一组地址连续的存储单元依次存储线性表的数据元素。&lt;/p&gt;
+&lt;h3 id=&#34;代码表示&#34;&gt;代码表示
+&lt;/h3&gt;&lt;p&gt;1.结构定义&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-C++&#34; data-lang=&#34;C++&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cp&#34;&gt;#define MAXSIZE = 100
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cp&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;typedef&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;struct&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;ElemType&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;elem&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;length&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Sqlist&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;示例:图书管理系统涉及&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-C++&#34; data-lang=&#34;C++&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cp&#34;&gt;#define MAXSIZE = 100
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cp&#34;&gt;&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;typedef&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;struct&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;string&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;string&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ISBN&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;kt&#34;&gt;float&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;price&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Book&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;typedef&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;struct&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;Book&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;elem&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;length&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Sqlist&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;类似定义后，可以直接通过变量定义语句&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-C++&#34; data-lang=&#34;C++&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;sqlist&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;l&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;2.初始化(没有包括存储失败等)：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-C++&#34; data-lang=&#34;C++&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;Status&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;Initlist&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Sqlist&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;l&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;){&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;l&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;elem&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;new&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Elemtype&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Maxsize&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;];&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;l&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;length&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;3.取值&lt;br&gt;
+取下标即可，判断下表是否合法即可&lt;br&gt;
+4.查找&lt;br&gt;
+平均复杂度为O(n)的查找，C语言基础，略。&lt;br&gt;
+5.插入&lt;br&gt;
+平均时间复杂度为O(n)的查找，C语言基础，略。&lt;br&gt;
+6.删除&lt;br&gt;
+平均时间复杂度为O(n)的删除操作，C语言基础，略。&lt;br&gt;&lt;/p&gt;
+&lt;h3 id=&#34;补充&#34;&gt;补充
+&lt;/h3&gt;&lt;p&gt;因为线性表的顺序表示大部分为C语言基础，具体操作不再详写&lt;/p&gt;
+&lt;h2 id=&#34;线性表-链表&#34;&gt;线性表-链表
+&lt;/h2&gt;&lt;h3 id=&#34;定义与引出&#34;&gt;定义与引出
+&lt;/h3&gt;&lt;p&gt;线性表链式存储特点：用一组任意的存储单元存储线性表的数据元素(存储单元可以不连续)&lt;br&gt;
+因为存储单元可以不连续，因此对于每个数据元素\(a_i\)来说，除了存储自己本身的信息，还要存储一个指示直接后继的信息。&lt;br&gt;
+这两部分信息组成数据元素\(a_i\)的存储映像，称为节点。其中存储数据元素信息的域称为数据域，存储直接后继存储位置的域为指针域。&lt;br&gt;
+许多节点链接成一个链表，即为线性表。&lt;br&gt;
+线性表还有许多形式，如双链表等。&lt;br&gt;&lt;/p&gt;
+&lt;h3 id=&#34;基本操作实现代码表示&#34;&gt;基本操作实现+代码表示
+&lt;/h3&gt;&lt;h4 id=&#34;定义-1&#34;&gt;定义
+&lt;/h4&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;6
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-C++&#34; data-lang=&#34;C++&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;typedef&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;struct&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;Elemtype&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;data&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;//数据域
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;k&#34;&gt;struct&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;node&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;next&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;//指针域
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;node&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Linklist&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;//其中Linklist是指向node的指针类型
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;1.Linklist和node &lt;em&gt;本质上是等价的，为了代码可读性，我们通常用Linklist定义单链表，强调其为某个单链表的头指针，用node&lt;/em&gt;定义指向单链表中任意节点的指针变量&lt;br&gt;
+2.单链表是表头指针唯一确定的，因此单链表的名字可以用头指针的名字命名。&lt;br&gt;
+3.若定义Linklist p或者Lnode &lt;em&gt;p,则p为指向某节点的指针变量，表示该节点的地址，而&lt;/em&gt;p为对应的节点变量。&lt;br&gt;
+&lt;br&gt;&lt;/p&gt;
+&lt;h4 id=&#34;初始化&#34;&gt;初始化
+&lt;/h4&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-C++&#34; data-lang=&#34;C++&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;Status&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;Initlist&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Sqlist&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;l&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;){&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;c1&#34;&gt;//构造单链表L
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;n&#34;&gt;l&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;new&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;node&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;//有头节点的，让单链表指向一个头节点
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;n&#34;&gt;l&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;next&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;NULL&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;//头节点的指针域为空
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;头节点：
+在首元节点前的一个节点，指针域指向首元节点，头节点的数据域可以存储信息，也可以不存储&lt;br&gt;
+头节点的用处：&lt;br&gt;
+1.便于首元节点(链表中存储第一个数据元素的节点)处理，添加头节点后，对首元节点的操作跟其他节点一样，无需额外处理&lt;br&gt;
+2.便于空表和非空表的统一管理。&lt;/p&gt;
+&lt;h4 id=&#34;取值&#34;&gt;取值
+&lt;/h4&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;19
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;20
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;21
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;22
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;23
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;24
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;25
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;26
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;27
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;28
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;29
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;30
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;31
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;32
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;33
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;34
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;35
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;36
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;37
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;38
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;39
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-C++&#34; data-lang=&#34;C++&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;//取节点序号为i的值
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Status&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;Get_elem&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Linklist&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;L&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ElemType&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;e&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;){&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;p&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;L&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;next&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;j&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;while&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;p&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;j&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;){&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;n&#34;&gt;p&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;p&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;next&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;o&#34;&gt;++&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;j&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;!&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;p&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;||&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;j&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Error&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;e&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;p&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;data&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;OK&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cp&#34;&gt;#### 查找
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cp&#34;&gt;&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;```&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;C&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;++&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;//在带头节点的单链表L中查找值为e的元素
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;node&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;LocateELem&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Linklist&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;L&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Elemtype&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;e&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;){&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;p&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;L&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;next&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;while&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;p&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;p&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;data&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;!=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;e&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;){&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;n&#34;&gt;p&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;p&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;next&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;p&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cp&#34;&gt;#### 插入
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cp&#34;&gt;&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;```&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;C&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;++&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;Status&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ListInsert&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Linklist&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;l&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Elemtype&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;e&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;){&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;c1&#34;&gt;//在带头节点的单链表L的第i个位置插入值为e的点
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;n&#34;&gt;p&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;L&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;j&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;while&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;p&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;j&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;){&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;n&#34;&gt;p&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;p&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;next&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;n&#34;&gt;j&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;++&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;//先找到第i-1个
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;!&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;p&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;||&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;j&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ERROR&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;s&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;new&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;node&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;s&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;data&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;e&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;s&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;next&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;p&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;next&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;p&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;next&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;s&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;OK&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id=&#34;删除&#34;&gt;删除
+&lt;/h4&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-C++&#34; data-lang=&#34;C++&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;Status&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;ListDelete&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Linklist&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;l&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;){&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;c1&#34;&gt;//在带头节点的单链表L中，删除第i个元素
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;&lt;/span&gt;    &lt;span class=&#34;n&#34;&gt;p&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;l&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;kt&#34;&gt;int&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;j&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;while&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;p&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;j&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)){&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;n&#34;&gt;p&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;p&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;next&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;n&#34;&gt;j&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;++&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;!&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;p&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;||&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;j&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;i&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ERROR&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;q&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;p&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;next&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;p&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;next&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;q&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;next&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;delete&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;q&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;OK&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h4 id=&#34;创建单链表&#34;&gt;创建单链表
+&lt;/h4&gt;&lt;h5 id=&#34;前插法&#34;&gt;前插法
+&lt;/h5&gt;&lt;h5 id=&#34;后插法&#34;&gt;后插法
+&lt;/h5&gt;&lt;h2 id=&#34;循环链表&#34;&gt;循环链表
+&lt;/h2&gt;</description>
+        </item>
+        <item>
         <title>机器学习-支持向量机</title>
         <link>https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/</link>
         <pubDate>Sun, 06 Oct 2024 14:27:00 +0800</pubDate>
@@ -425,18 +1043,18 @@ SVM精妙之处将被引出：
 &lt;table&gt;
   &lt;thead&gt;
       &lt;tr&gt;
-          &lt;th style=&#34;text-align: left&#34;&gt;Name&lt;/th&gt;
-          &lt;th style=&#34;text-align: left&#34;&gt;Age&lt;/th&gt;
+          &lt;th&gt;Name&lt;/th&gt;
+          &lt;th&gt;Age&lt;/th&gt;
       &lt;/tr&gt;
   &lt;/thead&gt;
   &lt;tbody&gt;
       &lt;tr&gt;
-          &lt;td style=&#34;text-align: left&#34;&gt;Bob&lt;/td&gt;
-          &lt;td style=&#34;text-align: left&#34;&gt;27&lt;/td&gt;
+          &lt;td&gt;Bob&lt;/td&gt;
+          &lt;td&gt;27&lt;/td&gt;
       &lt;/tr&gt;
       &lt;tr&gt;
-          &lt;td style=&#34;text-align: left&#34;&gt;Alice&lt;/td&gt;
-          &lt;td style=&#34;text-align: left&#34;&gt;23&lt;/td&gt;
+          &lt;td&gt;Alice&lt;/td&gt;
+          &lt;td&gt;23&lt;/td&gt;
       &lt;/tr&gt;
   &lt;/tbody&gt;
 &lt;/table&gt;
@@ -444,38 +1062,38 @@ SVM精妙之处将被引出：
 &lt;/h4&gt;&lt;table&gt;
   &lt;thead&gt;
       &lt;tr&gt;
-          &lt;th style=&#34;text-align: left&#34;&gt;Italics&lt;/th&gt;
-          &lt;th style=&#34;text-align: left&#34;&gt;Bold&lt;/th&gt;
-          &lt;th style=&#34;text-align: left&#34;&gt;Code&lt;/th&gt;
+          &lt;th&gt;Italics&lt;/th&gt;
+          &lt;th&gt;Bold&lt;/th&gt;
+          &lt;th&gt;Code&lt;/th&gt;
       &lt;/tr&gt;
   &lt;/thead&gt;
   &lt;tbody&gt;
       &lt;tr&gt;
-          &lt;td style=&#34;text-align: left&#34;&gt;&lt;em&gt;italics&lt;/em&gt;&lt;/td&gt;
-          &lt;td style=&#34;text-align: left&#34;&gt;&lt;strong&gt;bold&lt;/strong&gt;&lt;/td&gt;
-          &lt;td style=&#34;text-align: left&#34;&gt;&lt;code&gt;code&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;em&gt;italics&lt;/em&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;bold&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;code&lt;/code&gt;&lt;/td&gt;
       &lt;/tr&gt;
   &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;table&gt;
   &lt;thead&gt;
       &lt;tr&gt;
-          &lt;th style=&#34;text-align: left&#34;&gt;A&lt;/th&gt;
-          &lt;th style=&#34;text-align: left&#34;&gt;B&lt;/th&gt;
-          &lt;th style=&#34;text-align: left&#34;&gt;C&lt;/th&gt;
-          &lt;th style=&#34;text-align: left&#34;&gt;D&lt;/th&gt;
-          &lt;th style=&#34;text-align: left&#34;&gt;E&lt;/th&gt;
-          &lt;th style=&#34;text-align: left&#34;&gt;F&lt;/th&gt;
+          &lt;th&gt;A&lt;/th&gt;
+          &lt;th&gt;B&lt;/th&gt;
+          &lt;th&gt;C&lt;/th&gt;
+          &lt;th&gt;D&lt;/th&gt;
+          &lt;th&gt;E&lt;/th&gt;
+          &lt;th&gt;F&lt;/th&gt;
       &lt;/tr&gt;
   &lt;/thead&gt;
   &lt;tbody&gt;
       &lt;tr&gt;
-          &lt;td style=&#34;text-align: left&#34;&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/td&gt;
-          &lt;td style=&#34;text-align: left&#34;&gt;Phasellus ultricies, sapien non euismod aliquam, dui ligula tincidunt odio, at accumsan nulla sapien eget ex.&lt;/td&gt;
-          &lt;td style=&#34;text-align: left&#34;&gt;Proin eleifend dictum ipsum, non euismod ipsum pulvinar et. Vivamus sollicitudin, quam in pulvinar aliquam, metus elit pretium purus&lt;/td&gt;
-          &lt;td style=&#34;text-align: left&#34;&gt;Proin sit amet velit nec enim imperdiet vehicula.&lt;/td&gt;
-          &lt;td style=&#34;text-align: left&#34;&gt;Ut bibendum vestibulum quam, eu egestas turpis gravida nec&lt;/td&gt;
-          &lt;td style=&#34;text-align: left&#34;&gt;Sed scelerisque nec turpis vel viverra. Vivamus vitae pretium sapien&lt;/td&gt;
+          &lt;td&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/td&gt;
+          &lt;td&gt;Phasellus ultricies, sapien non euismod aliquam, dui ligula tincidunt odio, at accumsan nulla sapien eget ex.&lt;/td&gt;
+          &lt;td&gt;Proin eleifend dictum ipsum, non euismod ipsum pulvinar et. Vivamus sollicitudin, quam in pulvinar aliquam, metus elit pretium purus&lt;/td&gt;
+          &lt;td&gt;Proin sit amet velit nec enim imperdiet vehicula.&lt;/td&gt;
+          &lt;td&gt;Ut bibendum vestibulum quam, eu egestas turpis gravida nec&lt;/td&gt;
+          &lt;td&gt;Sed scelerisque nec turpis vel viverra. Vivamus vitae pretium sapien&lt;/td&gt;
       &lt;/tr&gt;
   &lt;/tbody&gt;
 &lt;/table&gt;

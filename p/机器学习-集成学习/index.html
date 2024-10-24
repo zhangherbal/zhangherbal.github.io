@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="集成学习 知识补充 弱学习器 在给定任务中，其性能略好于随机猜测的学习模型，但是显著弱于强学习器。\n强学习器 在给定任务中，性能远超随机猜测的学习模型。它能够有效地从数据中学习并做出准确的预测，通常具有较高的准确率和较好的泛化能力。\n">
+<title>机器学习-集成学习</title>
+
+<link rel='canonical' href='https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/'>
+
+<link rel="stylesheet" href="/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css"><meta property='og:title' content="机器学习-集成学习">
+<meta property='og:description' content="集成学习 知识补充 弱学习器 在给定任务中，其性能略好于随机猜测的学习模型，但是显著弱于强学习器。\n强学习器 在给定任务中，性能远超随机猜测的学习模型。它能够有效地从数据中学习并做出准确的预测，通常具有较高的准确率和较好的泛化能力。\n">
+<meta property='og:url' content='https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/'>
+<meta property='og:site_name' content='Herb'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2024-10-20T15:19:41&#43;08:00'/><meta property='article:modified_time' content='2024-10-20T15:19:41&#43;08:00'/>
+<meta name="twitter:title" content="机器学习-集成学习">
+<meta name="twitter:description" content="集成学习 知识补充 弱学习器 在给定任务中，其性能略好于随机猜测的学习模型，但是显著弱于强学习器。\n强学习器 在给定任务中，性能远超随机猜测的学习模型。它能够有效地从数据中学习并做出准确的预测，通常具有较高的准确率和较好的泛化能力。\n">
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu14322915909999105942.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🍥</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Herb</a></h1>
+            <h2 class="site-description">拨雪寻春，烧灯续昼</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/CaiJimmy/hugo-theme-stack'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://twitter.com'
+                        target="_blank"
+                        title="Twitter"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-twitter" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M22 4.01c-1 .49 -1.98 .689 -3 .99c-1.121 -1.265 -2.783 -1.335 -4.38 -.737s-2.643 2.06 -2.62 3.737v1c-3.245 .083 -6.135 -1.395 -8 -4c0 0 -4.182 7.433 4 11c-1.872 1.247 -3.739 2.088 -6 2c3.308 1.803 6.913 2.423 10.034 1.517c3.58 -1.04 6.522 -3.723 7.651 -7.742a13.84 13.84 0 0 0 .497 -3.753c-.002 -.249 1.51 -2.772 1.818 -4.013z" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%85%B3%E4%BA%8E/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/links/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>Links</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#知识补充">知识补充</a>
+      <ol>
+        <li><a href="#弱学习器">弱学习器</a></li>
+        <li><a href="#强学习器">强学习器</a></li>
+        <li><a href="#串行">串行</a></li>
+        <li><a href="#并行">并行</a></li>
+      </ol>
+    </li>
+    <li><a href="#定义">定义</a></li>
+    <li><a href="#相关问题">相关问题</a>
+      <ol>
+        <li><a href="#问题1弱学习器之间的关系">问题1：弱学习器之间的关系</a></li>
+        <li><a href="#问题2学习器的选择">问题2：学习器的选择</a></li>
+        <li><a href="#问题3怎样组合弱学习器">问题3：怎样组合弱学习器</a>
+          <ol>
+            <li><a href="#平均法">平均法</a></li>
+            <li><a href="#投票法">投票法</a></li>
+            <li><a href="#学习法">学习法</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#boosting">Boosting</a>
+      <ol>
+        <li><a href="#算法介绍">算法介绍</a></li>
+        <li><a href="#算法补充">算法补充</a></li>
+        <li><a href="#adaboost">Adaboost</a>
+          <ol>
+            <li><a href="#adaboost的解决思路">AdaBoost的解决思路</a></li>
+            <li><a href="#算法流程">算法流程</a></li>
+            <li><a href="#adaboost公式推导">Adaboost公式推导</a></li>
+          </ol>
+        </li>
+        <li><a href="#xgboost">XGBOOST</a></li>
+      </ol>
+    </li>
+    <li><a href="#bagging">Bagging</a>
+      <ol>
+        <li><a href="#算法介绍-1">算法介绍</a>
+          <ol>
+            <li><a href="#算法流程-1">算法流程</a></li>
+            <li><a href="#随机森林">随机森林</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/">机器学习-集成学习</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">2024-10-20</time>
+            </div>
+        
+
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h1 id="集成学习">集成学习
+</h1><h2 id="知识补充">知识补充
+</h2><h3 id="弱学习器">弱学习器
+</h3><p>在给定任务中，其性能略好于随机猜测的学习模型，但是显著弱于强学习器。</p>
+<h3 id="强学习器">强学习器
+</h3><p>在给定任务中，性能远超随机猜测的学习模型。它能够有效地从数据中学习并做出准确的预测，通常具有较高的准确率和较好的泛化能力。</p>
+<h3 id="串行">串行
+</h3><p>下一个分类器只在前一个分类器预测不够准确的实例上进行训练或者检验。<br></p>
+<h3 id="并行">并行
+</h3><p>所有的弱分类器都给出各自的预测结果，通过组合把这些预测结果转化为最终结果。<br></p>
+<h2 id="定义">定义
+</h2><p>集成学习是使用一系列学习器进行学习，并使用某种规则把各个学习结果进行整合从而获得比单个学习器更好的学习效果的一种机器学习方法。<br>
+集成学习通过将多个学习器进行结合，可获得比单一学习器显著卓越的泛化性能，对弱学习器最明显，因此集成学习的很多理论学习都是针对弱学习器进行的。</p>
+<h2 id="相关问题">相关问题
+</h2><h3 id="问题1弱学习器之间的关系">问题1：弱学习器之间的关系
+</h3><p>第一种就是所有个体学习器都是一个种类的，也可以称为同质的。例如决策树的集成全是决策树，神经网络集成中全是神经网络。<br>
+第二种就是所有个体学习器不全是一个种类的，也可以称为异质的。例如同时包含决策树和神经网络。<br>
+其中同质个体学习器按照个体学习器之间的依赖关系又分两类。一类是当一系列个体学习器存在强依赖关系，都要串行生成，代表为\(Boosting\)系列算法，第二类是个体学习器之间不存在强依赖关系，一系列个体学习器可以并行生成，代表算法是\(bagging\)和随机森林。</p>
+<h3 id="问题2学习器的选择">问题2：学习器的选择
+</h3><p>我们在选择学习器时要秉持好而不同的原则。既要考虑准确性，也要考虑多样性。<br>
+准确性：是指个体学习器不能太差，要有一定的准确度。<br>
+多样性：是指个体学习器之间的输出要有差异性。<br>
+简单举例，下图是一个二分类任务的结果，对号表示分类正确。集成结果少数服从多数。
+<img src="/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image1.png"
+	width="620"
+	height="200"
+	srcset="/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image1_hu1351982106612280065.png 480w, /p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image1_hu4371385821505748623.png 1024w"
+	loading="lazy"
+	
+		alt="alt text"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="310"
+		data-flex-basis="744px"
+	
+><br></p>
+<h3 id="问题3怎样组合弱学习器">问题3：怎样组合弱学习器
+</h3><p>假定集成包含T个基学习器\(\{ h_1,h_2,……h_T \}\)，其中\(h_i\)在示例\(x\)上的输出为\(h_i(x)\)。</p>
+<h4 id="平均法">平均法
+</h4><p>对数值型输出，数值类的回归预测问题比较常用。</p>
+<h5 id="简单平均法">简单平均法
+</h5>\[
+  H(x) = \frac{1}{T} \sum_{i=1}^{T} h_i(x)
+\]<h5 id="加权平均法">加权平均法
+</h5>\[
+  H(x) = \sum_{i=1}^{T} w_i \cdot h_i(x)
+  \]<p>
+其中 \( w_i \) 是第 \( i \) 个个体学习器的权重，满足 \( \sum_{i=1}^{T} w_i = 1，w_i \geq 0 \)。</p>
+<h4 id="投票法">投票法
+</h4><p>对于分类问题比较常见。<br>
+常见的投票方法有绝对多数投票法(若某标记记得票数超过半数，则预测为该标记)，相对多数投票法(预测为得票最多的标记，若有多个标记获得最高票，则从中随机选取)，加权投票法等。</p>
+<h4 id="学习法">学习法
+</h4><p>当训练数据很多时，我们可以采取学习法，即通过另一个学习器来进行结合，\(Stacking\)是学习法的典型代表，我们将个体学习器称为初级学习器，用于结合的学习器称为元学习器。<br>
+步骤如下<br>
+\(1\).将训练数据集划分为多个子集，通常是两个或更多个。<br>
+\(2\).对于每个子集，使用不同的初级学习器进行训练和预测，得到每个初级学习器的预测结果。<br>
+\(3\).将这些预测结果作为新的特征，组合成一个新的训练数据集。<br>
+\(4\).使用这个新的训练数据集来训练一个元学习器，例如逻辑回归、决策树等。<br>
+\(5\).最后，使用训练好的元学习器来对测试数据进行预测。<br></p>
+<h2 id="boosting">Boosting
+</h2><h3 id="算法介绍">算法介绍
+</h3><p>Boosting是可以将弱学习器提升为强学习器的算法：先从初始训练集训练出一个基学习器，再根据基学习器的表现对训练样本分布进行调整，使得先前基学习器做错的训练样本在后续收到更多关注，然后基于调整后的样本分布来训练下一个基学习器，如此反复进行，直至
+基学习器数目达到事先指定的值T，最终将这T个基学习器进行加权结合。<br>
+即采用了重赋权法：即在训练过程的每一轮中，根据样本分布为每一个训练样本重新赋予一个权重。对无法接受带权样本的
+基学习算法，则可以通过重采样法来处理，即在每一轮的学习中，根据样本分布对训练集重新进行采样，在对重采样而来的样本集对基学习器进行训练。
+<img src="/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image2.png"
+	width="1412"
+	height="662"
+	srcset="/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image2_hu4778031569442016601.png 480w, /p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image2_hu12172636537052933245.png 1024w"
+	loading="lazy"
+	
+		alt="alt text"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="213"
+		data-flex-basis="511px"
+	
+><br></p>
+<h3 id="算法补充">算法补充
+</h3><p>1.准确率越高的弱学习机权重越高。<br></p>
+<h3 id="adaboost">Adaboost
+</h3><p>\(Adaboost\)全称为\((adaptive \ boosting)\),\(adaptive\)的意思是自适应，那么与\(boosting\)相比，\(Adaboost\)是如何去实现自适应的呢？\(Adaboost\)需要解决两个问题。<br>
+1.在每一轮训练中，如何对训练样本的权值分布进行调整？<br>
+2.如何确定各个基学习器“加权”结合的权重？<br></p>
+<h4 id="adaboost的解决思路">AdaBoost的解决思路
+</h4><p>通过分类器权重公式来确定各个基学习器的权重；通过样本分布更新公式来确定各轮训练中的样本分布。<br>
+1.在确定各个基学习器的权重时：<br>
+加大“分类误差率”小的弱分类器的权值，使其在表决中发挥较大作用；减小“分类误差率”大的弱分类器的权值，使其在表决中发挥较小作用。<br>
+2.在确定各轮训练中的样本分布时：<br>
+提高那些被前一轮弱分类器错误分类样本的权值，降低那些被正确分类的样本的权值。</p>
+<h4 id="算法流程">算法流程
+</h4><p><img src="/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image5.png"
+	width="570"
+	height="411"
+	srcset="/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image5_hu9209690453702848560.png 480w, /p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image5_hu15183132805961146882.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="138"
+		data-flex-basis="332px"
+	
+><br></p>
+<h4 id="adaboost公式推导">Adaboost公式推导
+</h4><h5 id="推导前置说明">推导前置说明
+</h5><p>\(Adaboost\)有多种推导方式，我们以基于加法模型来进行推导。
+推导的目标是最小化目标损失函数。<br>
+注意，我们在这里讨论的是二分类问题，其中训练样本集的 \(y_i∈\{−1,+1\}\)，\(f\) 是真实函数。对于样本\(x\)来说，真实值\(f(x)\)∈\(\{−1,+1\}\)，每个基学习器的预测值 \(h_i(x)∈\{−1,+1\}\)，假定基分类器的错误率为 \(ϵ\)，即对每个基分类器\(h_i\)有： </p>
+$$ P(h_i(x)\neq f(x))=\epsilon \tag{8.1} $$<p> 假设集成通过简单投票法结合
+T个基分类器，若有超过半数的基分类器正确，则集成分类就正确；集成分类的结果 F简单投票(x)
+为： </p>
+$$ F_{简单投票}(x)=\mathrm{sign}\Big(\sum\limits_{i=1}^{T}h_i(x)\Big) \tag{8.2} $$<p> “加法模型”（\(additive model\)），即基学习器的线性组合
+\(H(x)\)： </p>
+$$ H(x)=\sum\limits_{t=1}^T\alpha_{t}h_{t}(x) \tag{8.4} $$<p> 其中，\(\alpha_t\) 表示基分类器的权重，因为 AdaBoost 并不使用简单投票法，而是“加权表决法”，即让基学习器具有不同的权值： </p>
+$$ F(x)=\mathrm{sign}(H(x))=\mathrm{sign}\Big(\sum\limits_{t=1}^T\alpha_{t}h_{t}(x)\Big) $$<p> <br>
+指数损失函数”的定义为： </p>
+$$ \mathscr{l}_{exp}(H\mid D)=\mathbb{E}{x\sim D}[e^{-f(x)H(x)}]\tag{8.5} $$<p> 其中，\(x\sim D\) 表示概率分布
+D(x)，\(\mathbb{E}\) 表示期望。<br>
+这个指数损失函数为什么合理：当对于某一学习器而言，\(Adaboost\)的优点就是给予其权重，我们注意到\(e\)的指数为\(-H(x)*f(x)\)，当对于某一样本\(x\)，预测正确时
+\(H(x)\)和\(f(x)\)应该为同号，前面加上符号，指数就变成了负数，同时若\(H(x)\)的值越大(分类器对结果的信任程度就高)，整个函数的值就越小。同时若分类错误，\(H(x)\)与\(f(x)\)
+为异号，那么\(e\)的指数变为一个正数，且\(H(x)\)越大，整个损失函数的值都会变大(分类器错付了，那么损失函数值就要反应出问题)。<br>
+在搞懂前提后，我们还需要借助两个公式。<br>
+\( \mathbb{E}_{x\sim D}[f(x)]=\sum_{x\in D}D(x)f(x)\tag{工具公式1} \)
+\(\sum\limits_{i=1}^{|D|}D(x_i)\mathbb{I}(f(x_i)=1)=p(f(x_i)=1|x_i)\tag{工具公式2}\)</p>
+<h5 id="损失函数正确性说明">损失函数正确性说明
+</h5><p>若集成学习器
+\(H(x)\)能令指数损失函数最小化，则考虑式（8.5）对
+\(H(x)\)的偏导： </p>
+$$ \dfrac{\partial\mathscr{l}_{exp}(H\mid D)}{\partial H(x)}=-e^{-H(x)}P(f(x)=1\mid x)+e^{H(x)}P(f(x)=-1\mid x)\tag{8.6} $$<p>
+令式(8.6)为0
+将工具公式1代入式（8.5）： </p>
+$$ \mathscr{l}_{exp}(H\mid D)=\mathbb{E}{x\sim D}[e^{-f(x)H(x)}]=\sum\limits_{x\in D}D(x)e^{-f(x)H(x)} $$<p> 由于工具公式2： </p>
+$$ \sum\limits_{i=1}^{|D|}D(x_i)\mathbb{I}(f(x_i)=1)=P(f(x_i)=1\mid x_i) $$<p> 又注意到
+\(f(x_i)∈−\{1,+1\}\)，所以： </p>
+$$
+\begin{aligned}
+\dfrac{\partial \mathscr{l}_{exp}(H \mid D)}{\partial H(x)} &= \sum\limits_{i=1}^{|D|} D(x_i) \Big( -e^{-H(x_i)} \mathbb{I}(f(x_i)=1) + e^{H(x_i)} \mathbb{I}(f(x_i)=-1) \Big)
+\end{aligned}<br>
+$$<p>
+\begin{aligned}
+&amp;=-e^{-H(x_i)} P(f(x_i)=1 \mid x_i) + e^{H(x_i)} P(f(x_i)=-1 \mid x_i) \quad \text{(由工具公式2得)}
+\end{aligned}
+式（8.6）的具体推导过程至此结束。
+令式（8.6）为零，进行求解： </p>
+$$ 
+-e^{-H(x)} P(f(x)=1 \mid x) + e^{H(x)} P(f(x)=-1 \mid x) = 0 
+$$\[
+H(x) + \ln(P(f(x)=-1 \mid x)) = -H(x) + \ln(P(f(x)=1 \mid x)
+\]<p>
+可解得：</p>
+$$ 
+H(x) = \dfrac{1}{2} \ln \dfrac{P(f(x)=1 \mid x)}{P(f(x)=-1 \mid x)} \tag{8.7} 
+$$<p>因此，有：</p>
+$$ 
+\begin{aligned} 
+\mathrm{sign}(H(x)) &= \mathrm{sign}\Big(\dfrac{1}{2} \ln \dfrac{P(f(x)=1 \mid x)}{P(f(x)=-1 \mid x)}\Big) \\
+&= \begin{cases} 
+1, & P(f(x)=1 \mid x) > P(f(x)=-1 \mid x) \\ 
+-1, & P(f(x)=1 \mid x) < P(f(x)=-1 \mid x) 
+\end{cases} \\
+&= \mathop{\mathrm{argmax}}\limits_{y \in \{-1, 1\}} P(f(x)=y \mid x) 
+\end{aligned} \tag{8.8} 
+$$<p>
+这意味着 \(\mathrm{sign}(H(x))\)
+达到了贝叶斯最优错误率（即对于每个样本\(x\)
+都选择后验概率最大的类别）。换言之，若指数损失函数最小化，则分类错误率也将最小化；这说明指数损失函数是分类任务原本 0/1 损失函数的一致的\(（consistent）\)替代损失函数。由于这个替代损失函数有更好的数学性质，例如它是连续可微函数，因此我们用它替代 0/1 损失函数作为优化目标。
+至此，我们知道了使用“指数损失函数”的原因及其正确性。</p>
+<h5 id="分类器权重公式">分类器权重公式
+</h5><p>下面，我们将从指数损失函数入手，推导\(AdaBoost\)算法的分类器权重公式。在\(AdaBoost\)算法中，第一个基分类器\(h_1\)是通过直接将基学习器算法用于初始数据分布而得；此后迭代地生成\(h_t\)和\(\alpha_t\)，当基分类器\(h_t\)基于分布\(D_t\)产生后，该基分类器的权重\(\alpha_t\)应使得 \(\alpha_th_t\)最小化指数损失函数。
+此时的指数损失函数： <br>
+由定义式(8.5)得到
+</p>
+$$
+\begin{aligned}
+\mathscr{l}_{exp}(\alpha_t h_t \mid D_t) &= \mathbb{E}_{x \sim D_t}[e^{-f(x) \alpha_t h_t(x)}]
+\end{aligned}
+$$<p>
+分类讨论（两种情形）：
+</p>
+$$
+\begin{aligned}
+&=\mathbb{E}_{x \sim D_t}\left[e^{-\alpha_t} \mathbb{I}(f(x) = h_t(x)) + e^{\alpha_t} \mathbb{I}(f(x) \neq h_t(x))\right]
+\end{aligned}
+$$<p>
+由工具公式1得到：
+</p>
+$$
+\begin{aligned}
+&=\sum\limits_{x \in D_t} D_t(x) \left[e^{-\alpha_t} \mathbb{I}(f(x) = h_t(x)) + e^{\alpha_t} \mathbb{I}(f(x) \neq h_t(x))\right]
+\end{aligned}
+$$<p>
+由工具公式2得到：
+</p>
+$$
+\begin{aligned}
+&= e^{-\alpha_t} P_{x \sim D_t}(f(x) = h_t(x)) + e^{\alpha_t} P_{x \sim D_t}(f(x) \neq h_t(x))
+\end{aligned}
+$$$$
+\begin{aligned}
+&= e^{-\alpha_t}(1 - \epsilon_t) + e^{\alpha_t} \epsilon_t \quad \text{错误率的定义推出}
+\end{aligned} \tag{8.9}
+$$<p>
+其中，错误率 \(\epsilon_t = P_{x \sim D_t}(h_t(x) \neq f(x))\)。
+考虑指数损失函数的导数： </p>
+$$ \begin{aligned} &\dfrac{\partial\mathscr{l}_{exp}(\alpha_th_t\mid D_{t})}{\partial\alpha_t}=-e^{-\alpha_t}(1-\epsilon_t)+e^{\alpha_t}\epsilon_{t} &由式(8.9)对\alpha_{t}求偏导 \end{aligned}\tag{8.10} $$<p> 令式（8.10）为零，进行求解： </p>
+$$ \begin{aligned} &-e^{-\alpha_{t}}(1-\epsilon_{t})+e^{\alpha_{t}}\epsilon_{t}=0&令式(8.10)为零\ \ &\alpha_{t}+\mathrm{ln}\epsilon_{t}=-\alpha_{t}+\mathrm{ln}(1-\epsilon_{t})&移项后取对数 \end{aligned} $$<p>
+可解得： </p>
+$$ \alpha_{t}=\dfrac{1}{2}\mathrm{ln}\Big(\dfrac{1-\epsilon_{t}}{\epsilon_{t}}\Big)\tag{8.11} $$<p> 至此，我们求得了 AdaBoost 算法的分类器权重公式。</p>
+<h5 id="样本分布更新公式">样本分布更新公式
+</h5><p>下面，我们推导 AdaBoost 算法的样本分布更新公式。</p>
+<p>AdaBoost 算法在获得 \( H_{t-1} \) 之后样本分布将进行调整，使下一轮的基学习器 \( h_t \) 能纠正 \( H_{t-1} \) 的一些错误。</p>
+<p>理想的 \( h_t \) 能纠正 \( H_{t-1} \) 的全部错误，由于
+</p>
+\[
+H(x) = H_{t-1}(x) + \alpha_t h_t(x)
+\]<p>
+因此，我们希望最小化
+\(\mathscr{l}_{exp}(H_{t-1} + \alpha_t h_t \mid D)\)，可以简化为，最小化：
+</p>
+$$
+\begin{aligned}
+\mathscr{l}_{exp}(H_{t-1} + h_t \mid D) &= \mathbb{E}_{x \sim D}[e^{-f(x)(H_{t-1}(x) + h_t(x))}] \\
+&= \mathbb{E}_{x \sim D}[e^{-f(x)H_{t-1}(x)} e^{-f(x)h_t(x)}]
+\end{aligned} \tag{8.12}
+$$<p>对式（8.12）使用 \( e^{-f(x)h_t(x)} \) 的泰勒展式近似：</p>
+<p>使用到的泰勒展开式： \( e^x \sim 1 + x + \dfrac{1}{2} x^{2} + o(x^2) \)</p>
+<p>可得：
+</p>
+$$
+\mathscr{l}_{exp}(H_{t-1} + h_t \mid D) \simeq \mathbb{E}_{x \sim D}\Big[e^{-f(x)H_{t-1}(x)}\Big(1 - f(x)h_t(x) + \dfrac{f^2(x)h_t^2(x)}{2}\Big)\Big]
+$$<p>又因为 \( f^2(x) = h_t^2(x) = 1 \)，可得：
+</p>
+$$
+\mathscr{l}_{exp}(H_{t-1} + h_t \mid D) = \mathbb{E}_{x \sim D}\Big[e^{-f(x)H_{t-1}(x)}\Big(1 - f(x)h_t(x) + \dfrac{1}{2}\Big)\Big] \tag{8.13}
+$$<p>因为理想的基学习器 \( h_t(x) \) 要使得指数损失函数最小化，所以：
+</p>
+$$
+\begin{aligned}
+h_t(x) &= \mathop{\mathrm{argmin}}\limits_{h} \mathscr{l}_{exp}(H_{t-1} + h \mid D) \\
+&= \mathop{\mathrm{argmin}}\limits_{h} \mathbb{E}_{x \sim D}\Big[e^{-f(x)H_{t-1}(x)}\Big(1 - f(x)h(x) + \dfrac{1}{2}\Big)\Big] & \quad \text{由式(8.13)代入得到} \\
+&= \mathop{\mathrm{argmin}}\limits_{h} \mathbb{E}_{x \sim D}\Big[e^{-f(x)H_{t-1}(x)}\Big(-f(x)h(x)\Big)\Big] & \\
+& \text{常数 } 1 + \dfrac{1}{2} \text{ 不影响结果} \\
+&= \mathop{\mathrm{argmax}}\limits_{h} \mathbb{E}_{x \sim D}\Big[e^{-f(x)H_{t-1}(x)}f(x)h(x)\Big] & \text{去负号 } \mathrm{argmin} \text{ 变 } \mathrm{argmax} \\
+&= \mathop{\mathrm{argmax}}\limits_{h} \mathbb{E}_{x \sim D}\Big[\dfrac{e^{-f(x)H_{t-1}(x)}}{\mathbb{E}_{x \sim D}[e^{-f(x)H_{t-1}(x)}]}f(x)h(x)\Big] & \text{新加入的常数不影响结果}
+\end{aligned} \tag{8.14}
+$$<p>注意，式（8.14）中的 \( \mathbb{E}_{x \sim D}[e^{-f(x)H_{t-1}(x)}] \) 是一个常数，之所以添加此常数，是为了构造出下面的 \( D_t \) 分布。</p>
+<p>令 \( D_t \) 表示一个分布：
+</p>
+$$
+D_t(x) = \dfrac{D(x)e^{-f(x)H_{t-1}(x)}}{\mathbb{E}_{x \sim D}[e^{-f(x)H_{t-1}(x)}]} \tag{8.15}
+$$<p>根据数学期望的定义，再将式（8.15）代入式（8.14），则理想的基学习器 \( h_t(x) \)：
+</p>
+$$
+\begin{aligned}
+h_t(x) &= \mathop{\mathrm{argmax}}\limits_{h}\mathbb{E}_{x \sim D}\Big[\dfrac{e^{-f(x)H_{t-1}(x)}}{\mathbb{E}_{x \sim D}[e^{-f(x)H_{t-1}(x)}]}f(x)h(x)\Big] & \text{式(8.14)} \\
+&= \mathop{\mathrm{argmax}}\limits_{h}\sum\limits_{i=1}^{|D|}D(x_i)\Big[\dfrac{e^{-f(x_i)H_{t-1}(x_i)}f(x_i)h(x_i)}{\mathbb{E}_{x \sim D}[e^{-f(x_i)H_{t-1}(x_i)}]}\Big] & \text{数学期望的定义} \\
+&= \mathop{\mathrm{argmax}}\limits_{h}\sum_{i=1}^{|D|}D_t(x_i)f(x_i)h(x_i) & \text{由式(8.15)代入得到} \\
+&= \mathop{\mathrm{argmax}}\limits_{h}\mathbb{E}_{x \sim D_t}[f(x)h(x)]
+\end{aligned} \tag{8.16}
+$$<p>由于 \( f(x), h(x) \in \{-1, +1\} \)，有：
+</p>
+$$
+f(x)h(x) = 1 - 2\mathbb{I}(f(x) \neq h(x)) \tag{8.17}
+$$<p>则理想的基学习器 \( h_t(x) \)：
+</p>
+$$
+\begin{aligned}
+h_t(x) &= \mathop{\mathrm{argmax}}\limits_{h}\mathbb{E}_{x \sim D_t}[f(x)h(x)] & \text{式(8.16)} \\
+&= \mathop{\mathrm{argmax}}\limits_{h}\mathbb{E}_{x \sim D_t}[1 - 2\mathbb{I}(f(x) \neq h(x))] & \text{由式(8.17)代入得到} \\
+&= \mathop{\mathrm{argmin}}\limits_{h}\mathbb{E}_{x \sim D_t}[\mathbb{I}(f(x) \neq h(x))] & \text{去掉常数和负号}
+\end{aligned} \tag{8.18}
+$$<p>由此可见，理想的 \( h_t(x) \) 将在分布 \( D_t \) 下最小化分类误差。</p>
+<p>因此，弱分类器将基于分布 \( D_t \) 进行训练，且针对 \( D_t \) 的分类误差应小于 0.5，这在一定程度上类似“残差逼近”的思想。</p>
+<p>考虑到 \( D_t \) 与 \( D_{t+1} \) 的关系，有：
+</p>
+$$
+\begin{aligned}
+D_{t+1}(x) &= \dfrac{D(x)e^{-f(x)H_t(x)}}{\mathbb{E}_{x \sim D}[e^{-f(x)H_t(x)}]} & \text{由式(8.15)可得} \\
+&= \dfrac{D(x)e^{-f(x)H_{t-1}(x)} e^{-f(x)\alpha_th_t(x)}}{\mathbb{E}_{x \sim D}[e^{-f(x)H_t(x)}]} & \text{将 } H_t(x) \text{ 展开得到} \\
+&= D_t(x)e^{-f(x)\alpha_th_t(x)}\dfrac{\mathbb{E}_{x \sim D}[e^{-f(x)H_{t-1}(x)}]}{\mathbb{E}_{x \sim D}[e^{-f(x)H_t(x)}]} & \text{将式(8.15)代入，构造 } D_t(x)
+\end{aligned} \tag{8.19}
+$$<p>
+至此，我们求得了\(AdaBoost\)算法的样本分布更新公式。</p>
+<h3 id="xgboost">XGBOOST
+</h3><h2 id="bagging">Bagging
+</h2><h3 id="算法介绍-1">算法介绍
+</h3><p>策略：<br>
+从样本集中有放回(使得下次采样时还可选中)的采样出\(m\)个样本，重复操作，我们可以得到\(T\)个数量为\(m\)的训练样本集，然后基于每一个采样集训练出一个基学习器，再将这些基学习器进行结合，然后进行输出的预测。如果是分类任务，通常使用
+简单投票法，对回归任务使用简单平均法。<br>
+<img src="/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image3.png"
+	width="1388"
+	height="678"
+	srcset="/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image3_hu11103290048620439160.png 480w, /p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image3_hu9029925249424189085.png 1024w"
+	loading="lazy"
+	
+		alt="alt text"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="204"
+		data-flex-basis="491px"
+	
+><br>
+采样自助采样法的好处：初始训练集中约有63.2%的样本出现在采样集中，剩下的36.8%的样本可用作验证集。对于这部分大约36.8%的没有被采样到的数据，我们常常称之为袋外数据(\(Out Of Bag, 简称OOB\))。这些数据没有参与训练集模型的拟合，因此可以用来检测模型的泛化能力。<br></p>
+<h4 id="算法流程-1">算法流程
+</h4><p><img src="/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image4.png"
+	width="571"
+	height="239"
+	srcset="/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image4_hu278838057141749296.png 480w, /p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image4_hu10015664186025117585.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="238"
+		data-flex-basis="573px"
+	
+><br>
+用较为通俗的话解释就是在每一轮训练中，通过自助采样获得样本集，使用这个样本集训练一个弱学习器，最后将所有的弱学习器进行结合。</p>
+<h4 id="随机森林">随机森林
+</h4><p>随机森林(\(Random Forest,简称RF\))算法在\(bagging\)算法上进行了一点独特的改进，体现在以下几点。<br>
+\(1\).\(RF\)以决策树为基学习器。<br>
+\(2\).在训练过程中引入了随机属性选择。<br></p>
+<h5 id="随机属性选择">随机属性选择
+</h5><p>传统决策树在选择划分属性是在当前结点的属性集合中选择一个最优属性。而\(RF\)有所不同，对基决策树的每个结点，先从该结点的属性集合(假设有\(d\)个属性)中随机选择一个包含\(k\)个属性的子集，然后再从这个子集中选择一个最优属性用于划分。
+若\(K=1\)，相当于随机选择属性，\(k=d\)，则基决策树的构建与传统决策树相同，一般情况下，推荐\(k=log2(d)\)。<br></p>
+<h5 id="算法">算法
+</h5><p>输入为样本集
+\(D={(x_1,y_1),(x_2,y_2),...(x_m,y_m)}\)，弱分类器迭代次数\(T\)。输出为最终的强分类器\(f(x)\)　　　　<br>
+\((1)\)对于\(t=1,2...,T\):<br>
+\((a)\)对训练集进行第\(t\)次随机采样，共采集\(m\)次，得到包含\(m\)个样本的采样集\(D_t\)<br>
+\((b)\)用采样集\(D_t\)训练第t个决策树模型\(G_t (x)\)，在训练决策树模型的节点的时候， 在节点上所有的样本特征中选择一部分样本特征， 在这些随机选择的部分样本特征中选择一个最优的特征来做决策树的左右子树划分<br>
+\((2)\)如果是分类算法预测，则\(T\)个弱学习器投出最多票数的类别或者类别之一为最终类别。如果是回归算法，\(T\)个弱学习器得到的回归结果进行算术平均得到的值为最终的模型输出。</p>
+<h5 id="随机森林的优点">随机森林的优点
+</h5><p>1.并行处理：由于每棵树的构建是相互独立的，随机森林可以很容易地实现并行化，提高训练效率。<br>
+2.防止过拟合：随机森林通过引入随机性，降低了模型对训练数据的依赖，从而减少了过拟合的风险。<br>
+3.高准确性：通过构建多个决策树并将结果进行投票或平均，随机森林能够提高模型的整体准确性。<br></p>
+<h5 id="随机森林的缺点">随机森林的缺点
+</h5><p>1.在某些噪音比较大的特征上，\(RF\) 模型容易陷入过拟合；<br>
+2.取值比较多的划分特征对\(RF\)的决策会产生更大的影响，从而有可能影响模型的效果。<br></p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2024 Herb
+    </section>
+    
+    <section class="powerby">
+        使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.27.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+    <script type="text/javascript"
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
