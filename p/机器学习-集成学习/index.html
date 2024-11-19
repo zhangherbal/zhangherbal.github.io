@@ -475,18 +475,7 @@
 ><br></p>
 <h4 id="adaboost公式推导">Adaboost公式推导
 </h4><h5 id="推导前置说明">推导前置说明
-</h5><p>\(Adaboost\)有多种推导方式，我们以基于加法模型来进行推导。
-推导的目标是最小化目标损失函数。<br>
-注意，我们在这里讨论的是二分类问题，其中训练样本集的 \(y_i∈\{−1,+1\}\)，\(f\) 是真实函数。对于样本\(x\)来说，真实值\(f(x)\)∈\(\{−1,+1\}\)，每个基学习器的预测值 \(h_i(x)∈\{−1,+1\}\)，假定基分类器的错误率为 \(ϵ\)，即对每个基分类器\(h_i\)有： </p>
-$$ P(h_i(x)\neq f(x))=\epsilon \tag{8.1} $$<p> 假设集成通过简单投票法结合
-T个基分类器，若有超过半数的基分类器正确，则集成分类就正确；集成分类的结果 F简单投票(x)
-为： </p>
-$$ F_{简单投票}(x)=\mathrm{sign}\Big(\sum\limits_{i=1}^{T}h_i(x)\Big) \tag{8.2} $$<p> “加法模型”（\(additive model\)），即基学习器的线性组合
-\(H(x)\)： </p>
-$$ H(x)=\sum\limits_{t=1}^T\alpha_{t}h_{t}(x) \tag{8.4} $$<p> 其中，\(\alpha_t\) 表示基分类器的权重，因为 AdaBoost 并不使用简单投票法，而是“加权表决法”，即让基学习器具有不同的权值： </p>
-$$ F(x)=\mathrm{sign}(H(x))=\mathrm{sign}\Big(\sum\limits_{t=1}^T\alpha_{t}h_{t}(x)\Big) $$<p> <br>
-指数损失函数”的定义为： </p>
-$$ \mathscr{l}_{exp}(H\mid D)=\mathbb{E}{x\sim D}[e^{-f(x)H(x)}]\tag{8.5} $$<p> 其中，\(x\sim D\) 表示概率分布
+</h5>$$ P(h_i(x)\neq f(x))=\epsilon \tag{8.1} $$$$ F_{简单投票}(x)=\mathrm{sign}\Big(\sum\limits_{i=1}^{T}h_i(x)\Big) \tag{8.2} $$$$ H(x)=\sum\limits_{t=1}^T\alpha_{t}h_{t}(x) \tag{8.4} $$$$ F(x)=\mathrm{sign}(H(x))=\mathrm{sign}\Big(\sum\limits_{t=1}^T\alpha_{t}h_{t}(x)\Big) $$$$ \mathscr{l}_{exp}(H\mid D)=\mathbb{E}{x\sim D}[e^{-f(x)H(x)}]\tag{8.5} $$<p> 其中，\(x\sim D\) 表示概率分布
 D(x)，\(\mathbb{E}\) 表示期望。<br>
 这个指数损失函数为什么合理：当对于某一学习器而言，\(Adaboost\)的优点就是给予其权重，我们注意到\(e\)的指数为\(-H(x)*f(x)\)，当对于某一样本\(x\)，预测正确时
 \(H(x)\)和\(f(x)\)应该为同号，前面加上符号，指数就变成了负数，同时若\(H(x)\)的值越大(分类器对结果的信任程度就高)，整个函数的值就越小。同时若分类错误，\(H(x)\)与\(f(x)\)
@@ -495,26 +484,11 @@ D(x)，\(\mathbb{E}\) 表示期望。<br>
 \( \mathbb{E}_{x\sim D}[f(x)]=\sum_{x\in D}D(x)f(x)\tag{工具公式1} \)
 \(\sum\limits_{i=1}^{|D|}D(x_i)\mathbb{I}(f(x_i)=1)=p(f(x_i)=1|x_i)\tag{工具公式2}\)</p>
 <h5 id="损失函数正确性说明">损失函数正确性说明
-</h5><p>若集成学习器
-\(H(x)\)能令指数损失函数最小化，则考虑式（8.5）对
-\(H(x)\)的偏导： </p>
-$$ \dfrac{\partial\mathscr{l}_{exp}(H\mid D)}{\partial H(x)}=-e^{-H(x)}P(f(x)=1\mid x)+e^{H(x)}P(f(x)=-1\mid x)\tag{8.6} $$<p>
-令式(8.6)为0
-将工具公式1代入式（8.5）： </p>
-$$ \mathscr{l}_{exp}(H\mid D)=\mathbb{E}{x\sim D}[e^{-f(x)H(x)}]=\sum\limits_{x\in D}D(x)e^{-f(x)H(x)} $$<p> 由于工具公式2： </p>
-$$ \sum\limits_{i=1}^{|D|}D(x_i)\mathbb{I}(f(x_i)=1)=P(f(x_i)=1\mid x_i) $$<p> 又注意到
-\(f(x_i)∈−\{1,+1\}\)，所以： </p>
-$$
+</h5>$$ \dfrac{\partial\mathscr{l}_{exp}(H\mid D)}{\partial H(x)}=-e^{-H(x)}P(f(x)=1\mid x)+e^{H(x)}P(f(x)=-1\mid x)\tag{8.6} $$$$ \mathscr{l}_{exp}(H\mid D)=\mathbb{E}{x\sim D}[e^{-f(x)H(x)}]=\sum\limits_{x\in D}D(x)e^{-f(x)H(x)} $$$$ \sum\limits_{i=1}^{|D|}D(x_i)\mathbb{I}(f(x_i)=1)=P(f(x_i)=1\mid x_i) $$$$
 \begin{aligned}
 \dfrac{\partial \mathscr{l}_{exp}(H \mid D)}{\partial H(x)} &= \sum\limits_{i=1}^{|D|} D(x_i) \Big( -e^{-H(x_i)} \mathbb{I}(f(x_i)=1) + e^{H(x_i)} \mathbb{I}(f(x_i)=-1) \Big)
 \end{aligned}<br>
-$$<p>
-\begin{aligned}
-&amp;=-e^{-H(x_i)} P(f(x_i)=1 \mid x_i) + e^{H(x_i)} P(f(x_i)=-1 \mid x_i) \quad \text{(由工具公式2得)}
-\end{aligned}
-式（8.6）的具体推导过程至此结束。
-令式（8.6）为零，进行求解： </p>
-$$ 
+$$$$ 
 -e^{-H(x)} P(f(x)=1 \mid x) + e^{H(x)} P(f(x)=-1 \mid x) = 0 
 $$\[
 H(x) + \ln(P(f(x)=-1 \mid x)) = -H(x) + \ln(P(f(x)=1 \mid x)
@@ -538,32 +512,19 @@ $$<p>
 都选择后验概率最大的类别）。换言之，若指数损失函数最小化，则分类错误率也将最小化；这说明指数损失函数是分类任务原本 0/1 损失函数的一致的\(（consistent）\)替代损失函数。由于这个替代损失函数有更好的数学性质，例如它是连续可微函数，因此我们用它替代 0/1 损失函数作为优化目标。
 至此，我们知道了使用“指数损失函数”的原因及其正确性。</p>
 <h5 id="分类器权重公式">分类器权重公式
-</h5><p>下面，我们将从指数损失函数入手，推导\(AdaBoost\)算法的分类器权重公式。在\(AdaBoost\)算法中，第一个基分类器\(h_1\)是通过直接将基学习器算法用于初始数据分布而得；此后迭代地生成\(h_t\)和\(\alpha_t\)，当基分类器\(h_t\)基于分布\(D_t\)产生后，该基分类器的权重\(\alpha_t\)应使得 \(\alpha_th_t\)最小化指数损失函数。
-此时的指数损失函数： <br>
-由定义式(8.5)得到
-</p>
-$$
+</h5>$$
 \begin{aligned}
 \mathscr{l}_{exp}(\alpha_t h_t \mid D_t) &= \mathbb{E}_{x \sim D_t}[e^{-f(x) \alpha_t h_t(x)}]
 \end{aligned}
-$$<p>
-分类讨论（两种情形）：
-</p>
-$$
+$$$$
 \begin{aligned}
 &=\mathbb{E}_{x \sim D_t}\left[e^{-\alpha_t} \mathbb{I}(f(x) = h_t(x)) + e^{\alpha_t} \mathbb{I}(f(x) \neq h_t(x))\right]
 \end{aligned}
-$$<p>
-由工具公式1得到：
-</p>
-$$
+$$$$
 \begin{aligned}
 &=\sum\limits_{x \in D_t} D_t(x) \left[e^{-\alpha_t} \mathbb{I}(f(x) = h_t(x)) + e^{\alpha_t} \mathbb{I}(f(x) \neq h_t(x))\right]
 \end{aligned}
-$$<p>
-由工具公式2得到：
-</p>
-$$
+$$$$
 \begin{aligned}
 &= e^{-\alpha_t} P_{x \sim D_t}(f(x) = h_t(x)) + e^{\alpha_t} P_{x \sim D_t}(f(x) \neq h_t(x))
 \end{aligned}
@@ -571,42 +532,24 @@ $$$$
 \begin{aligned}
 &= e^{-\alpha_t}(1 - \epsilon_t) + e^{\alpha_t} \epsilon_t \quad \text{错误率的定义推出}
 \end{aligned} \tag{8.9}
-$$<p>
-其中，错误率 \(\epsilon_t = P_{x \sim D_t}(h_t(x) \neq f(x))\)。
-考虑指数损失函数的导数： </p>
-$$ \begin{aligned} &\dfrac{\partial\mathscr{l}_{exp}(\alpha_th_t\mid D_{t})}{\partial\alpha_t}=-e^{-\alpha_t}(1-\epsilon_t)+e^{\alpha_t}\epsilon_{t} &由式(8.9)对\alpha_{t}求偏导 \end{aligned}\tag{8.10} $$<p> 令式（8.10）为零，进行求解： </p>
-$$ \begin{aligned} &-e^{-\alpha_{t}}(1-\epsilon_{t})+e^{\alpha_{t}}\epsilon_{t}=0&令式(8.10)为零\ \ &\alpha_{t}+\mathrm{ln}\epsilon_{t}=-\alpha_{t}+\mathrm{ln}(1-\epsilon_{t})&移项后取对数 \end{aligned} $$<p>
-可解得： </p>
-$$ \alpha_{t}=\dfrac{1}{2}\mathrm{ln}\Big(\dfrac{1-\epsilon_{t}}{\epsilon_{t}}\Big)\tag{8.11} $$<p> 至此，我们求得了 AdaBoost 算法的分类器权重公式。</p>
+$$$$ \begin{aligned} &\dfrac{\partial\mathscr{l}_{exp}(\alpha_th_t\mid D_{t})}{\partial\alpha_t}=-e^{-\alpha_t}(1-\epsilon_t)+e^{\alpha_t}\epsilon_{t} &由式(8.9)对\alpha_{t}求偏导 \end{aligned}\tag{8.10} $$$$ \begin{aligned} &-e^{-\alpha_{t}}(1-\epsilon_{t})+e^{\alpha_{t}}\epsilon_{t}=0&令式(8.10)为零\ \ &\alpha_{t}+\mathrm{ln}\epsilon_{t}=-\alpha_{t}+\mathrm{ln}(1-\epsilon_{t})&移项后取对数 \end{aligned} $$$$ \alpha_{t}=\dfrac{1}{2}\mathrm{ln}\Big(\dfrac{1-\epsilon_{t}}{\epsilon_{t}}\Big)\tag{8.11} $$<p> 至此，我们求得了 AdaBoost 算法的分类器权重公式。</p>
 <h5 id="样本分布更新公式">样本分布更新公式
 </h5><p>下面，我们推导 AdaBoost 算法的样本分布更新公式。</p>
 <p>AdaBoost 算法在获得 \( H_{t-1} \) 之后样本分布将进行调整，使下一轮的基学习器 \( h_t \) 能纠正 \( H_{t-1} \) 的一些错误。</p>
-<p>理想的 \( h_t \) 能纠正 \( H_{t-1} \) 的全部错误，由于
-</p>
 \[
 H(x) = H_{t-1}(x) + \alpha_t h_t(x)
-\]<p>
-因此，我们希望最小化
-\(\mathscr{l}_{exp}(H_{t-1} + \alpha_t h_t \mid D)\)，可以简化为，最小化：
-</p>
-$$
+\]$$
 \begin{aligned}
 \mathscr{l}_{exp}(H_{t-1} + h_t \mid D) &= \mathbb{E}_{x \sim D}[e^{-f(x)(H_{t-1}(x) + h_t(x))}] \\
 &= \mathbb{E}_{x \sim D}[e^{-f(x)H_{t-1}(x)} e^{-f(x)h_t(x)}]
 \end{aligned} \tag{8.12}
 $$<p>对式（8.12）使用 \( e^{-f(x)h_t(x)} \) 的泰勒展式近似：</p>
 <p>使用到的泰勒展开式： \( e^x \sim 1 + x + \dfrac{1}{2} x^{2} + o(x^2) \)</p>
-<p>可得：
-</p>
 $$
 \mathscr{l}_{exp}(H_{t-1} + h_t \mid D) \simeq \mathbb{E}_{x \sim D}\Big[e^{-f(x)H_{t-1}(x)}\Big(1 - f(x)h_t(x) + \dfrac{f^2(x)h_t^2(x)}{2}\Big)\Big]
-$$<p>又因为 \( f^2(x) = h_t^2(x) = 1 \)，可得：
-</p>
-$$
+$$$$
 \mathscr{l}_{exp}(H_{t-1} + h_t \mid D) = \mathbb{E}_{x \sim D}\Big[e^{-f(x)H_{t-1}(x)}\Big(1 - f(x)h_t(x) + \dfrac{1}{2}\Big)\Big] \tag{8.13}
-$$<p>因为理想的基学习器 \( h_t(x) \) 要使得指数损失函数最小化，所以：
-</p>
-$$
+$$$$
 \begin{aligned}
 h_t(x) &= \mathop{\mathrm{argmin}}\limits_{h} \mathscr{l}_{exp}(H_{t-1} + h \mid D) \\
 &= \mathop{\mathrm{argmin}}\limits_{h} \mathbb{E}_{x \sim D}\Big[e^{-f(x)H_{t-1}(x)}\Big(1 - f(x)h(x) + \dfrac{1}{2}\Big)\Big] & \quad \text{由式(8.13)代入得到} \\
@@ -616,26 +559,18 @@ h_t(x) &= \mathop{\mathrm{argmin}}\limits_{h} \mathscr{l}_{exp}(H_{t-1} + h \mid
 &= \mathop{\mathrm{argmax}}\limits_{h} \mathbb{E}_{x \sim D}\Big[\dfrac{e^{-f(x)H_{t-1}(x)}}{\mathbb{E}_{x \sim D}[e^{-f(x)H_{t-1}(x)}]}f(x)h(x)\Big] & \text{新加入的常数不影响结果}
 \end{aligned} \tag{8.14}
 $$<p>注意，式（8.14）中的 \( \mathbb{E}_{x \sim D}[e^{-f(x)H_{t-1}(x)}] \) 是一个常数，之所以添加此常数，是为了构造出下面的 \( D_t \) 分布。</p>
-<p>令 \( D_t \) 表示一个分布：
-</p>
 $$
 D_t(x) = \dfrac{D(x)e^{-f(x)H_{t-1}(x)}}{\mathbb{E}_{x \sim D}[e^{-f(x)H_{t-1}(x)}]} \tag{8.15}
-$$<p>根据数学期望的定义，再将式（8.15）代入式（8.14），则理想的基学习器 \( h_t(x) \)：
-</p>
-$$
+$$$$
 \begin{aligned}
 h_t(x) &= \mathop{\mathrm{argmax}}\limits_{h}\mathbb{E}_{x \sim D}\Big[\dfrac{e^{-f(x)H_{t-1}(x)}}{\mathbb{E}_{x \sim D}[e^{-f(x)H_{t-1}(x)}]}f(x)h(x)\Big] & \text{式(8.14)} \\
 &= \mathop{\mathrm{argmax}}\limits_{h}\sum\limits_{i=1}^{|D|}D(x_i)\Big[\dfrac{e^{-f(x_i)H_{t-1}(x_i)}f(x_i)h(x_i)}{\mathbb{E}_{x \sim D}[e^{-f(x_i)H_{t-1}(x_i)}]}\Big] & \text{数学期望的定义} \\
 &= \mathop{\mathrm{argmax}}\limits_{h}\sum_{i=1}^{|D|}D_t(x_i)f(x_i)h(x_i) & \text{由式(8.15)代入得到} \\
 &= \mathop{\mathrm{argmax}}\limits_{h}\mathbb{E}_{x \sim D_t}[f(x)h(x)]
 \end{aligned} \tag{8.16}
-$$<p>由于 \( f(x), h(x) \in \{-1, +1\} \)，有：
-</p>
-$$
+$$$$
 f(x)h(x) = 1 - 2\mathbb{I}(f(x) \neq h(x)) \tag{8.17}
-$$<p>则理想的基学习器 \( h_t(x) \)：
-</p>
-$$
+$$$$
 \begin{aligned}
 h_t(x) &= \mathop{\mathrm{argmax}}\limits_{h}\mathbb{E}_{x \sim D_t}[f(x)h(x)] & \text{式(8.16)} \\
 &= \mathop{\mathrm{argmax}}\limits_{h}\mathbb{E}_{x \sim D_t}[1 - 2\mathbb{I}(f(x) \neq h(x))] & \text{由式(8.17)代入得到} \\
@@ -643,8 +578,6 @@ h_t(x) &= \mathop{\mathrm{argmax}}\limits_{h}\mathbb{E}_{x \sim D_t}[f(x)h(x)] &
 \end{aligned} \tag{8.18}
 $$<p>由此可见，理想的 \( h_t(x) \) 将在分布 \( D_t \) 下最小化分类误差。</p>
 <p>因此，弱分类器将基于分布 \( D_t \) 进行训练，且针对 \( D_t \) 的分类误差应小于 0.5，这在一定程度上类似“残差逼近”的思想。</p>
-<p>考虑到 \( D_t \) 与 \( D_{t+1} \) 的关系，有：
-</p>
 $$
 \begin{aligned}
 D_{t+1}(x) &= \dfrac{D(x)e^{-f(x)H_t(x)}}{\mathbb{E}_{x \sim D}[e^{-f(x)H_t(x)}]} & \text{由式(8.15)可得} \\

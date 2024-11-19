@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="多臂赌博机问题 K臂赌博机问题 问题引出：一个赌博机有好几个臂，我们可以选择一些臂获得一些收益，但是我们事先并不知道这些臂的收益是多少。玩家希望摇固定次数的臂所获得的期望累计奖励最大\n原始形式：重复地在\\(K\\)个选项或动作中进行选择，每次做出选择之后，都会得到一定数值的收益，收益由你选择的动作决定的平稳概率分布产生，目标是在某一段时间内最大化总收益的期望。\n">
+<title>强化学习-多臂赌博机</title>
+
+<link rel='canonical' href='https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/'>
+
+<link rel="stylesheet" href="/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css"><meta property='og:title' content="强化学习-多臂赌博机">
+<meta property='og:description' content="多臂赌博机问题 K臂赌博机问题 问题引出：一个赌博机有好几个臂，我们可以选择一些臂获得一些收益，但是我们事先并不知道这些臂的收益是多少。玩家希望摇固定次数的臂所获得的期望累计奖励最大\n原始形式：重复地在\\(K\\)个选项或动作中进行选择，每次做出选择之后，都会得到一定数值的收益，收益由你选择的动作决定的平稳概率分布产生，目标是在某一段时间内最大化总收益的期望。\n">
+<meta property='og:url' content='https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/'>
+<meta property='og:site_name' content='Herb'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2024-11-09T14:00:53&#43;08:00'/><meta property='article:modified_time' content='2024-11-09T14:00:53&#43;08:00'/>
+<meta name="twitter:title" content="强化学习-多臂赌博机">
+<meta name="twitter:description" content="多臂赌博机问题 K臂赌博机问题 问题引出：一个赌博机有好几个臂，我们可以选择一些臂获得一些收益，但是我们事先并不知道这些臂的收益是多少。玩家希望摇固定次数的臂所获得的期望累计奖励最大\n原始形式：重复地在\\(K\\)个选项或动作中进行选择，每次做出选择之后，都会得到一定数值的收益，收益由你选择的动作决定的平稳概率分布产生，目标是在某一段时间内最大化总收益的期望。\n">
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu14322915909999105942.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🍥</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Herb</a></h1>
+            <h2 class="site-description">拨雪寻春，烧灯续昼</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/CaiJimmy/hugo-theme-stack'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://twitter.com'
+                        target="_blank"
+                        title="Twitter"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-twitter" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M22 4.01c-1 .49 -1.98 .689 -3 .99c-1.121 -1.265 -2.783 -1.335 -4.38 -.737s-2.643 2.06 -2.62 3.737v1c-3.245 .083 -6.135 -1.395 -8 -4c0 0 -4.182 7.433 4 11c-1.872 1.247 -3.739 2.088 -6 2c3.308 1.803 6.913 2.423 10.034 1.517c3.58 -1.04 6.522 -3.723 7.651 -7.742a13.84 13.84 0 0 0 .497 -3.753c-.002 -.249 1.51 -2.772 1.818 -4.013z" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%85%B3%E4%BA%8E/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/links/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>Links</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#k臂赌博机问题">K臂赌博机问题</a>
+      <ol>
+        <li><a href="#相关定义及问题引出">相关定义及问题引出</a>
+          <ol>
+            <li><a href="#价值">价值</a></li>
+            <li><a href="#估计过程">估计过程</a></li>
+          </ol>
+        </li>
+        <li><a href="#动作价值方法">动作价值方法</a>
+          <ol>
+            <li><a href="#补充-大数定律">补充-大数定律</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#开发-试探平衡">开发-试探平衡</a>
+      <ol>
+        <li><a href="#epsilon贪心方法">贪心方法</a>
+          <ol>
+            <li><a href="#举例">举例</a></li>
+            <li><a href="#改进-增量式实现">改进-增量式实现</a></li>
+          </ol>
+        </li>
+        <li><a href="#定义补充">定义补充</a></li>
+      </ol>
+    </li>
+    <li><a href="#多臂赌博机-非平稳问题">多臂赌博机-非平稳问题</a>
+      <ol>
+        <li><a href="#基础-非平稳下的行为估值br">基础-非平稳下的行为估值<br></a>
+          <ol>
+            <li><a href="#收敛条件">收敛条件</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#乐观初值法">乐观初值法</a></li>
+    <li><a href="#ucb行为选择策略">行为选择策略</a></li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/">强化学习-多臂赌博机</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">2024-11-09</time>
+            </div>
+        
+
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h1 id="多臂赌博机问题">多臂赌博机问题
+</h1><h2 id="k臂赌博机问题">K臂赌博机问题
+</h2><p>问题引出：一个赌博机有好几个臂，我们可以选择一些臂获得一些收益，但是我们事先并不知道这些臂的收益是多少。玩家希望摇固定次数的臂所获得的期望累计奖励最大<br>
+原始形式：重复地在\(K\)个选项或动作中进行选择，每次做出选择之后，都会得到一定数值的收益，收益由你选择的动作决定的平稳概率分布产生，目标是在某一段时间内最大化总收益的期望。<br>
+<img src="/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-5.png"
+	width="544"
+	height="349"
+	srcset="/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-5_hu9486346748799315069.png 480w, /p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-5_hu7449452040634016328.png 1024w"
+	loading="lazy"
+	
+		alt="alt text"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="155"
+		data-flex-basis="374px"
+	
+></p>
+<h3 id="相关定义及问题引出">相关定义及问题引出
+</h3><h4 id="价值">价值
+</h4><p>价值：\(K\)个动作中的每个动作在被选择时都有一个期望或者平均收益，我们称此为这个动作的价值，在时刻t选择的动作\(A_t\),并将对应的收益即为\(R_t\),任一动作\(a\)对应的价值记作\(q_{*}(a)\)
+,是给定动作\(a\)时收益的期望。<br>
+\(q_{*}(a)=E[R_t|A_t=a]\)<br>
+类比赌博机<br>
+行为：摇哪个臂<br>
+奖励：每次摇臂获得的奖金<br>
+\(A_t\)表示第\(t\)轮的行为，对应的收益为\(R_t\)<br>
+第\(t\)轮采取动作\(a\)的期望奖励即为\(q_{*}(a)\)<br>
+每一个选择对应的奖励为\(q_{*}(a)\)。因此我们首先要完成一个任务才能去思考这件事情：对动作\(a\)在时刻\(t\)时的价值进行估计。只有估计出这个值我们才能继续进行我们的选择策略。这个值为\(Q_{*}(a)\)<br>
+玩家在第\(t\)轮时只能根据估计的\(Q_{*}(a)\)来进行选择，如果按照贪心策略，那么只需要每轮选择\(Q_{*}(a)\)最大的行为即可。<br>那么估计的效果也很重要，估计的好，最后获得的奖励值可能也越大。
+接着我们就对估计的过程进行讲述。</p>
+<h4 id="估计过程">估计过程
+</h4><p>估计过程：持续对动作的价值进行估计去选择动作。<br>
+贪心：对应最高估计价值的动作。<br>
+试探：选择非贪心的动作。<br>
+缺点：短期奖励很低<br>
+优点：长期奖励可能会高。可能找出奖励更大的行为<br></p>
+<p>开发：选择贪心的动作。<br>
+缺点：当前估计值最高不一定意味着其\(q_{*}(a)\)最高。<br>
+优点：短期奖励很高。<br>
+通过试探和开发来看，我们可以感知到，开发是当下最好的，但是试探可能对未来长远更好。接下来我们就引入估计的方法。</p>
+<h3 id="动作价值方法">动作价值方法
+</h3><p>我们接下来将给出估计动作价值的方法。即估计在\(t\)时刻选择动作\(A\)的价值。<br>
+\(Q_{*}(a)=\frac{t时刻前通过执行动作a得到的收益总和}{t时刻前执行动作a的次数}\)<br>
+\(=\frac{\sum_{i=1}^{t-1} R_i*\mathbb{I}A_i=a}{\sum_{i=1}^{t-1}\mathbb{I}A_i=a}\)<br>
+当分母为0时我们将\(Q_{*}(a)\)定义为某个默认值，比如\(Q_{*}(a)=0\)。当分母趋向无穷大时，根据大数定律，\(Q_t(a)\)会收敛到\(q_{*}(a)\),这种采样方法称为采样平均方法。
+至此我们就可以初步估计出动作的值。这种方法其实就是我们回顾我们探索的过程，把历史上所有探索过的取一下均值。<br></p>
+<h4 id="补充-大数定律">补充-大数定律
+</h4><p>\(1\).弱大数定理：设\(x_1,x_2……\)是相互独立，服从同一分布的随机变量序列且具有数学期望\(E(x_k)=u(k=1,2……)\),作前\(n\)个变量的算数平均<br>\(\lim_{n \to \infty} \{ |\frac{1}{n} \sum_{k=1}^{n} (x_k-u)|<\epsilon \}=1\)<br>
+白话翻译是：当n很大时，他们的算术平均近似可以看作为\(u\)<br></p>
+<h2 id="开发-试探平衡">开发-试探平衡
+</h2><p>至此，我们已经解决了估计动作价值的问题，那么在估计完成后，我们要思考，怎么进行选择呢。最简单是我们每一轮都选最大的，但是每一轮都选最大的不一定是最优的。也有可能我们去试探，能试探出更优的行为，因此我们要平衡和开发和试探。
+我们将引出一些方法。</p>
+<h3 id="epsilon贪心方法">\(\epsilon\)贪心方法
+</h3><p>以一个很小的概率\(\epsilon\)去做试探，那么次数无限多的情况下，每个动作都会被采样无限次，那么估计值将遵循大数定律逼近均值\(q_{*}(a)\)</p>
+<h4 id="举例">举例
+</h4><p>假设有\(10\)个臂，每个臂的期望奖励从一个均值为\(0\)，方差为\(1\)的正态分布中得到。在第\(t\)轮中选择行为\(A_t\)获得奖励服从均值为\(q_{*}(A_t)\),方差为\(1\)的正态分布。
+<img src="/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-2.png"
+	width="669"
+	height="399"
+	srcset="/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-2_hu8922681758800833809.png 480w, /p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-2_hu18335926872897226828.png 1024w"
+	loading="lazy"
+	
+		alt="alt text"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="167"
+		data-flex-basis="402px"
+	
+><br>
+上图为10个动作的收益分布。
+<br>
+<img src="/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-3.png"
+	width="634"
+	height="523"
+	srcset="/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-3_hu16009700299957611757.png 480w, /p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-3_hu17098290657405704171.png 1024w"
+	loading="lazy"
+	
+		alt="alt text"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="121"
+		data-flex-basis="290px"
+	
+></p>
+<h4 id="改进-增量式实现">改进-增量式实现
+</h4><p>在我们使用\(\epsilon\)贪心方法的时候，如果我们按照前文的估计方法，要把历史的奖励都加起来，然后除以轮数。时间复杂度较高，因此我们要对此进行一点小小的优化。<br>
+令\(R_i\)表示这一动作被选择\(i\)次后获得的收益，\(Q_n\)表示被选择\(n-1\)次后它的估计的动作价值，可以写为<br>
+\(Q_n=\frac{R_1+R_2+……R_{n-1}}{n-1}\),但是每计算一次，我们需要消耗很多内存，计算量也很大，因此我们要对其优化。<br>
+\(Q_{n+1}=\frac{1}{n} \sum_{i=1}^{n} R_i\)<br>
+\(=\frac{1}{n}(R_n+\sum_{i=1}^{n-1}R_i)\)<br>
+\(=\frac{1}{n}(R_n+(n-1)\frac{1}{n-1}\sum_{i=1}^{n-1}R_i)\)<br>
+\(=\frac{1}{n}(R_n+(n-1)Q_n\))<br>
+\(=\frac{1}{n}(R_n+nQ_n-Q_n\))<br>
+\(=Q_n+\frac{1}{n}[R_n-Q_n]\)<br>
+本式也被称为更新公式，它的一般形式为:<br>
+新估计值&lt;-旧估计值+步长*[目标-旧估计值]<br>
+通过观察发现，我们只需要存储\(Q_n\)和\(n\)即可。
+（目标-旧估计值）是估计值的误差，误差会随着向目标靠近的每一步而减小。上述方法的步长会随着时间而变化，处理动作\(a\)对应的第\(n\)个收益的方法用的步长是\(\frac{1}{n}\),在本书中我们将步长记作\(α\),或者为\(α_t(a)\).
+至此，我们完成了一个简单的多臂赌博机算法，但是如果赌博机的收益的概率是随着时间变化的该怎么办呢?用一个通俗的例子进行说明，一个学生小学三年级数学期末考试考30分，高一数学期末考试考了120分，我们无法认为75分就是下次的估计值。
+<img src="/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-1.png"
+	width="662"
+	height="301"
+	srcset="/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-1_hu370281415510223488.png 480w, /p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-1_hu10231790194951019399.png 1024w"
+	loading="lazy"
+	
+		alt="alt text"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="219"
+		data-flex-basis="527px"
+	
+></p>
+<h3 id="定义补充">定义补充
+</h3><p>首先我们要搞明白两个概念。<br>
+1.平稳问题：<br>
+固定的奖励分布，每个动作的奖励分布在时间上保持不变，例如在多臂赌博机中，某个臂的期望奖励是固定的。随着观测样本的增加，平均值估计方法最终收敛于\(q_{*}(a)\)<br>
+2.非平稳问题：<br>
+每个动作的奖励分布随着时间变化，例如某个臂某段时间内表现好，某段时间表现差，因此机制复杂。也就是说\(q_{*}(a)\)是关于时间的函数，我们更关注最近的样本。<br></p>
+<h2 id="多臂赌博机-非平稳问题">多臂赌博机-非平稳问题
+</h2><p>从平稳问题的视角来看，某个臂的期望奖励是固定的，而从非平稳问题的视角来看，赌博机的收益概率随时间变化，取平均方法不可用，那我们是如何改进的呢？</p>
+<h3 id="基础-非平稳下的行为估值br">基础-非平稳下的行为估值<br>
+</h3><p>我们可以引入\(α\)，使每个行为的权值都不再相等。<br>
+\(Q_{n+1}=Q_n+α[R_n-Q_n]\) \(α &in; [0,1]\)<br>
+\(Q_{n+1}\)成为对过去的收益和初始的估计\(Q_1\)的加权平均<br>
+\(Q_{n+1}=Q_n+α[R_n-Q_n]\)<br>
+=\(αR_n+(1-α)Q_n\)<br>
+=\(αR_n+(1-α)[αR+{n-1}+(1-α)Q_{n-1}]\)然后进行不断拆分<br>
+=\((1-α)^nQ_1+\sum_{i=1}^{n}α(1-α)^{n-i}R_i\)<br>
+\(Q_{n+1}\)成为对过去的收益和初始的估计\(Q_1\)的加权平均<br>
+之所以可以成为加权平均是因为：\((1-α)+\sum_{i=1}^{n}α(1-α)^{n-i}=1\)<bn>
+因此我们随着时刻一步一步改变步长参数，设\(α_n(a)\)表示用于处理第\(n\)次选择动作\(a\)后收到的收益的步长参数<br>
+当我们选择\(α\)时，会发现最终结果不是收敛的，而是随着近期得到的收益而变化,而之前选用的平均估值法的\(\frac{1}{n}\)是收敛的，这个也符合我们对非平稳问题的预期。
+因此在选择步长参数时要观察其是否收敛。</p>
+<h4 id="收敛条件">收敛条件
+</h4><p>\(\sum_{n=1}^{\infty}a_n(α)=\infty\)且\(\sum_{n=1}^{\infty}a_n(α)^2<\infty\)<br>
+第一个条件：要求保证有足够大的步长。最终克服任何初始条件或随机波动<br>
+第二个条件：保证最终步长变小，以保证收敛。</p>
+<h2 id="乐观初值法">乐观初值法
+</h2><p>我们首先观察行为的初始估值。<br>
+\(1\).在我们之前的贪心策略中，每个行为的初始估值为0。<br>
+\(2\).每个行为的初始估值可以帮助我们引入先验知识。<br>
+\(3\).初始估值还可以帮助我们平衡试探和开发。<br>
+乐观初值法是什么意思呢，比如目前有十个臂，我们替换掉原先的初始值0，换为+5，在之前我们的问题描述中，\(q_{*}(a)\)是按照均值为0，方差为1的正态分布去进行选择的，因此+5是一个非常乐观的估计，但是这种乐观的估计会鼓励
+动作-价值方法去试探。因为无论选哪一种动作，都比开始的估计值小，因此学习器会失望去主动进行试探，结果是所有动作都被探索了很多次。乐观初值法也可以理解为鼓励探索。<br>
+同时我们也会发现，乐观初值法比较适合平稳问题，不太适合非平稳问题。毕竟非平稳问题更关注最近的样本。<br>
+<img src="/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image.png"
+	width="625"
+	height="276"
+	srcset="/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image_hu11324991071178999865.png 480w, /p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image_hu5517646830536578878.png 1024w"
+	loading="lazy"
+	
+		alt="alt text"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="226"
+		data-flex-basis="543px"
+	
+></p>
+<h2 id="ucb行为选择策略">\(UCB\)行为选择策略
+</h2>\[
+a_t = \arg\max_{i \in \{1, 2, \dots, K\}} \left( Q_t(a) + c \sqrt{\frac{\ln t}{N_t(a)}} \right)
+\]<p>
+\(N_t(a)\)表示时间\(t\)之前行为\(a\)被选择的次数。参数\(c\)决定了置信水平。
+此公式引入了置信度，例如一个臂之前只被摇了两次，那么它的预测值就不太准，如果被摇了几万次，那就比较准确。因此平方根项是对\(a\)动作值估计的不确定性和方差的度量，随着时间的变化，
+具有较低价值估计的动作或者已经被选择了更多次的动作被选择的频率较低。<br>
+<img src="/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-4.png"
+	width="609"
+	height="233"
+	srcset="/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-4_hu2311328956770086695.png 480w, /p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-4_hu3637641226048031829.png 1024w"
+	loading="lazy"
+	
+		alt="alt text"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="261"
+		data-flex-basis="627px"
+	
+></p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2024 Herb
+    </section>
+    
+    <section class="powerby">
+        使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.27.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+    <script type="text/javascript"
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>

@@ -465,31 +465,7 @@ d= \frac{|w_1 x_0 + w_2 y_0 + b|}{\sqrt{w_1^2 + w_2^2}}\)<br>
 <br></p>
 <h3 id="优化方法">优化方法
 </h3><h4 id="拉格朗日乘子法">拉格朗日乘子法
-</h4><p>终极目标其实是一个二次规划问题，也是凸优化问题，要么无解要么有一个极小值。
-我们采用拉格朗日乘子法进行解决。对式\((2)\)的每条约束添加拉格朗日乘子 \(α_i>=0\),可得出拉格朗日函数.<br>
-\(L(w,b,α)=\frac{1}{2}\|w\|^2+
-\sum_{i=1}^{m} α_i(1-y_i(w^Tx_i+b))\quad(3)\)<br>
-令拉格朗日函数对\(w,b\)求偏导为0(计算过程如下)
-<img src="/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/image3.png"
-	width="1280"
-	height="1144"
-	srcset="/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/image3_hu18442657097368827043.png 480w, /p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/image3_hu12528380760245140696.png 1024w"
-	loading="lazy"
-	
-		alt="alt text"
-	
-	
-		class="gallery-image" 
-		data-flex-grow="111"
-		data-flex-basis="268px"
-	
-><br>
-得出<br>
-\(w=\sum_{i=1}^{m}a_iy_ix_i\quad(4)\)<br>
-\(0=\sum_{i=1}^{m}a_iy_i\quad(5)\)<br>
-将\((3),(4),(5)\)结合消去\(w,b\)引出对偶问题<br>
-</p>
-$$
+</h4>$$
 \begin{align*}
 \text{maximize} & \quad \sum_{i=1}^{m} \alpha_i - \frac{1}{2} \sum_{i=1}^{m} \sum_{j=1}^{m} \alpha_i \alpha_j y_i y_j (x_i^T \cdot x_j) \\
 \text{subject to} & \quad \sum_{i=1}^{m} \alpha_i y_i = 0, \\
@@ -544,26 +520,18 @@ SVM精妙之处将被引出：
 \(k(x1,x2)=\phi(x_1)^T \phi(x_2)\)(后面两者相乘明显是一个数值)</p>
 <ol>
 <li>
-<p>线性核:
-</p>
 \[
    K(x, y) = x^T y=\phi(x_1)^T \phi(x_2)
 \]</li>
 <li>
-<p>多项式核:
-</p>
 \[
    K(x, y) = (x^T y + c)^d=\phi(x_1)^T \phi(x_2)
 \]</li>
 <li>
-<p>高斯（RBF）核:
-</p>
 \[
    K(x, y) = \exp\left(-\frac{\|x - y\|^2}{2\sigma^2}\right)=\phi(x_1)^T \phi(x_2)
 \]</li>
 <li>
-<p>Sigmoid核:
-</p>
 \[
    K(x, y) = \tanh(\alpha x^T y + c)=\phi(x_1)^T \phi(x_2)
 \]<p><br></p>
@@ -577,47 +545,21 @@ SVM精妙之处将被引出：
 <p>我们最常用的就是高斯核，我们可以通过继续转化问题来使用核函数去解决这个问题，把这个优化问题变得可做。</p>
 <h3 id="数学推导">数学推导
 </h3><h4 id="拉格朗日乘子法-1">拉格朗日乘子法
-</h4><p>此问题还是二次规划问题，与线性模型的推导方法相同。
-因为存在两个限制条件，因此引入两个拉格朗日乘子，\(a_i>=0,u_i>=0\),那么拉格朗日函数为<br>
-</p>
-\[
+</h4>\[
 \mathcal{L}(\mathbf{w}, b, \boldsymbol{\alpha}, \boldsymbol{\xi},u) = \frac{1}{2} \|\mathbf{w}\|^2 + C \sum_{i=1}^{m} \xi_i - \sum_{i=1}^{m} \alpha_i \left( y_i (\mathbf{w}^T \phi(x_i) + b) - 1 + \xi_i \right) - 
-\]<p>
-\(\sum_{i=1}^{n} \mu_i \xi_i\)<br>
-对 \(\mathbf{w}\) 求导并设置为零：
-</p>
-\[
+\]\[
 \frac{\partial \mathcal{L}}{\partial \mathbf{w}} = \mathbf{w} - \sum_{i=1}^{m} \alpha_i y_i \phi(x_i) = 0
-\]<p>
-得到：
-</p>
-\[
+\]\[
 \mathbf{w} = \sum_{i=1}^{m} \alpha_i y_i \phi(x_i)
-\]<p>
-对 \(b\) 求导并设置为零：
-</p>
-\[
+\]\[
 \frac{\partial \mathcal{L}}{\partial b} = -\sum_{i=1}^{m} \alpha_i y_i = 0
-\]<p>
-对 \(\xi_i\) 求导并设置为零：
-</p>
-\[
+\]\[
 \frac{\partial \mathcal{L}}{\partial \xi_i} = C - \alpha_i - \mu_i = 0
-\]<p>
-联立上述式子代回拉格朗日函数得到最终结果(推导过程跟线性基本一样)
-</p>
-\[
+\]\[
 \mathcal{L}(\boldsymbol{\alpha}) = \sum_{i=1}^{m} \alpha_i - \frac{1}{2} \sum_{i=1}^{m} \sum_{j=1}^{m} \alpha_i \alpha_j y_i y_j \phi(\mathbf{x}_i)^T \phi(\mathbf{x}_j)
-\]<p>
-将核函数代入得到
-</p>
-\[
+\]\[
 \mathcal{L}(\boldsymbol{\alpha}) = \sum_{i=1}^{m} \alpha_i - \frac{1}{2} \sum_{i=1}^{m} \sum_{j=1}^{m} \alpha_i \alpha_j y_i y_j k(x_i,x_j)
-\]<p>
-至此引出对偶问题
-最大化:
-</p>
-\[
+\]\[
 \mathcal{L}(\boldsymbol{\alpha}) = \sum_{i=1}^{m} \alpha_i - \frac{1}{2} \sum_{i=1}^{m} \sum_{j=1}^{m} \alpha_i \alpha_j y_i y_j k(x_i,x_j)
 \]<p>
 限制条件:

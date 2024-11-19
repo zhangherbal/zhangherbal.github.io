@@ -7,7 +7,359 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>Herb</copyright>
-        <lastBuildDate>Sun, 20 Oct 2024 15:19:41 +0800</lastBuildDate><atom:link href="https://zhangherbal.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Sat, 09 Nov 2024 14:00:53 +0800</lastBuildDate><atom:link href="https://zhangherbal.github.io/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>强化学习-多臂赌博机</title>
+        <link>https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/</link>
+        <pubDate>Sat, 09 Nov 2024 14:00:53 +0800</pubDate>
+        
+        <guid>https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/</guid>
+        <description>&lt;h1 id=&#34;多臂赌博机问题&#34;&gt;多臂赌博机问题
+&lt;/h1&gt;&lt;h2 id=&#34;k臂赌博机问题&#34;&gt;K臂赌博机问题
+&lt;/h2&gt;&lt;p&gt;问题引出：一个赌博机有好几个臂，我们可以选择一些臂获得一些收益，但是我们事先并不知道这些臂的收益是多少。玩家希望摇固定次数的臂所获得的期望累计奖励最大&lt;br&gt;
+原始形式：重复地在\(K\)个选项或动作中进行选择，每次做出选择之后，都会得到一定数值的收益，收益由你选择的动作决定的平稳概率分布产生，目标是在某一段时间内最大化总收益的期望。&lt;br&gt;
+&lt;img src=&#34;https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-5.png&#34;
+	width=&#34;544&#34;
+	height=&#34;349&#34;
+	srcset=&#34;https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-5_hu9486346748799315069.png 480w, https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-5_hu7449452040634016328.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;alt text&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;155&#34;
+		data-flex-basis=&#34;374px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h3 id=&#34;相关定义及问题引出&#34;&gt;相关定义及问题引出
+&lt;/h3&gt;&lt;h4 id=&#34;价值&#34;&gt;价值
+&lt;/h4&gt;&lt;p&gt;价值：\(K\)个动作中的每个动作在被选择时都有一个期望或者平均收益，我们称此为这个动作的价值，在时刻t选择的动作\(A_t\),并将对应的收益即为\(R_t\),任一动作\(a\)对应的价值记作\(q_{*}(a)\)
+,是给定动作\(a\)时收益的期望。&lt;br&gt;
+\(q_{*}(a)=E[R_t|A_t=a]\)&lt;br&gt;
+类比赌博机&lt;br&gt;
+行为：摇哪个臂&lt;br&gt;
+奖励：每次摇臂获得的奖金&lt;br&gt;
+\(A_t\)表示第\(t\)轮的行为，对应的收益为\(R_t\)&lt;br&gt;
+第\(t\)轮采取动作\(a\)的期望奖励即为\(q_{*}(a)\)&lt;br&gt;
+每一个选择对应的奖励为\(q_{*}(a)\)。因此我们首先要完成一个任务才能去思考这件事情：对动作\(a\)在时刻\(t\)时的价值进行估计。只有估计出这个值我们才能继续进行我们的选择策略。这个值为\(Q_{*}(a)\)&lt;br&gt;
+玩家在第\(t\)轮时只能根据估计的\(Q_{*}(a)\)来进行选择，如果按照贪心策略，那么只需要每轮选择\(Q_{*}(a)\)最大的行为即可。&lt;br&gt;那么估计的效果也很重要，估计的好，最后获得的奖励值可能也越大。
+接着我们就对估计的过程进行讲述。&lt;/p&gt;
+&lt;h4 id=&#34;估计过程&#34;&gt;估计过程
+&lt;/h4&gt;&lt;p&gt;估计过程：持续对动作的价值进行估计去选择动作。&lt;br&gt;
+贪心：对应最高估计价值的动作。&lt;br&gt;
+试探：选择非贪心的动作。&lt;br&gt;
+缺点：短期奖励很低&lt;br&gt;
+优点：长期奖励可能会高。可能找出奖励更大的行为&lt;br&gt;&lt;/p&gt;
+&lt;p&gt;开发：选择贪心的动作。&lt;br&gt;
+缺点：当前估计值最高不一定意味着其\(q_{*}(a)\)最高。&lt;br&gt;
+优点：短期奖励很高。&lt;br&gt;
+通过试探和开发来看，我们可以感知到，开发是当下最好的，但是试探可能对未来长远更好。接下来我们就引入估计的方法。&lt;/p&gt;
+&lt;h3 id=&#34;动作价值方法&#34;&gt;动作价值方法
+&lt;/h3&gt;&lt;p&gt;我们接下来将给出估计动作价值的方法。即估计在\(t\)时刻选择动作\(A\)的价值。&lt;br&gt;
+\(Q_{*}(a)=\frac{t时刻前通过执行动作a得到的收益总和}{t时刻前执行动作a的次数}\)&lt;br&gt;
+\(=\frac{\sum_{i=1}^{t-1} R_i*\mathbb{I}A_i=a}{\sum_{i=1}^{t-1}\mathbb{I}A_i=a}\)&lt;br&gt;
+当分母为0时我们将\(Q_{*}(a)\)定义为某个默认值，比如\(Q_{*}(a)=0\)。当分母趋向无穷大时，根据大数定律，\(Q_t(a)\)会收敛到\(q_{*}(a)\),这种采样方法称为采样平均方法。
+至此我们就可以初步估计出动作的值。这种方法其实就是我们回顾我们探索的过程，把历史上所有探索过的取一下均值。&lt;br&gt;&lt;/p&gt;
+&lt;h4 id=&#34;补充-大数定律&#34;&gt;补充-大数定律
+&lt;/h4&gt;&lt;p&gt;\(1\).弱大数定理：设\(x_1,x_2……\)是相互独立，服从同一分布的随机变量序列且具有数学期望\(E(x_k)=u(k=1,2……)\),作前\(n\)个变量的算数平均&lt;br&gt;\(\lim_{n \to \infty} \{ |\frac{1}{n} \sum_{k=1}^{n} (x_k-u)|&lt;\epsilon \}=1\)&lt;br&gt;
+白话翻译是：当n很大时，他们的算术平均近似可以看作为\(u\)&lt;br&gt;&lt;/p&gt;
+&lt;h2 id=&#34;开发-试探平衡&#34;&gt;开发-试探平衡
+&lt;/h2&gt;&lt;p&gt;至此，我们已经解决了估计动作价值的问题，那么在估计完成后，我们要思考，怎么进行选择呢。最简单是我们每一轮都选最大的，但是每一轮都选最大的不一定是最优的。也有可能我们去试探，能试探出更优的行为，因此我们要平衡和开发和试探。
+我们将引出一些方法。&lt;/p&gt;
+&lt;h3 id=&#34;epsilon贪心方法&#34;&gt;\(\epsilon\)贪心方法
+&lt;/h3&gt;&lt;p&gt;以一个很小的概率\(\epsilon\)去做试探，那么次数无限多的情况下，每个动作都会被采样无限次，那么估计值将遵循大数定律逼近均值\(q_{*}(a)\)&lt;/p&gt;
+&lt;h4 id=&#34;举例&#34;&gt;举例
+&lt;/h4&gt;&lt;p&gt;假设有\(10\)个臂，每个臂的期望奖励从一个均值为\(0\)，方差为\(1\)的正态分布中得到。在第\(t\)轮中选择行为\(A_t\)获得奖励服从均值为\(q_{*}(A_t)\),方差为\(1\)的正态分布。
+&lt;img src=&#34;https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-2.png&#34;
+	width=&#34;669&#34;
+	height=&#34;399&#34;
+	srcset=&#34;https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-2_hu8922681758800833809.png 480w, https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-2_hu18335926872897226828.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;alt text&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;167&#34;
+		data-flex-basis=&#34;402px&#34;
+	
+&gt;&lt;br&gt;
+上图为10个动作的收益分布。
+&lt;br&gt;
+&lt;img src=&#34;https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-3.png&#34;
+	width=&#34;634&#34;
+	height=&#34;523&#34;
+	srcset=&#34;https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-3_hu16009700299957611757.png 480w, https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-3_hu17098290657405704171.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;alt text&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;121&#34;
+		data-flex-basis=&#34;290px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h4 id=&#34;改进-增量式实现&#34;&gt;改进-增量式实现
+&lt;/h4&gt;&lt;p&gt;在我们使用\(\epsilon\)贪心方法的时候，如果我们按照前文的估计方法，要把历史的奖励都加起来，然后除以轮数。时间复杂度较高，因此我们要对此进行一点小小的优化。&lt;br&gt;
+令\(R_i\)表示这一动作被选择\(i\)次后获得的收益，\(Q_n\)表示被选择\(n-1\)次后它的估计的动作价值，可以写为&lt;br&gt;
+\(Q_n=\frac{R_1+R_2+……R_{n-1}}{n-1}\),但是每计算一次，我们需要消耗很多内存，计算量也很大，因此我们要对其优化。&lt;br&gt;
+\(Q_{n+1}=\frac{1}{n} \sum_{i=1}^{n} R_i\)&lt;br&gt;
+\(=\frac{1}{n}(R_n+\sum_{i=1}^{n-1}R_i)\)&lt;br&gt;
+\(=\frac{1}{n}(R_n+(n-1)\frac{1}{n-1}\sum_{i=1}^{n-1}R_i)\)&lt;br&gt;
+\(=\frac{1}{n}(R_n+(n-1)Q_n\))&lt;br&gt;
+\(=\frac{1}{n}(R_n+nQ_n-Q_n\))&lt;br&gt;
+\(=Q_n+\frac{1}{n}[R_n-Q_n]\)&lt;br&gt;
+本式也被称为更新公式，它的一般形式为:&lt;br&gt;
+新估计值&amp;lt;-旧估计值+步长*[目标-旧估计值]&lt;br&gt;
+通过观察发现，我们只需要存储\(Q_n\)和\(n\)即可。
+（目标-旧估计值）是估计值的误差，误差会随着向目标靠近的每一步而减小。上述方法的步长会随着时间而变化，处理动作\(a\)对应的第\(n\)个收益的方法用的步长是\(\frac{1}{n}\),在本书中我们将步长记作\(α\),或者为\(α_t(a)\).
+至此，我们完成了一个简单的多臂赌博机算法，但是如果赌博机的收益的概率是随着时间变化的该怎么办呢?用一个通俗的例子进行说明，一个学生小学三年级数学期末考试考30分，高一数学期末考试考了120分，我们无法认为75分就是下次的估计值。
+&lt;img src=&#34;https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-1.png&#34;
+	width=&#34;662&#34;
+	height=&#34;301&#34;
+	srcset=&#34;https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-1_hu370281415510223488.png 480w, https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-1_hu10231790194951019399.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;alt text&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;219&#34;
+		data-flex-basis=&#34;527px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h3 id=&#34;定义补充&#34;&gt;定义补充
+&lt;/h3&gt;&lt;p&gt;首先我们要搞明白两个概念。&lt;br&gt;
+1.平稳问题：&lt;br&gt;
+固定的奖励分布，每个动作的奖励分布在时间上保持不变，例如在多臂赌博机中，某个臂的期望奖励是固定的。随着观测样本的增加，平均值估计方法最终收敛于\(q_{*}(a)\)&lt;br&gt;
+2.非平稳问题：&lt;br&gt;
+每个动作的奖励分布随着时间变化，例如某个臂某段时间内表现好，某段时间表现差，因此机制复杂。也就是说\(q_{*}(a)\)是关于时间的函数，我们更关注最近的样本。&lt;br&gt;&lt;/p&gt;
+&lt;h2 id=&#34;多臂赌博机-非平稳问题&#34;&gt;多臂赌博机-非平稳问题
+&lt;/h2&gt;&lt;p&gt;从平稳问题的视角来看，某个臂的期望奖励是固定的，而从非平稳问题的视角来看，赌博机的收益概率随时间变化，取平均方法不可用，那我们是如何改进的呢？&lt;/p&gt;
+&lt;h3 id=&#34;基础-非平稳下的行为估值br&#34;&gt;基础-非平稳下的行为估值&lt;br&gt;
+&lt;/h3&gt;&lt;p&gt;我们可以引入\(α\)，使每个行为的权值都不再相等。&lt;br&gt;
+\(Q_{n+1}=Q_n+α[R_n-Q_n]\) \(α &amp;in; [0,1]\)&lt;br&gt;
+\(Q_{n+1}\)成为对过去的收益和初始的估计\(Q_1\)的加权平均&lt;br&gt;
+\(Q_{n+1}=Q_n+α[R_n-Q_n]\)&lt;br&gt;
+=\(αR_n+(1-α)Q_n\)&lt;br&gt;
+=\(αR_n+(1-α)[αR+{n-1}+(1-α)Q_{n-1}]\)然后进行不断拆分&lt;br&gt;
+=\((1-α)^nQ_1+\sum_{i=1}^{n}α(1-α)^{n-i}R_i\)&lt;br&gt;
+\(Q_{n+1}\)成为对过去的收益和初始的估计\(Q_1\)的加权平均&lt;br&gt;
+之所以可以成为加权平均是因为：\((1-α)+\sum_{i=1}^{n}α(1-α)^{n-i}=1\)&lt;bn&gt;
+因此我们随着时刻一步一步改变步长参数，设\(α_n(a)\)表示用于处理第\(n\)次选择动作\(a\)后收到的收益的步长参数&lt;br&gt;
+当我们选择\(α\)时，会发现最终结果不是收敛的，而是随着近期得到的收益而变化,而之前选用的平均估值法的\(\frac{1}{n}\)是收敛的，这个也符合我们对非平稳问题的预期。
+因此在选择步长参数时要观察其是否收敛。&lt;/p&gt;
+&lt;h4 id=&#34;收敛条件&#34;&gt;收敛条件
+&lt;/h4&gt;&lt;p&gt;\(\sum_{n=1}^{\infty}a_n(α)=\infty\)且\(\sum_{n=1}^{\infty}a_n(α)^2&lt;\infty\)&lt;br&gt;
+第一个条件：要求保证有足够大的步长。最终克服任何初始条件或随机波动&lt;br&gt;
+第二个条件：保证最终步长变小，以保证收敛。&lt;/p&gt;
+&lt;h2 id=&#34;乐观初值法&#34;&gt;乐观初值法
+&lt;/h2&gt;&lt;p&gt;我们首先观察行为的初始估值。&lt;br&gt;
+\(1\).在我们之前的贪心策略中，每个行为的初始估值为0。&lt;br&gt;
+\(2\).每个行为的初始估值可以帮助我们引入先验知识。&lt;br&gt;
+\(3\).初始估值还可以帮助我们平衡试探和开发。&lt;br&gt;
+乐观初值法是什么意思呢，比如目前有十个臂，我们替换掉原先的初始值0，换为+5，在之前我们的问题描述中，\(q_{*}(a)\)是按照均值为0，方差为1的正态分布去进行选择的，因此+5是一个非常乐观的估计，但是这种乐观的估计会鼓励
+动作-价值方法去试探。因为无论选哪一种动作，都比开始的估计值小，因此学习器会失望去主动进行试探，结果是所有动作都被探索了很多次。乐观初值法也可以理解为鼓励探索。&lt;br&gt;
+同时我们也会发现，乐观初值法比较适合平稳问题，不太适合非平稳问题。毕竟非平稳问题更关注最近的样本。&lt;br&gt;
+&lt;img src=&#34;https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image.png&#34;
+	width=&#34;625&#34;
+	height=&#34;276&#34;
+	srcset=&#34;https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image_hu11324991071178999865.png 480w, https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image_hu5517646830536578878.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;alt text&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;226&#34;
+		data-flex-basis=&#34;543px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h2 id=&#34;ucb行为选择策略&#34;&gt;\(UCB\)行为选择策略
+&lt;/h2&gt;\[
+a_t = \arg\max_{i \in \{1, 2, \dots, K\}} \left( Q_t(a) + c \sqrt{\frac{\ln t}{N_t(a)}} \right)
+\]&lt;p&gt;
+\(N_t(a)\)表示时间\(t\)之前行为\(a\)被选择的次数。参数\(c\)决定了置信水平。
+此公式引入了置信度，例如一个臂之前只被摇了两次，那么它的预测值就不太准，如果被摇了几万次，那就比较准确。因此平方根项是对\(a\)动作值估计的不确定性和方差的度量，随着时间的变化，
+具有较低价值估计的动作或者已经被选择了更多次的动作被选择的频率较低。&lt;br&gt;
+&lt;img src=&#34;https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-4.png&#34;
+	width=&#34;609&#34;
+	height=&#34;233&#34;
+	srcset=&#34;https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-4_hu2311328956770086695.png 480w, https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-4_hu3637641226048031829.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;alt text&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;261&#34;
+		data-flex-basis=&#34;627px&#34;
+	
+&gt;&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>OCR</title>
+        <link>https://zhangherbal.github.io/p/ocr/</link>
+        <pubDate>Mon, 04 Nov 2024 20:48:23 +0800</pubDate>
+        
+        <guid>https://zhangherbal.github.io/p/ocr/</guid>
+        <description>&lt;h1 id=&#34;ocr&#34;&gt;OCR
+&lt;/h1&gt;&lt;h2 id=&#34;前言&#34;&gt;前言
+&lt;/h2&gt;&lt;p&gt;在研究HUST数据集时，里面有一个文件夹叫做OCR。OCR（Optical Character Recognition，光学字符识别）是一种将图像中的文本转换为机器可读文本的技术。
+它通过分析图像中的字符形状来识别和提取文本。&lt;br&gt;
+OCR文件夹的结构如下&lt;br&gt;
+我们对每一部分的代码进行学习以及分析。&lt;br&gt;&lt;/p&gt;
+&lt;h2 id=&#34;dataset-establishmentpy&#34;&gt;Dataset establishment.py
+&lt;/h2&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt; 1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 3
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 4
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 5
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 6
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 7
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 8
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt; 9
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;10
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;11
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;12
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;13
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;14
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;15
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;16
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;17
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;18
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;19
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;20
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;21
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;22
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;23
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;24
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;25
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;26
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;27
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;28
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;copy&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;#用于复制对象&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;json&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;#用于处理json数据&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;os&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# 用于操作系统相关的功能，如文件和目录操作。&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;shutil&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kn&#34;&gt;from&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;tqdm&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;tqdm&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;random&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;folder_path&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;../OCR_Dataset&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# 要处理的文件夹路径&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;n&#34;&gt;dataset&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;# 初始化一个空列表，用于存储文件信息的字典。&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;root&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;directories&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;files&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;tqdm&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;os&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;walk&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;folder_path&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)):&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;file&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;files&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;n&#34;&gt;data&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;n&#34;&gt;file_path&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;os&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;path&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;join&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;root&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;file&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;c1&#34;&gt;# 这行代码的作用是构建当前文件的完整路径。&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;n&#34;&gt;data&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;label&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;int&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;file&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;replace&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;.png&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;))&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;#去掉.png得到数字&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;n&#34;&gt;data&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;path&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;file_path&lt;/span&gt;&lt;span class=&#34;c1&#34;&gt;#加入路径&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;n&#34;&gt;dataset&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;append&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;copy&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;deepcopy&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;data&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;))&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;print&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;len&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;dataset&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;))&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;with&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;open&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;OCR_train.json&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;w&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;encoding&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;utf-8&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;as&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;f&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;n&#34;&gt;json&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;dump&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;dataset&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;f&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ensure_ascii&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;kc&#34;&gt;False&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;这个 Python 文件的主要功能是从指定的文件夹中提取图像文件的路径和标签，并将这些信息保存到一个 JSON 文件中。JSON 格式因其结构化和易于解析的特性，常被用来存储和交换数据。&lt;/p&gt;
+&lt;h2 id=&#34;chinese_to_idjson-id_to_chinesejson&#34;&gt;Chinese_to_ID.json ID_to_Chinese.json
+&lt;/h2&gt;&lt;p&gt;存储OCR数据集类别ID和中文字符之间的映射&lt;br&gt;
+存储 OCR 数据集的类别 ID 和中文字符之间的映射通常是为了便于将模型的输出与实际字符进行对应，从而实现字符识别的有效性。&lt;br&gt;
+1.结果解码：在 OCR 模型进行预测时，模型输出的是类别 ID（通常是一个整数），而实际的字符是文本形式的。通过类别 ID 和字符的映射，可以将模型的输出转换为可读的中文字符。&lt;br&gt;
+2.数据验证：在训练和测试阶段，通过将类别 ID 映射到实际字符，可以验证模型的识别结果是否正确，有助于评估模型的性能。&lt;br&gt;
+3.标签管理：在处理多类字符识别任务时，保持类别 ID 和字符的映射可以帮助管理标签，从而确保在训练和测试时能够一致地使用相同的标签集。&lt;br&gt;
+4.可视化和分析：在结果可视化或分析时，能够直接查看模型输出的字符，而不是仅仅看到类别 ID，便于理解和解释模型的行为。&lt;br&gt;&lt;/p&gt;
+&lt;h2 id=&#34;ocr_trainjson&#34;&gt;OCR_train.json
+&lt;/h2&gt;&lt;p&gt;由 Dataset establishment所得到的结果&lt;/p&gt;
+</description>
+        </item>
+        <item>
+        <title>XCPC算法竞赛-搜索篇</title>
+        <link>https://zhangherbal.github.io/p/xcpc%E7%AE%97%E6%B3%95%E7%AB%9E%E8%B5%9B-%E6%90%9C%E7%B4%A2%E7%AF%87/</link>
+        <pubDate>Sun, 03 Nov 2024 14:08:21 +0800</pubDate>
+        
+        <guid>https://zhangherbal.github.io/p/xcpc%E7%AE%97%E6%B3%95%E7%AB%9E%E8%B5%9B-%E6%90%9C%E7%B4%A2%E7%AF%87/</guid>
+        <description>&lt;h1 id=&#34;搜索&#34;&gt;搜索
+&lt;/h1&gt;&lt;h2 id=&#34;搜索简介&#34;&gt;搜索简介
+&lt;/h2&gt;&lt;p&gt;利用计算机的计算能力，枚举所有可能的情况，是暴力法算法思想的体现。&lt;/p&gt;
+&lt;h2 id=&#34;bfs及dfs引出&#34;&gt;BFS及DFS引出
+&lt;/h2&gt;&lt;p&gt;BFS,DFS对应搜索算法的两种思路，其他的搜索算法是基于DFS或者BFS的延伸。无论是BFS还是DFS都能遍历整个问题空间，但是BFS和DFS的搜索方式不同，一位是执着型选手，一位是稳定型选手。
+我们拿出搜索树举例。
+&lt;img src=&#34;https://zhangherbal.github.io/p/xcpc%E7%AE%97%E6%B3%95%E7%AB%9E%E8%B5%9B-%E6%90%9C%E7%B4%A2%E7%AF%87/image1.jpg&#34;
+	width=&#34;1116&#34;
+	height=&#34;623&#34;
+	srcset=&#34;https://zhangherbal.github.io/p/xcpc%E7%AE%97%E6%B3%95%E7%AB%9E%E8%B5%9B-%E6%90%9C%E7%B4%A2%E7%AF%87/image1_hu8958161067793499222.jpg 480w, https://zhangherbal.github.io/p/xcpc%E7%AE%97%E6%B3%95%E7%AB%9E%E8%B5%9B-%E6%90%9C%E7%B4%A2%E7%AF%87/image1_hu12516348181635164926.jpg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;alt text&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;179&#34;
+		data-flex-basis=&#34;429px&#34;
+	
+&gt;&lt;br&gt;
+DFS是深度优先，先访问左节点再访问右节点，而BFS是按层遍历，这是两者搜索方式上的区别。&lt;br&gt;
+DFS搜索顺序{{E,B,A,D,C,G,F,I,H}}&lt;BR&gt;
+BFS搜索顺序{{E,B,G,A,D,F,I,C,H}}&lt;/p&gt;
+&lt;h2 id=&#34;bfs&#34;&gt;BFS
+&lt;/h2&gt;&lt;p&gt;我们知道BFS是按层遍历，全面扩散，逐层递进。&lt;/p&gt;
+&lt;h3 id=&#34;bfs的代码实现&#34;&gt;BFS的代码实现
+&lt;/h3&gt;&lt;p&gt;BFS是一层一层扩展开的，由本层扩展到下一层，那么在实现代码的过程中，我们要思考几个问题。
+1.代码是如何实现由上一层到下一层的扩展&lt;br&gt;
+2，
+我们以一题为例进行讲解。&lt;/p&gt;
+&lt;h4 id=&#34;马的遍历&#34;&gt;马的遍历
+&lt;/h4&gt;&lt;h5 id=&#34;题目描述&#34;&gt;题目描述
+&lt;/h5&gt;&lt;p&gt;有一个 \(n \times m \)的棋盘，在某个点 \((x, y)\) 上有一个马，要求你计算出马到达棋盘上任意一个点最少要走几步。&lt;/p&gt;
+&lt;h5 id=&#34;输入格式&#34;&gt;输入格式
+&lt;/h5&gt;&lt;p&gt;输入只有一行四个整数，分别为 \(n, m, x, y\)。&lt;/p&gt;
+&lt;h5 id=&#34;输出格式&#34;&gt;输出格式
+&lt;/h5&gt;&lt;p&gt;一个 \(n \times m\) 的矩阵，代表马到达某个点最少要走几步（不能到达则输出 \(-1\)）。&lt;/p&gt;
+&lt;h5 id=&#34;样例-1&#34;&gt;样例 #1
+&lt;/h5&gt;&lt;h6 id=&#34;样例输入-1&#34;&gt;样例输入 #1
+&lt;/h6&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;3 3 1 1
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h6 id=&#34;样例输出-1&#34;&gt;样例输出 #1
+&lt;/h6&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
+&lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code&gt;&lt;span class=&#34;lnt&#34;&gt;1
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;2
+&lt;/span&gt;&lt;span class=&#34;lnt&#34;&gt;3
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td class=&#34;lntd&#34;&gt;
+&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;0    3    2    
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;3    -1   1    
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;2    1    4
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;h5 id=&#34;提示&#34;&gt;提示
+&lt;/h5&gt;&lt;h5 id=&#34;数据规模与约定&#34;&gt;数据规模与约定
+&lt;/h5&gt;&lt;p&gt;对于全部的测试点，保证 \(1 \leq x \leq n \leq 400\)，\(1 \leq y \leq m \leq 400\)。&lt;/p&gt;
+&lt;h2 id=&#34;dfs&#34;&gt;DFS
+&lt;/h2&gt;&lt;h2 id=&#34;对比&#34;&gt;对比
+&lt;/h2&gt;</description>
+        </item>
+        <item>
         <title>机器学习-集成学习</title>
         <link>https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/</link>
         <pubDate>Sun, 20 Oct 2024 15:19:41 +0800</pubDate>
@@ -120,18 +472,7 @@
 &gt;&lt;br&gt;&lt;/p&gt;
 &lt;h4 id=&#34;adaboost公式推导&#34;&gt;Adaboost公式推导
 &lt;/h4&gt;&lt;h5 id=&#34;推导前置说明&#34;&gt;推导前置说明
-&lt;/h5&gt;&lt;p&gt;\(Adaboost\)有多种推导方式，我们以基于加法模型来进行推导。
-推导的目标是最小化目标损失函数。&lt;br&gt;
-注意，我们在这里讨论的是二分类问题，其中训练样本集的 \(y_i∈\{−1,+1\}\)，\(f\) 是真实函数。对于样本\(x\)来说，真实值\(f(x)\)∈\(\{−1,+1\}\)，每个基学习器的预测值 \(h_i(x)∈\{−1,+1\}\)，假定基分类器的错误率为 \(ϵ\)，即对每个基分类器\(h_i\)有： &lt;/p&gt;
-$$ P(h_i(x)\neq f(x))=\epsilon \tag{8.1} $$&lt;p&gt; 假设集成通过简单投票法结合
-T个基分类器，若有超过半数的基分类器正确，则集成分类就正确；集成分类的结果 F简单投票(x)
-为： &lt;/p&gt;
-$$ F_{简单投票}(x)=\mathrm{sign}\Big(\sum\limits_{i=1}^{T}h_i(x)\Big) \tag{8.2} $$&lt;p&gt; “加法模型”（\(additive model\)），即基学习器的线性组合
-\(H(x)\)： &lt;/p&gt;
-$$ H(x)=\sum\limits_{t=1}^T\alpha_{t}h_{t}(x) \tag{8.4} $$&lt;p&gt; 其中，\(\alpha_t\) 表示基分类器的权重，因为 AdaBoost 并不使用简单投票法，而是“加权表决法”，即让基学习器具有不同的权值： &lt;/p&gt;
-$$ F(x)=\mathrm{sign}(H(x))=\mathrm{sign}\Big(\sum\limits_{t=1}^T\alpha_{t}h_{t}(x)\Big) $$&lt;p&gt; &lt;br&gt;
-指数损失函数”的定义为： &lt;/p&gt;
-$$ \mathscr{l}_{exp}(H\mid D)=\mathbb{E}{x\sim D}[e^{-f(x)H(x)}]\tag{8.5} $$&lt;p&gt; 其中，\(x\sim D\) 表示概率分布
+&lt;/h5&gt;$$ P(h_i(x)\neq f(x))=\epsilon \tag{8.1} $$$$ F_{简单投票}(x)=\mathrm{sign}\Big(\sum\limits_{i=1}^{T}h_i(x)\Big) \tag{8.2} $$$$ H(x)=\sum\limits_{t=1}^T\alpha_{t}h_{t}(x) \tag{8.4} $$$$ F(x)=\mathrm{sign}(H(x))=\mathrm{sign}\Big(\sum\limits_{t=1}^T\alpha_{t}h_{t}(x)\Big) $$$$ \mathscr{l}_{exp}(H\mid D)=\mathbb{E}{x\sim D}[e^{-f(x)H(x)}]\tag{8.5} $$&lt;p&gt; 其中，\(x\sim D\) 表示概率分布
 D(x)，\(\mathbb{E}\) 表示期望。&lt;br&gt;
 这个指数损失函数为什么合理：当对于某一学习器而言，\(Adaboost\)的优点就是给予其权重，我们注意到\(e\)的指数为\(-H(x)*f(x)\)，当对于某一样本\(x\)，预测正确时
 \(H(x)\)和\(f(x)\)应该为同号，前面加上符号，指数就变成了负数，同时若\(H(x)\)的值越大(分类器对结果的信任程度就高)，整个函数的值就越小。同时若分类错误，\(H(x)\)与\(f(x)\)
@@ -140,26 +481,11 @@ D(x)，\(\mathbb{E}\) 表示期望。&lt;br&gt;
 \( \mathbb{E}_{x\sim D}[f(x)]=\sum_{x\in D}D(x)f(x)\tag{工具公式1} \)
 \(\sum\limits_{i=1}^{|D|}D(x_i)\mathbb{I}(f(x_i)=1)=p(f(x_i)=1|x_i)\tag{工具公式2}\)&lt;/p&gt;
 &lt;h5 id=&#34;损失函数正确性说明&#34;&gt;损失函数正确性说明
-&lt;/h5&gt;&lt;p&gt;若集成学习器
-\(H(x)\)能令指数损失函数最小化，则考虑式（8.5）对
-\(H(x)\)的偏导： &lt;/p&gt;
-$$ \dfrac{\partial\mathscr{l}_{exp}(H\mid D)}{\partial H(x)}=-e^{-H(x)}P(f(x)=1\mid x)+e^{H(x)}P(f(x)=-1\mid x)\tag{8.6} $$&lt;p&gt;
-令式(8.6)为0
-将工具公式1代入式（8.5）： &lt;/p&gt;
-$$ \mathscr{l}_{exp}(H\mid D)=\mathbb{E}{x\sim D}[e^{-f(x)H(x)}]=\sum\limits_{x\in D}D(x)e^{-f(x)H(x)} $$&lt;p&gt; 由于工具公式2： &lt;/p&gt;
-$$ \sum\limits_{i=1}^{|D|}D(x_i)\mathbb{I}(f(x_i)=1)=P(f(x_i)=1\mid x_i) $$&lt;p&gt; 又注意到
-\(f(x_i)∈−\{1,+1\}\)，所以： &lt;/p&gt;
-$$
+&lt;/h5&gt;$$ \dfrac{\partial\mathscr{l}_{exp}(H\mid D)}{\partial H(x)}=-e^{-H(x)}P(f(x)=1\mid x)+e^{H(x)}P(f(x)=-1\mid x)\tag{8.6} $$$$ \mathscr{l}_{exp}(H\mid D)=\mathbb{E}{x\sim D}[e^{-f(x)H(x)}]=\sum\limits_{x\in D}D(x)e^{-f(x)H(x)} $$$$ \sum\limits_{i=1}^{|D|}D(x_i)\mathbb{I}(f(x_i)=1)=P(f(x_i)=1\mid x_i) $$$$
 \begin{aligned}
 \dfrac{\partial \mathscr{l}_{exp}(H \mid D)}{\partial H(x)} &amp;= \sum\limits_{i=1}^{|D|} D(x_i) \Big( -e^{-H(x_i)} \mathbb{I}(f(x_i)=1) + e^{H(x_i)} \mathbb{I}(f(x_i)=-1) \Big)
 \end{aligned}&lt;br&gt;
-$$&lt;p&gt;
-\begin{aligned}
-&amp;amp;=-e^{-H(x_i)} P(f(x_i)=1 \mid x_i) + e^{H(x_i)} P(f(x_i)=-1 \mid x_i) \quad \text{(由工具公式2得)}
-\end{aligned}
-式（8.6）的具体推导过程至此结束。
-令式（8.6）为零，进行求解： &lt;/p&gt;
-$$ 
+$$$$ 
 -e^{-H(x)} P(f(x)=1 \mid x) + e^{H(x)} P(f(x)=-1 \mid x) = 0 
 $$\[
 H(x) + \ln(P(f(x)=-1 \mid x)) = -H(x) + \ln(P(f(x)=1 \mid x)
@@ -183,32 +509,19 @@ $$&lt;p&gt;
 都选择后验概率最大的类别）。换言之，若指数损失函数最小化，则分类错误率也将最小化；这说明指数损失函数是分类任务原本 0/1 损失函数的一致的\(（consistent）\)替代损失函数。由于这个替代损失函数有更好的数学性质，例如它是连续可微函数，因此我们用它替代 0/1 损失函数作为优化目标。
 至此，我们知道了使用“指数损失函数”的原因及其正确性。&lt;/p&gt;
 &lt;h5 id=&#34;分类器权重公式&#34;&gt;分类器权重公式
-&lt;/h5&gt;&lt;p&gt;下面，我们将从指数损失函数入手，推导\(AdaBoost\)算法的分类器权重公式。在\(AdaBoost\)算法中，第一个基分类器\(h_1\)是通过直接将基学习器算法用于初始数据分布而得；此后迭代地生成\(h_t\)和\(\alpha_t\)，当基分类器\(h_t\)基于分布\(D_t\)产生后，该基分类器的权重\(\alpha_t\)应使得 \(\alpha_th_t\)最小化指数损失函数。
-此时的指数损失函数： &lt;br&gt;
-由定义式(8.5)得到
-&lt;/p&gt;
-$$
+&lt;/h5&gt;$$
 \begin{aligned}
 \mathscr{l}_{exp}(\alpha_t h_t \mid D_t) &amp;= \mathbb{E}_{x \sim D_t}[e^{-f(x) \alpha_t h_t(x)}]
 \end{aligned}
-$$&lt;p&gt;
-分类讨论（两种情形）：
-&lt;/p&gt;
-$$
+$$$$
 \begin{aligned}
 &amp;=\mathbb{E}_{x \sim D_t}\left[e^{-\alpha_t} \mathbb{I}(f(x) = h_t(x)) + e^{\alpha_t} \mathbb{I}(f(x) \neq h_t(x))\right]
 \end{aligned}
-$$&lt;p&gt;
-由工具公式1得到：
-&lt;/p&gt;
-$$
+$$$$
 \begin{aligned}
 &amp;=\sum\limits_{x \in D_t} D_t(x) \left[e^{-\alpha_t} \mathbb{I}(f(x) = h_t(x)) + e^{\alpha_t} \mathbb{I}(f(x) \neq h_t(x))\right]
 \end{aligned}
-$$&lt;p&gt;
-由工具公式2得到：
-&lt;/p&gt;
-$$
+$$$$
 \begin{aligned}
 &amp;= e^{-\alpha_t} P_{x \sim D_t}(f(x) = h_t(x)) + e^{\alpha_t} P_{x \sim D_t}(f(x) \neq h_t(x))
 \end{aligned}
@@ -216,42 +529,24 @@ $$$$
 \begin{aligned}
 &amp;= e^{-\alpha_t}(1 - \epsilon_t) + e^{\alpha_t} \epsilon_t \quad \text{错误率的定义推出}
 \end{aligned} \tag{8.9}
-$$&lt;p&gt;
-其中，错误率 \(\epsilon_t = P_{x \sim D_t}(h_t(x) \neq f(x))\)。
-考虑指数损失函数的导数： &lt;/p&gt;
-$$ \begin{aligned} &amp;\dfrac{\partial\mathscr{l}_{exp}(\alpha_th_t\mid D_{t})}{\partial\alpha_t}=-e^{-\alpha_t}(1-\epsilon_t)+e^{\alpha_t}\epsilon_{t} &amp;由式(8.9)对\alpha_{t}求偏导 \end{aligned}\tag{8.10} $$&lt;p&gt; 令式（8.10）为零，进行求解： &lt;/p&gt;
-$$ \begin{aligned} &amp;-e^{-\alpha_{t}}(1-\epsilon_{t})+e^{\alpha_{t}}\epsilon_{t}=0&amp;令式(8.10)为零\ \ &amp;\alpha_{t}+\mathrm{ln}\epsilon_{t}=-\alpha_{t}+\mathrm{ln}(1-\epsilon_{t})&amp;移项后取对数 \end{aligned} $$&lt;p&gt;
-可解得： &lt;/p&gt;
-$$ \alpha_{t}=\dfrac{1}{2}\mathrm{ln}\Big(\dfrac{1-\epsilon_{t}}{\epsilon_{t}}\Big)\tag{8.11} $$&lt;p&gt; 至此，我们求得了 AdaBoost 算法的分类器权重公式。&lt;/p&gt;
+$$$$ \begin{aligned} &amp;\dfrac{\partial\mathscr{l}_{exp}(\alpha_th_t\mid D_{t})}{\partial\alpha_t}=-e^{-\alpha_t}(1-\epsilon_t)+e^{\alpha_t}\epsilon_{t} &amp;由式(8.9)对\alpha_{t}求偏导 \end{aligned}\tag{8.10} $$$$ \begin{aligned} &amp;-e^{-\alpha_{t}}(1-\epsilon_{t})+e^{\alpha_{t}}\epsilon_{t}=0&amp;令式(8.10)为零\ \ &amp;\alpha_{t}+\mathrm{ln}\epsilon_{t}=-\alpha_{t}+\mathrm{ln}(1-\epsilon_{t})&amp;移项后取对数 \end{aligned} $$$$ \alpha_{t}=\dfrac{1}{2}\mathrm{ln}\Big(\dfrac{1-\epsilon_{t}}{\epsilon_{t}}\Big)\tag{8.11} $$&lt;p&gt; 至此，我们求得了 AdaBoost 算法的分类器权重公式。&lt;/p&gt;
 &lt;h5 id=&#34;样本分布更新公式&#34;&gt;样本分布更新公式
 &lt;/h5&gt;&lt;p&gt;下面，我们推导 AdaBoost 算法的样本分布更新公式。&lt;/p&gt;
 &lt;p&gt;AdaBoost 算法在获得 \( H_{t-1} \) 之后样本分布将进行调整，使下一轮的基学习器 \( h_t \) 能纠正 \( H_{t-1} \) 的一些错误。&lt;/p&gt;
-&lt;p&gt;理想的 \( h_t \) 能纠正 \( H_{t-1} \) 的全部错误，由于
-&lt;/p&gt;
 \[
 H(x) = H_{t-1}(x) + \alpha_t h_t(x)
-\]&lt;p&gt;
-因此，我们希望最小化
-\(\mathscr{l}_{exp}(H_{t-1} + \alpha_t h_t \mid D)\)，可以简化为，最小化：
-&lt;/p&gt;
-$$
+\]$$
 \begin{aligned}
 \mathscr{l}_{exp}(H_{t-1} + h_t \mid D) &amp;= \mathbb{E}_{x \sim D}[e^{-f(x)(H_{t-1}(x) + h_t(x))}] \\
 &amp;= \mathbb{E}_{x \sim D}[e^{-f(x)H_{t-1}(x)} e^{-f(x)h_t(x)}]
 \end{aligned} \tag{8.12}
 $$&lt;p&gt;对式（8.12）使用 \( e^{-f(x)h_t(x)} \) 的泰勒展式近似：&lt;/p&gt;
 &lt;p&gt;使用到的泰勒展开式： \( e^x \sim 1 + x + \dfrac{1}{2} x^{2} + o(x^2) \)&lt;/p&gt;
-&lt;p&gt;可得：
-&lt;/p&gt;
 $$
 \mathscr{l}_{exp}(H_{t-1} + h_t \mid D) \simeq \mathbb{E}_{x \sim D}\Big[e^{-f(x)H_{t-1}(x)}\Big(1 - f(x)h_t(x) + \dfrac{f^2(x)h_t^2(x)}{2}\Big)\Big]
-$$&lt;p&gt;又因为 \( f^2(x) = h_t^2(x) = 1 \)，可得：
-&lt;/p&gt;
-$$
+$$$$
 \mathscr{l}_{exp}(H_{t-1} + h_t \mid D) = \mathbb{E}_{x \sim D}\Big[e^{-f(x)H_{t-1}(x)}\Big(1 - f(x)h_t(x) + \dfrac{1}{2}\Big)\Big] \tag{8.13}
-$$&lt;p&gt;因为理想的基学习器 \( h_t(x) \) 要使得指数损失函数最小化，所以：
-&lt;/p&gt;
-$$
+$$$$
 \begin{aligned}
 h_t(x) &amp;= \mathop{\mathrm{argmin}}\limits_{h} \mathscr{l}_{exp}(H_{t-1} + h \mid D) \\
 &amp;= \mathop{\mathrm{argmin}}\limits_{h} \mathbb{E}_{x \sim D}\Big[e^{-f(x)H_{t-1}(x)}\Big(1 - f(x)h(x) + \dfrac{1}{2}\Big)\Big] &amp; \quad \text{由式(8.13)代入得到} \\
@@ -261,26 +556,18 @@ h_t(x) &amp;= \mathop{\mathrm{argmin}}\limits_{h} \mathscr{l}_{exp}(H_{t-1} + h 
 &amp;= \mathop{\mathrm{argmax}}\limits_{h} \mathbb{E}_{x \sim D}\Big[\dfrac{e^{-f(x)H_{t-1}(x)}}{\mathbb{E}_{x \sim D}[e^{-f(x)H_{t-1}(x)}]}f(x)h(x)\Big] &amp; \text{新加入的常数不影响结果}
 \end{aligned} \tag{8.14}
 $$&lt;p&gt;注意，式（8.14）中的 \( \mathbb{E}_{x \sim D}[e^{-f(x)H_{t-1}(x)}] \) 是一个常数，之所以添加此常数，是为了构造出下面的 \( D_t \) 分布。&lt;/p&gt;
-&lt;p&gt;令 \( D_t \) 表示一个分布：
-&lt;/p&gt;
 $$
 D_t(x) = \dfrac{D(x)e^{-f(x)H_{t-1}(x)}}{\mathbb{E}_{x \sim D}[e^{-f(x)H_{t-1}(x)}]} \tag{8.15}
-$$&lt;p&gt;根据数学期望的定义，再将式（8.15）代入式（8.14），则理想的基学习器 \( h_t(x) \)：
-&lt;/p&gt;
-$$
+$$$$
 \begin{aligned}
 h_t(x) &amp;= \mathop{\mathrm{argmax}}\limits_{h}\mathbb{E}_{x \sim D}\Big[\dfrac{e^{-f(x)H_{t-1}(x)}}{\mathbb{E}_{x \sim D}[e^{-f(x)H_{t-1}(x)}]}f(x)h(x)\Big] &amp; \text{式(8.14)} \\
 &amp;= \mathop{\mathrm{argmax}}\limits_{h}\sum\limits_{i=1}^{|D|}D(x_i)\Big[\dfrac{e^{-f(x_i)H_{t-1}(x_i)}f(x_i)h(x_i)}{\mathbb{E}_{x \sim D}[e^{-f(x_i)H_{t-1}(x_i)}]}\Big] &amp; \text{数学期望的定义} \\
 &amp;= \mathop{\mathrm{argmax}}\limits_{h}\sum_{i=1}^{|D|}D_t(x_i)f(x_i)h(x_i) &amp; \text{由式(8.15)代入得到} \\
 &amp;= \mathop{\mathrm{argmax}}\limits_{h}\mathbb{E}_{x \sim D_t}[f(x)h(x)]
 \end{aligned} \tag{8.16}
-$$&lt;p&gt;由于 \( f(x), h(x) \in \{-1, +1\} \)，有：
-&lt;/p&gt;
-$$
+$$$$
 f(x)h(x) = 1 - 2\mathbb{I}(f(x) \neq h(x)) \tag{8.17}
-$$&lt;p&gt;则理想的基学习器 \( h_t(x) \)：
-&lt;/p&gt;
-$$
+$$$$
 \begin{aligned}
 h_t(x) &amp;= \mathop{\mathrm{argmax}}\limits_{h}\mathbb{E}_{x \sim D_t}[f(x)h(x)] &amp; \text{式(8.16)} \\
 &amp;= \mathop{\mathrm{argmax}}\limits_{h}\mathbb{E}_{x \sim D_t}[1 - 2\mathbb{I}(f(x) \neq h(x))] &amp; \text{由式(8.17)代入得到} \\
@@ -288,8 +575,6 @@ h_t(x) &amp;= \mathop{\mathrm{argmax}}\limits_{h}\mathbb{E}_{x \sim D_t}[f(x)h(x
 \end{aligned} \tag{8.18}
 $$&lt;p&gt;由此可见，理想的 \( h_t(x) \) 将在分布 \( D_t \) 下最小化分类误差。&lt;/p&gt;
 &lt;p&gt;因此，弱分类器将基于分布 \( D_t \) 进行训练，且针对 \( D_t \) 的分类误差应小于 0.5，这在一定程度上类似“残差逼近”的思想。&lt;/p&gt;
-&lt;p&gt;考虑到 \( D_t \) 与 \( D_{t+1} \) 的关系，有：
-&lt;/p&gt;
 $$
 \begin{aligned}
 D_{t+1}(x) &amp;= \dfrac{D(x)e^{-f(x)H_t(x)}}{\mathbb{E}_{x \sim D}[e^{-f(x)H_t(x)}]} &amp; \text{由式(8.15)可得} \\
@@ -741,31 +1026,7 @@ d= \frac{|w_1 x_0 + w_2 y_0 + b|}{\sqrt{w_1^2 + w_2^2}}\)&lt;br&gt;
 &lt;br&gt;&lt;/p&gt;
 &lt;h3 id=&#34;优化方法&#34;&gt;优化方法
 &lt;/h3&gt;&lt;h4 id=&#34;拉格朗日乘子法&#34;&gt;拉格朗日乘子法
-&lt;/h4&gt;&lt;p&gt;终极目标其实是一个二次规划问题，也是凸优化问题，要么无解要么有一个极小值。
-我们采用拉格朗日乘子法进行解决。对式\((2)\)的每条约束添加拉格朗日乘子 \(α_i&gt;=0\),可得出拉格朗日函数.&lt;br&gt;
-\(L(w,b,α)=\frac{1}{2}\|w\|^2+
-\sum_{i=1}^{m} α_i(1-y_i(w^Tx_i+b))\quad(3)\)&lt;br&gt;
-令拉格朗日函数对\(w,b\)求偏导为0(计算过程如下)
-&lt;img src=&#34;https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/image3.png&#34;
-	width=&#34;1280&#34;
-	height=&#34;1144&#34;
-	srcset=&#34;https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/image3_hu18442657097368827043.png 480w, https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/image3_hu12528380760245140696.png 1024w&#34;
-	loading=&#34;lazy&#34;
-	
-		alt=&#34;alt text&#34;
-	
-	
-		class=&#34;gallery-image&#34; 
-		data-flex-grow=&#34;111&#34;
-		data-flex-basis=&#34;268px&#34;
-	
-&gt;&lt;br&gt;
-得出&lt;br&gt;
-\(w=\sum_{i=1}^{m}a_iy_ix_i\quad(4)\)&lt;br&gt;
-\(0=\sum_{i=1}^{m}a_iy_i\quad(5)\)&lt;br&gt;
-将\((3),(4),(5)\)结合消去\(w,b\)引出对偶问题&lt;br&gt;
-&lt;/p&gt;
-$$
+&lt;/h4&gt;$$
 \begin{align*}
 \text{maximize} &amp; \quad \sum_{i=1}^{m} \alpha_i - \frac{1}{2} \sum_{i=1}^{m} \sum_{j=1}^{m} \alpha_i \alpha_j y_i y_j (x_i^T \cdot x_j) \\
 \text{subject to} &amp; \quad \sum_{i=1}^{m} \alpha_i y_i = 0, \\
@@ -820,26 +1081,18 @@ SVM精妙之处将被引出：
 \(k(x1,x2)=\phi(x_1)^T \phi(x_2)\)(后面两者相乘明显是一个数值)&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;
-&lt;p&gt;线性核:
-&lt;/p&gt;
 \[
    K(x, y) = x^T y=\phi(x_1)^T \phi(x_2)
 \]&lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;多项式核:
-&lt;/p&gt;
 \[
    K(x, y) = (x^T y + c)^d=\phi(x_1)^T \phi(x_2)
 \]&lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;高斯（RBF）核:
-&lt;/p&gt;
 \[
    K(x, y) = \exp\left(-\frac{\|x - y\|^2}{2\sigma^2}\right)=\phi(x_1)^T \phi(x_2)
 \]&lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;Sigmoid核:
-&lt;/p&gt;
 \[
    K(x, y) = \tanh(\alpha x^T y + c)=\phi(x_1)^T \phi(x_2)
 \]&lt;p&gt;&lt;br&gt;&lt;/p&gt;
@@ -853,47 +1106,21 @@ SVM精妙之处将被引出：
 &lt;p&gt;我们最常用的就是高斯核，我们可以通过继续转化问题来使用核函数去解决这个问题，把这个优化问题变得可做。&lt;/p&gt;
 &lt;h3 id=&#34;数学推导&#34;&gt;数学推导
 &lt;/h3&gt;&lt;h4 id=&#34;拉格朗日乘子法-1&#34;&gt;拉格朗日乘子法
-&lt;/h4&gt;&lt;p&gt;此问题还是二次规划问题，与线性模型的推导方法相同。
-因为存在两个限制条件，因此引入两个拉格朗日乘子，\(a_i&gt;=0,u_i&gt;=0\),那么拉格朗日函数为&lt;br&gt;
-&lt;/p&gt;
-\[
+&lt;/h4&gt;\[
 \mathcal{L}(\mathbf{w}, b, \boldsymbol{\alpha}, \boldsymbol{\xi},u) = \frac{1}{2} \|\mathbf{w}\|^2 + C \sum_{i=1}^{m} \xi_i - \sum_{i=1}^{m} \alpha_i \left( y_i (\mathbf{w}^T \phi(x_i) + b) - 1 + \xi_i \right) - 
-\]&lt;p&gt;
-\(\sum_{i=1}^{n} \mu_i \xi_i\)&lt;br&gt;
-对 \(\mathbf{w}\) 求导并设置为零：
-&lt;/p&gt;
-\[
+\]\[
 \frac{\partial \mathcal{L}}{\partial \mathbf{w}} = \mathbf{w} - \sum_{i=1}^{m} \alpha_i y_i \phi(x_i) = 0
-\]&lt;p&gt;
-得到：
-&lt;/p&gt;
-\[
+\]\[
 \mathbf{w} = \sum_{i=1}^{m} \alpha_i y_i \phi(x_i)
-\]&lt;p&gt;
-对 \(b\) 求导并设置为零：
-&lt;/p&gt;
-\[
+\]\[
 \frac{\partial \mathcal{L}}{\partial b} = -\sum_{i=1}^{m} \alpha_i y_i = 0
-\]&lt;p&gt;
-对 \(\xi_i\) 求导并设置为零：
-&lt;/p&gt;
-\[
+\]\[
 \frac{\partial \mathcal{L}}{\partial \xi_i} = C - \alpha_i - \mu_i = 0
-\]&lt;p&gt;
-联立上述式子代回拉格朗日函数得到最终结果(推导过程跟线性基本一样)
-&lt;/p&gt;
-\[
+\]\[
 \mathcal{L}(\boldsymbol{\alpha}) = \sum_{i=1}^{m} \alpha_i - \frac{1}{2} \sum_{i=1}^{m} \sum_{j=1}^{m} \alpha_i \alpha_j y_i y_j \phi(\mathbf{x}_i)^T \phi(\mathbf{x}_j)
-\]&lt;p&gt;
-将核函数代入得到
-&lt;/p&gt;
-\[
+\]\[
 \mathcal{L}(\boldsymbol{\alpha}) = \sum_{i=1}^{m} \alpha_i - \frac{1}{2} \sum_{i=1}^{m} \sum_{j=1}^{m} \alpha_i \alpha_j y_i y_j k(x_i,x_j)
-\]&lt;p&gt;
-至此引出对偶问题
-最大化:
-&lt;/p&gt;
-\[
+\]\[
 \mathcal{L}(\boldsymbol{\alpha}) = \sum_{i=1}^{m} \alpha_i - \frac{1}{2} \sum_{i=1}^{m} \sum_{j=1}^{m} \alpha_i \alpha_j y_i y_j k(x_i,x_j)
 \]&lt;p&gt;
 限制条件:
@@ -1329,8 +1556,6 @@ SVM精妙之处将被引出：
 
 &lt;h3 id=&#34;examples&#34;&gt;Examples
 &lt;/h3&gt;&lt;p&gt;Inline math: $\varphi = \dfrac{1+\sqrt5}{2}= 1.6180339887…$&lt;/p&gt;
-&lt;p&gt;Block math:
-&lt;/p&gt;
 $$
  \varphi = 1+\frac{1} {1+\frac{1} {1+\frac{1} {1+\cdots} } } 
 $$</description>
