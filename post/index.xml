@@ -7,7 +7,110 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>Herb</copyright>
-        <lastBuildDate>Sat, 09 Nov 2024 14:00:53 +0800</lastBuildDate><atom:link href="https://zhangherbal.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Thu, 12 Dec 2024 23:40:39 +0800</lastBuildDate><atom:link href="https://zhangherbal.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>简易交通灯控制器设计</title>
+        <link>https://zhangherbal.github.io/p/%E7%AE%80%E6%98%93%E4%BA%A4%E9%80%9A%E7%81%AF%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AE%BE%E8%AE%A1/</link>
+        <pubDate>Thu, 12 Dec 2024 23:40:39 +0800</pubDate>
+        
+        <guid>https://zhangherbal.github.io/p/%E7%AE%80%E6%98%93%E4%BA%A4%E9%80%9A%E7%81%AF%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AE%BE%E8%AE%A1/</guid>
+        <description>&lt;h1 id=&#34;简易交通灯控制器设计&#34;&gt;简易交通灯控制器设计
+&lt;/h1&gt;&lt;h2 id=&#34;设计要求&#34;&gt;设计要求
+&lt;/h2&gt;&lt;p&gt;\(1、2\)为两条单行道路，\(SEN_1\)和\(SEN_2\)为道路\(1，2\)的传感器，当有车辆越过传感器时，相应产生逻辑\(1\)，否则为逻辑\(0\)，\(TL_1,TL_2\)为道路\(1，2\)方向的信号灯。
+\(R\):红灯,\(Y\)：黄灯,\(G\):绿灯。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://zhangherbal.github.io/p/%E7%AE%80%E6%98%93%E4%BA%A4%E9%80%9A%E7%81%AF%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AE%BE%E8%AE%A1/image.png&#34;
+	width=&#34;670&#34;
+	height=&#34;427&#34;
+	srcset=&#34;https://zhangherbal.github.io/p/%E7%AE%80%E6%98%93%E4%BA%A4%E9%80%9A%E7%81%AF%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AE%BE%E8%AE%A1/image_hu1214566492928204425.png 480w, https://zhangherbal.github.io/p/%E7%AE%80%E6%98%93%E4%BA%A4%E9%80%9A%E7%81%AF%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AE%BE%E8%AE%A1/image_hu16898707897372018335.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;交通灯控制器管理方案&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;156&#34;
+		data-flex-basis=&#34;376px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h2 id=&#34;功能描述&#34;&gt;功能描述
+&lt;/h2&gt;&lt;p&gt;利用初始化信号\(INIT\)将控制器置于初始状态\(S_0\)（允许\(1\)方向通行，禁止\(2\)方向通行），当处于\(S_0\)状态，道路\(1\)有车辆要求通过且道路\(2\)无车辆要求通过时，电路停在\(S_0\)状态，否则，根据另外\(3\)种不同情况分别转向\(S_1\)状态或\(S_2\)状态。\(S_3\)状态为切换通行道路的过渡状态，经过切换过渡后，在下一时时钟脉冲作用下进入\(S_4\)状态（允许道路\(2\)通行，禁止道路\(1\)方向通行）。当处于\(S_4\)状态，道路\(2\)有车辆要求通过且道路\(1\)无车辆要求通过时，电路停在\(S_4\)状态。否则，根据不同情况分别转向\(S_5\)或\(S_6\)。\(S_7\)状态为切换通行道路的过渡状态，凡遇到初始化\(INIT\)，电路都回到\(S_0\)状态。    &lt;br&gt;
+状态图如下:&lt;br&gt;
+&lt;img src=&#34;https://zhangherbal.github.io/p/%E7%AE%80%E6%98%93%E4%BA%A4%E9%80%9A%E7%81%AF%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AE%BE%E8%AE%A1/image-1.png&#34;
+	width=&#34;511&#34;
+	height=&#34;559&#34;
+	srcset=&#34;https://zhangherbal.github.io/p/%E7%AE%80%E6%98%93%E4%BA%A4%E9%80%9A%E7%81%AF%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AE%BE%E8%AE%A1/image-1_hu15522276151874750485.png 480w, https://zhangherbal.github.io/p/%E7%AE%80%E6%98%93%E4%BA%A4%E9%80%9A%E7%81%AF%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AE%BE%E8%AE%A1/image-1_hu3817412940856687835.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;状态图&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;91&#34;
+		data-flex-basis=&#34;219px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;h2 id=&#34;电路设计&#34;&gt;电路设计
+&lt;/h2&gt;&lt;p&gt;&lt;img src=&#34;https://zhangherbal.github.io/p/%E7%AE%80%E6%98%93%E4%BA%A4%E9%80%9A%E7%81%AF%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AE%BE%E8%AE%A1/image-2.png&#34;
+	width=&#34;713&#34;
+	height=&#34;192&#34;
+	srcset=&#34;https://zhangherbal.github.io/p/%E7%AE%80%E6%98%93%E4%BA%A4%E9%80%9A%E7%81%AF%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AE%BE%E8%AE%A1/image-2_hu17270026851214813233.png 480w, https://zhangherbal.github.io/p/%E7%AE%80%E6%98%93%E4%BA%A4%E9%80%9A%E7%81%AF%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AE%BE%E8%AE%A1/image-2_hu4172541492770167116.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;控制器状态表&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;371&#34;
+		data-flex-basis=&#34;891px&#34;
+	
+&gt;&lt;br&gt;
+电路共有八个状态，因此我们可以使用三个状态变量\(Q_2,Q_1,Q_0\)进行表示，将状态图转换为控制器二进制状态表&lt;br&gt;
+&lt;img src=&#34;https://zhangherbal.github.io/p/%E7%AE%80%E6%98%93%E4%BA%A4%E9%80%9A%E7%81%AF%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AE%BE%E8%AE%A1/image-3.png&#34;
+	width=&#34;713&#34;
+	height=&#34;209&#34;
+	srcset=&#34;https://zhangherbal.github.io/p/%E7%AE%80%E6%98%93%E4%BA%A4%E9%80%9A%E7%81%AF%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AE%BE%E8%AE%A1/image-3_hu2453025179176520990.png 480w, https://zhangherbal.github.io/p/%E7%AE%80%E6%98%93%E4%BA%A4%E9%80%9A%E7%81%AF%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AE%BE%E8%AE%A1/image-3_hu3008632528528376977.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;alt text&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;341&#34;
+		data-flex-basis=&#34;818px&#34;
+	
+&gt;&lt;br&gt;
+如果我们采用D触发器作为存储元件，根据二进制状态表可得到激励函数和输出函数的函数表达式。进而画出逻辑电路&lt;br&gt;
+&lt;img src=&#34;https://zhangherbal.github.io/p/%E7%AE%80%E6%98%93%E4%BA%A4%E9%80%9A%E7%81%AF%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AE%BE%E8%AE%A1/image-4.png&#34;
+	width=&#34;752&#34;
+	height=&#34;592&#34;
+	srcset=&#34;https://zhangherbal.github.io/p/%E7%AE%80%E6%98%93%E4%BA%A4%E9%80%9A%E7%81%AF%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AE%BE%E8%AE%A1/image-4_hu1801274321682464681.png 480w, https://zhangherbal.github.io/p/%E7%AE%80%E6%98%93%E4%BA%A4%E9%80%9A%E7%81%AF%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AE%BE%E8%AE%A1/image-4_hu8968888902433712702.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;alt text&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;127&#34;
+		data-flex-basis=&#34;304px&#34;
+	
+&gt;&lt;br&gt;
+逻辑电路如下：&lt;br&gt;
+&lt;img src=&#34;https://zhangherbal.github.io/p/%E7%AE%80%E6%98%93%E4%BA%A4%E9%80%9A%E7%81%AF%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AE%BE%E8%AE%A1/image-5.png&#34;
+	width=&#34;865&#34;
+	height=&#34;560&#34;
+	srcset=&#34;https://zhangherbal.github.io/p/%E7%AE%80%E6%98%93%E4%BA%A4%E9%80%9A%E7%81%AF%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AE%BE%E8%AE%A1/image-5_hu18159368493227838217.png 480w, https://zhangherbal.github.io/p/%E7%AE%80%E6%98%93%E4%BA%A4%E9%80%9A%E7%81%AF%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AE%BE%E8%AE%A1/image-5_hu446140535556583621.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;alt text&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;154&#34;
+		data-flex-basis=&#34;370px&#34;
+	
+&gt;&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>强化学习-多臂赌博机</title>
         <link>https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/</link>
         <pubDate>Sat, 09 Nov 2024 14:00:53 +0800</pubDate>
