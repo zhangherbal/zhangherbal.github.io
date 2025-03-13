@@ -7,7 +7,225 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>Herb</copyright>
-        <lastBuildDate>Thu, 12 Dec 2024 23:40:39 +0800</lastBuildDate><atom:link href="https://zhangherbal.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Wed, 12 Mar 2025 18:55:16 +0800</lastBuildDate><atom:link href="https://zhangherbal.github.io/post/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>强化学习-时序差分学习</title>
+        <link>https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E6%97%B6%E5%BA%8F%E5%B7%AE%E5%88%86%E5%AD%A6%E4%B9%A0/</link>
+        <pubDate>Wed, 12 Mar 2025 18:55:16 +0800</pubDate>
+        
+        <guid>https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E6%97%B6%E5%BA%8F%E5%B7%AE%E5%88%86%E5%AD%A6%E4%B9%A0/</guid>
+        <description>&lt;h1 id=&#34;时序差分学习&#34;&gt;时序差分学习
+&lt;/h1&gt;&lt;h2 id=&#34;基本概念及其背景&#34;&gt;基本概念及其背景
+&lt;/h2&gt;&lt;p&gt;​	时序差分算法\(（Temporal Difference, TD）\)是一种强化学习方法，结合了蒙特卡洛方法和动态规划的优点，用于估计状态值函数。时序差分方法也可以直接从环境互动的经验中学习策略，而不需要构建关于环境动态特性的模型。&lt;/p&gt;
+&lt;h3 id=&#34;自举思想&#34;&gt;自举思想
+&lt;/h3&gt;&lt;p&gt;​	自举意味着当前状态的价值估计依赖于未来状态的估计值，而不是直接依赖真实的最终回报。这种方式使得\(TD\)方法在不需要完整回报（如蒙特卡洛方法）的情况下，仍能进行学习和更新。&lt;/p&gt;
+&lt;h3 id=&#34;在线学习&#34;&gt;在线学习
+&lt;/h3&gt;&lt;p&gt;​	在线学习是指在强化学习中，智能体在与环境交互的过程中，实时更新自己的策略和价值函数。在这个过程中，智能体不需要等待所有数据收集完毕，而是通过每一步的反馈（奖励和状态转移），在学习过程中逐步改进其行为。也就是说模型在接收到数据后立即进行更新。&lt;/p&gt;
+&lt;h3 id=&#34;离线学习&#34;&gt;离线学习
+&lt;/h3&gt;&lt;p&gt;​	离线学习是指智能体在一个固定的数据集（通常是收集到的历史数据或模拟数据）上进行学习，而不依赖实时的环境交互过程。离线学习更适合大规模的训练。&lt;/p&gt;
+&lt;h3 id=&#34;同轨策略&#34;&gt;同轨策略
+&lt;/h3&gt;&lt;p&gt;​	在同轨策略的强化学习中，学习过程中使用的策略是与行为策略（即选择动作的策略）相同的。也就是说，智能体在环境中执行动作的策略和它用来学习的策略是一致的。&lt;/p&gt;
+&lt;h3 id=&#34;离轨策略&#34;&gt;离轨策略
+&lt;/h3&gt;&lt;p&gt;​	在离轨策略的强化学习中，学习策略和行为策略是不同的。智能体在执行动作时使用的策略（行为策略）与用于学习和更新价值函数的策略是分开的。&lt;/p&gt;
+&lt;h2 id=&#34;td&#34;&gt;TD
+&lt;/h2&gt;&lt;h2 id=&#34;td算法引出&#34;&gt;TD算法引出
+&lt;/h2&gt;&lt;h3 id=&#34;与蒙特卡洛的区别&#34;&gt;与蒙特卡洛的区别
+&lt;/h3&gt;&lt;p&gt;​	在谈到&lt;em&gt;TD&lt;/em&gt;算法时就不得忽视蒙特卡洛算法，毕竟&lt;em&gt;TD&lt;/em&gt;算法是结合了蒙特卡洛方法和动态规划方法的优点。&lt;/p&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;特性&lt;/th&gt;
+          &lt;th&gt;&lt;strong&gt;时序差分（TD）&lt;/strong&gt;&lt;/th&gt;
+          &lt;th&gt;&lt;strong&gt;蒙特卡洛（MC）&lt;/strong&gt;&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;更新方式&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;每个时间步都更新&lt;/td&gt;
+          &lt;td&gt;只有在回合结束后更新&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;是否使用自举（Bootstrapping）&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;是（依赖自身估计的值）&lt;/td&gt;
+          &lt;td&gt;否（依赖完整回报）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;收敛速度&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;更快&lt;/strong&gt;（每步更新）&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;更慢&lt;/strong&gt;（需要完整回合）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;数据需求&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;适用于持续任务&lt;/strong&gt;，不需要终止状态&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;必须等待回合终止&lt;/strong&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;偏差与方差&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;有偏估计（Bias）&lt;/strong&gt;，但方差较小&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;无偏估计（Unbiased）&lt;/strong&gt;，但方差较大&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;计算效率&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;高&lt;/strong&gt;（单步更新）&lt;/td&gt;
+          &lt;td&gt;&lt;strong&gt;较低&lt;/strong&gt;（需要回合结束）&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;&lt;strong&gt;适用场景&lt;/strong&gt;&lt;/td&gt;
+          &lt;td&gt;适用于长期任务、在线学习&lt;/td&gt;
+          &lt;td&gt;适用于回合制任务、离线学习&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+$$
+V(S_t) = V(S_t) + \alpha[G_t-V(S_t)] 
+$$$$
+G_t: 时刻t的真实回报 \\
+\alpha:常量步长参数 \\
+V():状态价值函数
+$$&lt;p&gt;
+蒙特卡洛方法必须等到一幕的末尾才能确定对\( V(S_t) \)的增量，因为这时\(G_t \) 才是已知的,而\(TD\)方法只需要等到下一个时刻就行。&lt;/p&gt;
+&lt;h3 id=&#34;td0算法&#34;&gt;TD(0)算法
+&lt;/h3&gt;&lt;p&gt;首先我们引出第一个概念\(TD\)误差：&lt;/p&gt;
+$$
+\delta_t = R_{t+1} + \gamma V(S_{t+1}) - V(S_t)
+$$&lt;p&gt;
+其中，\(R_{t+1}\) 是在时刻 \(t+1\) 获得的奖励，\(\gamma\) 是折扣因子，\(V(S_t)\) 和 \(V(S_{t+1})\) 分别是时刻 \(t\) 和 \(t+1\) 时状态 \(S_t\) 和 \(S_{t+1}\) 的价值估计。&lt;/p&gt;
+&lt;p&gt;接着我们给出更新规则：&lt;/p&gt;
+$$
+V(S_t) \leftarrow V(S_t) + \alpha \delta_t
+$$&lt;p&gt;
+其中，\(\alpha\) 是学习率，控制每次更新的步长。由此就得到了\(TD(0)\)的算法框架。&lt;/p&gt;
+&lt;h4 id=&#34;td0的最优性&#34;&gt;TD(0)的最优性
+&lt;/h4&gt;&lt;h3 id=&#34;-同轨策略下的时序差分控制&#34;&gt;\(Sarsa\) : 同轨策略下的时序差分控制
+&lt;/h3&gt;&lt;p&gt;是一种同轨策略\(（On-Policy）\)的强化学习算法。它通过实时与环境的交互，学习一个行为策略，并根据该策略更新Q值（状态-动作价值函数），从而使智能体在环境中获得最大回报。接下来我们将给出其工作原理：&lt;/p&gt;
+&lt;p&gt;首先我们要学习的是动作价值函数而不是状态价值函数，对于同轨策略方法，我们必须对所有状态\(S\)以及动作\(a\)，估计出在当前的行动策略下所有对应的\(q(s,a)\)&lt;/p&gt;
+&lt;p&gt;\(Sarsa\) 算法的核心思想是根据当前选择的动作和下一状态下选择的动作来更新\(Q\)值。它是一个在线学习算法，通过与环境的交互来不断更新状态-动作价值函数。在\(TD(0)\)算法中我们学习了状态之间的转移以及状态的价值。在\(Sarsa\)中我们讨论的是状态-动作二元组之间的转移，在数学形式上这两者是相同的，他们都是带有收益的马尔科夫链，因此\(TD（0）\)的收敛定理也适用于\(Sarsa\)，因此我们可以引出更新公式。&lt;/p&gt;
+&lt;h4 id=&#34;更新公式&#34;&gt;更新公式
+&lt;/h4&gt;&lt;p&gt;首先定义一个五元组\((S_t,A_t，S_{t+1},A_{t+1}，R_{t+1})\)&lt;/p&gt;
+$$
+Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha \left[ R_{t+1} + \gamma Q(S_{t+1}, A_{t+1}) - Q(S_t, A_t) \right]
+$$&lt;p&gt;
+其中：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;\(S_t\) 是当前状态。&lt;/li&gt;
+&lt;li&gt;\(A_t\) 是在状态\(S_t\)下选择的动作。&lt;/li&gt;
+&lt;li&gt;\(R_{t+1}\) 是执行动作\(A_t\)后得到的奖励。&lt;/li&gt;
+&lt;li&gt;\(S_{t+1}\) 是执行动作\(A_t\)后的下一个状态。&lt;/li&gt;
+&lt;li&gt;\(A_{t+1}\) 是在状态\(S_{t+1}\)下选择的下一个动作。&lt;/li&gt;
+&lt;li&gt;\(\gamma\) 是折扣因子，表示未来奖励的权重。&lt;/li&gt;
+&lt;li&gt;\(\alpha\) 是学习率，表示每次更新的步长。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;\(Sarsa\)的算法流程如下：
+&lt;img src=&#34;https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E6%97%B6%E5%BA%8F%E5%B7%AE%E5%88%86%E5%AD%A6%E4%B9%A0/image1.jpg&#34;
+	width=&#34;1110&#34;
+	height=&#34;541&#34;
+	srcset=&#34;https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E6%97%B6%E5%BA%8F%E5%B7%AE%E5%88%86%E5%AD%A6%E4%B9%A0/image1_hu_fa0e10d41b9d5763.jpg 480w, https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E6%97%B6%E5%BA%8F%E5%B7%AE%E5%88%86%E5%AD%A6%E4%B9%A0/image1_hu_a46bfaf5a7bf456d.jpg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Sarsa&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;205&#34;
+		data-flex-basis=&#34;492px&#34;
+	
+&gt;&lt;br&gt;&lt;/p&gt;
+&lt;h3 id=&#34;q学习离轨策略下的时序差分控制&#34;&gt;Q学习：离轨策略下的时序差分控制
+&lt;/h3&gt;&lt;p&gt;\(Q\)学习\(（Q-learning）\)是一种基于 离轨策略\(（Off-Policy）\) 的强化学习算法，旨在学习一个最优策略，通过不断与环境交互，估计每个状态-动作对的价值（Q值）。&lt;/p&gt;
+&lt;h4 id=&#34;q学习的更新公式&#34;&gt;Q学习的更新公式
+&lt;/h4&gt;$$
+Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha \left[ R_{t+1} + \gamma \max_a Q(S_{t+1}, a) - Q(S_t, A_t) \right]
+$$&lt;p&gt;
+其中：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;\(S_t\)：当前状态。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;\(A_t\)：在状态 $S_t$ 下选择的动作。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;\(R_{t+1}\)：执行动作 $A_t$ 后获得的即时奖励。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;\(S_{t+1}\)：执行动作后到达的下一个状态。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;\(\max_a Q(S_{t+1}, a)\)：状态\(S_{t+1}\) 下所有可能动作的最大Q值，代表目标策略（即最优策略）。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;\(\gamma\)：折扣因子，用于权衡当前奖励和未来奖励的影响。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;\(\alpha\)：学习率，表示每次更新的步长。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;q学习的算法流程&#34;&gt;Q学习的算法流程
+&lt;/h4&gt;&lt;p&gt;&lt;img src=&#34;https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E6%97%B6%E5%BA%8F%E5%B7%AE%E5%88%86%E5%AD%A6%E4%B9%A0/image2.png&#34;
+	width=&#34;1111&#34;
+	height=&#34;501&#34;
+	srcset=&#34;https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E6%97%B6%E5%BA%8F%E5%B7%AE%E5%88%86%E5%AD%A6%E4%B9%A0/image2_hu_c23992104efe4a59.png 480w, https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E6%97%B6%E5%BA%8F%E5%B7%AE%E5%88%86%E5%AD%A6%E4%B9%A0/image2_hu_f50507a9d7833156.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;Q学习&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;221&#34;
+		data-flex-basis=&#34;532px&#34;
+	
+&gt;&lt;br&gt;&lt;/p&gt;
+&lt;h3 id=&#34;期望sarsa&#34;&gt;期望Sarsa
+&lt;/h3&gt;&lt;p&gt;期望\(Sarsa\)是对\(Sarsa\)算法的扩展，它与\(Q\)学习十分类似，但把对于下一个“状态-动作”二元组取最大值这一步换成取期望，使得更新不依赖于实际采取的动作，而是基于在给定状态下所有可能动作的期望\(Q\)值。具体来说，期望\(Sarsa\)考虑了在下一个状态中所有可能动作的加权平均值，权重由行为策略给出。&lt;/p&gt;
+&lt;h4 id=&#34;期望sarsa的更新公式&#34;&gt;期望Sarsa的更新公式
+&lt;/h4&gt;$$
+Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha \left[ R_{t+1} + \gamma \sum_{a&#39;} \pi(a&#39;|S_{t+1}) Q(S_{t+1}, a&#39;) - Q(S_t, A_t) \right]
+$$&lt;p&gt;
+其中：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;\(\pi(a&#39;|S_{t+1})\) 是行为策略下在状态 \(S_{t+1}\)下选择动作\(a&#39;\)的概率。&lt;/li&gt;
+&lt;li&gt;\(\sum_{a&#39;} \pi(a&#39;|S_{t+1}) Q(S_{t+1}, a&#39;)\) 表示在状态\(S_{t+1}\)下，所有可能动作的Q值的期望值（加权平均）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;​	与\(Sarsa\)不同的是，在期望\(Sarsa\)中，更新不仅仅依赖于下一个状态的实际选择的动作，而是依赖于所有可能的动作的期望\(Q\)值，这使得期望\(Sarsa\)在一定程度上更加稳定。&lt;/p&gt;
+&lt;h3 id=&#34;双q学习&#34;&gt;双Q学习
+&lt;/h3&gt;&lt;p&gt;双\(Q\)学习\(（Double Q-learning)\)是强化学习中的一种方法，旨在克服传统\(Q\)学习\(（Q-learning）\)中常见的过估计问题。传统Q学习算法在更新\(Q\)值时，通常会遇到过估计的问题，即在更新\(Q\)值时，算法会倾向于高估最优动作的价值，尤其是在动作值较为接近的情况下。这个问题会导致学习过程中策略不稳定，收敛速度变慢。&lt;/p&gt;
+&lt;p&gt;双\(Q\)学习通过引入两个独立的Q值函数来缓解这一问题，从而提高\(Q\)学习算法的性能。&lt;/p&gt;
+&lt;h4 id=&#34;传统q学习的过估计问题&#34;&gt;传统Q学习的过估计问题
+&lt;/h4&gt;$$
+Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha \left[ R_{t+1} + \gamma \max_{a&#39;} Q(S_{t+1}, a&#39;) - Q(S_t, A_t) \right]
+$$&lt;p&gt;
+传统\(Q\)学习存在过估计问题，也叫最大化偏差问题，&lt;/p&gt;
+&lt;h4 id=&#34;双q学习的核心思想&#34;&gt;双Q学习的核心思想
+&lt;/h4&gt;&lt;p&gt;双\(Q\)学习通过两个\(Q\)值函数来减轻过估计问题。在双\(Q\)学习中，算法维护两个\(Q\)值函数\(Q_1\)和\(Q_2\)，并通过交替更新这两个\(Q\)值函数来避免过度依赖单一的\(Q\)值估计。具体来说，更新过程中，不再直接使用一个\(Q\)值函数来选择和评估最优动作，而是使用两个独立的\(Q\)值函数交替进行。&lt;/p&gt;
+&lt;h5 id=&#34;双q学习的更新公式&#34;&gt;双Q学习的更新公式
+&lt;/h5&gt;$$
+Q_1(S_t, A_t) \leftarrow Q_1(S_t, A_t) + \alpha \left[ R_{t+1} + \gamma Q_2(S_{t+1}, \arg\max_{a&#39;} Q_1(S_{t+1}, a&#39;)) - Q_1(S_t, A_t) \right]
+$$&lt;p&gt;
+在这个更新公式中：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;\(Q_1(S_t, A_t)\) 和 \(Q_2(S_t, A_t)\) 是两个独立的Q值函数。&lt;/li&gt;
+&lt;li&gt;\(\arg\max_{a&#39;} Q_1(S_{t+1}, a&#39;)\) 是根据\(Q_1\)选择的最优动作。&lt;/li&gt;
+&lt;li&gt;然后，使用\(Q_2\)来评估该动作的价值。&lt;/li&gt;
+&lt;li&gt;通过这种方式，双\(Q\)学习避免了传统\(Q\)学习中的过估计问题，因为每次更新时，评估最优动作价值的\(Q\)值函数与选择最优动作的\(Q\)值函数是不同的。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;算法流程&#34;&gt;算法流程
+&lt;/h4&gt;&lt;p&gt;&lt;img src=&#34;https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E6%97%B6%E5%BA%8F%E5%B7%AE%E5%88%86%E5%AD%A6%E4%B9%A0/image3.png&#34;
+	width=&#34;1118&#34;
+	height=&#34;683&#34;
+	srcset=&#34;https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E6%97%B6%E5%BA%8F%E5%B7%AE%E5%88%86%E5%AD%A6%E4%B9%A0/image3_hu_d2c519493e1a26f0.png 480w, https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E6%97%B6%E5%BA%8F%E5%B7%AE%E5%88%86%E5%AD%A6%E4%B9%A0/image3_hu_ebdc5c7cb6f880ea.png 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+		alt=&#34;双Q学习&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;163&#34;
+		data-flex-basis=&#34;392px&#34;
+	
+&gt;&lt;br&gt;&lt;/p&gt;
+</description>
+        </item>
+        <item>
         <title>简易交通灯控制器设计</title>
         <link>https://zhangherbal.github.io/p/%E7%AE%80%E6%98%93%E4%BA%A4%E9%80%9A%E7%81%AF%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AE%BE%E8%AE%A1/</link>
         <pubDate>Thu, 12 Dec 2024 23:40:39 +0800</pubDate>
@@ -20,7 +238,7 @@
 &lt;p&gt;&lt;img src=&#34;https://zhangherbal.github.io/p/%E7%AE%80%E6%98%93%E4%BA%A4%E9%80%9A%E7%81%AF%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AE%BE%E8%AE%A1/image.png&#34;
 	width=&#34;670&#34;
 	height=&#34;427&#34;
-	srcset=&#34;https://zhangherbal.github.io/p/%E7%AE%80%E6%98%93%E4%BA%A4%E9%80%9A%E7%81%AF%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AE%BE%E8%AE%A1/image_hu1214566492928204425.png 480w, https://zhangherbal.github.io/p/%E7%AE%80%E6%98%93%E4%BA%A4%E9%80%9A%E7%81%AF%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AE%BE%E8%AE%A1/image_hu16898707897372018335.png 1024w&#34;
+	srcset=&#34;https://zhangherbal.github.io/p/%E7%AE%80%E6%98%93%E4%BA%A4%E9%80%9A%E7%81%AF%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AE%BE%E8%AE%A1/image_hu_92b4943f77855014.png 480w, https://zhangherbal.github.io/p/%E7%AE%80%E6%98%93%E4%BA%A4%E9%80%9A%E7%81%AF%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AE%BE%E8%AE%A1/image_hu_f254cb6d3351b8f0.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;交通灯控制器管理方案&#34;
@@ -37,7 +255,7 @@
 &lt;img src=&#34;https://zhangherbal.github.io/p/%E7%AE%80%E6%98%93%E4%BA%A4%E9%80%9A%E7%81%AF%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AE%BE%E8%AE%A1/image-1.png&#34;
 	width=&#34;511&#34;
 	height=&#34;559&#34;
-	srcset=&#34;https://zhangherbal.github.io/p/%E7%AE%80%E6%98%93%E4%BA%A4%E9%80%9A%E7%81%AF%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AE%BE%E8%AE%A1/image-1_hu15522276151874750485.png 480w, https://zhangherbal.github.io/p/%E7%AE%80%E6%98%93%E4%BA%A4%E9%80%9A%E7%81%AF%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AE%BE%E8%AE%A1/image-1_hu3817412940856687835.png 1024w&#34;
+	srcset=&#34;https://zhangherbal.github.io/p/%E7%AE%80%E6%98%93%E4%BA%A4%E9%80%9A%E7%81%AF%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AE%BE%E8%AE%A1/image-1_hu_76853f691346408a.png 480w, https://zhangherbal.github.io/p/%E7%AE%80%E6%98%93%E4%BA%A4%E9%80%9A%E7%81%AF%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AE%BE%E8%AE%A1/image-1_hu_b912d7ca2f617397.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;状态图&#34;
@@ -52,7 +270,7 @@
 &lt;/h2&gt;&lt;p&gt;&lt;img src=&#34;https://zhangherbal.github.io/p/%E7%AE%80%E6%98%93%E4%BA%A4%E9%80%9A%E7%81%AF%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AE%BE%E8%AE%A1/image-2.png&#34;
 	width=&#34;713&#34;
 	height=&#34;192&#34;
-	srcset=&#34;https://zhangherbal.github.io/p/%E7%AE%80%E6%98%93%E4%BA%A4%E9%80%9A%E7%81%AF%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AE%BE%E8%AE%A1/image-2_hu17270026851214813233.png 480w, https://zhangherbal.github.io/p/%E7%AE%80%E6%98%93%E4%BA%A4%E9%80%9A%E7%81%AF%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AE%BE%E8%AE%A1/image-2_hu4172541492770167116.png 1024w&#34;
+	srcset=&#34;https://zhangherbal.github.io/p/%E7%AE%80%E6%98%93%E4%BA%A4%E9%80%9A%E7%81%AF%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AE%BE%E8%AE%A1/image-2_hu_c263dbaac08a7d53.png 480w, https://zhangherbal.github.io/p/%E7%AE%80%E6%98%93%E4%BA%A4%E9%80%9A%E7%81%AF%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AE%BE%E8%AE%A1/image-2_hu_750118040c462774.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;控制器状态表&#34;
@@ -67,7 +285,7 @@
 &lt;img src=&#34;https://zhangherbal.github.io/p/%E7%AE%80%E6%98%93%E4%BA%A4%E9%80%9A%E7%81%AF%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AE%BE%E8%AE%A1/image-3.png&#34;
 	width=&#34;713&#34;
 	height=&#34;209&#34;
-	srcset=&#34;https://zhangherbal.github.io/p/%E7%AE%80%E6%98%93%E4%BA%A4%E9%80%9A%E7%81%AF%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AE%BE%E8%AE%A1/image-3_hu2453025179176520990.png 480w, https://zhangherbal.github.io/p/%E7%AE%80%E6%98%93%E4%BA%A4%E9%80%9A%E7%81%AF%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AE%BE%E8%AE%A1/image-3_hu3008632528528376977.png 1024w&#34;
+	srcset=&#34;https://zhangherbal.github.io/p/%E7%AE%80%E6%98%93%E4%BA%A4%E9%80%9A%E7%81%AF%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AE%BE%E8%AE%A1/image-3_hu_d02c13f55eefe9d6.png 480w, https://zhangherbal.github.io/p/%E7%AE%80%E6%98%93%E4%BA%A4%E9%80%9A%E7%81%AF%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AE%BE%E8%AE%A1/image-3_hu_743b13b6d8493063.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;alt text&#34;
@@ -82,7 +300,7 @@
 &lt;img src=&#34;https://zhangherbal.github.io/p/%E7%AE%80%E6%98%93%E4%BA%A4%E9%80%9A%E7%81%AF%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AE%BE%E8%AE%A1/image-4.png&#34;
 	width=&#34;752&#34;
 	height=&#34;592&#34;
-	srcset=&#34;https://zhangherbal.github.io/p/%E7%AE%80%E6%98%93%E4%BA%A4%E9%80%9A%E7%81%AF%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AE%BE%E8%AE%A1/image-4_hu1801274321682464681.png 480w, https://zhangherbal.github.io/p/%E7%AE%80%E6%98%93%E4%BA%A4%E9%80%9A%E7%81%AF%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AE%BE%E8%AE%A1/image-4_hu8968888902433712702.png 1024w&#34;
+	srcset=&#34;https://zhangherbal.github.io/p/%E7%AE%80%E6%98%93%E4%BA%A4%E9%80%9A%E7%81%AF%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AE%BE%E8%AE%A1/image-4_hu_db087eddbc122a7e.png 480w, https://zhangherbal.github.io/p/%E7%AE%80%E6%98%93%E4%BA%A4%E9%80%9A%E7%81%AF%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AE%BE%E8%AE%A1/image-4_hu_c8d21bf90fc1ad19.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;alt text&#34;
@@ -97,7 +315,7 @@
 &lt;img src=&#34;https://zhangherbal.github.io/p/%E7%AE%80%E6%98%93%E4%BA%A4%E9%80%9A%E7%81%AF%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AE%BE%E8%AE%A1/image-5.png&#34;
 	width=&#34;865&#34;
 	height=&#34;560&#34;
-	srcset=&#34;https://zhangherbal.github.io/p/%E7%AE%80%E6%98%93%E4%BA%A4%E9%80%9A%E7%81%AF%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AE%BE%E8%AE%A1/image-5_hu18159368493227838217.png 480w, https://zhangherbal.github.io/p/%E7%AE%80%E6%98%93%E4%BA%A4%E9%80%9A%E7%81%AF%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AE%BE%E8%AE%A1/image-5_hu446140535556583621.png 1024w&#34;
+	srcset=&#34;https://zhangherbal.github.io/p/%E7%AE%80%E6%98%93%E4%BA%A4%E9%80%9A%E7%81%AF%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AE%BE%E8%AE%A1/image-5_hu_acb58029a911a984.png 480w, https://zhangherbal.github.io/p/%E7%AE%80%E6%98%93%E4%BA%A4%E9%80%9A%E7%81%AF%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AE%BE%E8%AE%A1/image-5_hu_e7b7dbf3e3469669.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;alt text&#34;
@@ -123,7 +341,7 @@
 &lt;img src=&#34;https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-5.png&#34;
 	width=&#34;544&#34;
 	height=&#34;349&#34;
-	srcset=&#34;https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-5_hu9486346748799315069.png 480w, https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-5_hu7449452040634016328.png 1024w&#34;
+	srcset=&#34;https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-5_hu_ff475bc76599b859.png 480w, https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-5_hu_81dd97069d36ca24.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;alt text&#34;
@@ -169,14 +387,14 @@
 &lt;h2 id=&#34;开发-试探平衡&#34;&gt;开发-试探平衡
 &lt;/h2&gt;&lt;p&gt;至此，我们已经解决了估计动作价值的问题，那么在估计完成后，我们要思考，怎么进行选择呢。最简单是我们每一轮都选最大的，但是每一轮都选最大的不一定是最优的。也有可能我们去试探，能试探出更优的行为，因此我们要平衡和开发和试探。
 我们将引出一些方法。&lt;/p&gt;
-&lt;h3 id=&#34;epsilon贪心方法&#34;&gt;\(\epsilon\)贪心方法
+&lt;h3 id=&#34;贪心方法&#34;&gt;\(\epsilon\)贪心方法
 &lt;/h3&gt;&lt;p&gt;以一个很小的概率\(\epsilon\)去做试探，那么次数无限多的情况下，每个动作都会被采样无限次，那么估计值将遵循大数定律逼近均值\(q_{*}(a)\)&lt;/p&gt;
 &lt;h4 id=&#34;举例&#34;&gt;举例
 &lt;/h4&gt;&lt;p&gt;假设有\(10\)个臂，每个臂的期望奖励从一个均值为\(0\)，方差为\(1\)的正态分布中得到。在第\(t\)轮中选择行为\(A_t\)获得奖励服从均值为\(q_{*}(A_t)\),方差为\(1\)的正态分布。
 &lt;img src=&#34;https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-2.png&#34;
 	width=&#34;669&#34;
 	height=&#34;399&#34;
-	srcset=&#34;https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-2_hu8922681758800833809.png 480w, https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-2_hu18335926872897226828.png 1024w&#34;
+	srcset=&#34;https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-2_hu_11ff5f08b0732962.png 480w, https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-2_hu_2d7c0c0d57721108.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;alt text&#34;
@@ -192,7 +410,7 @@
 &lt;img src=&#34;https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-3.png&#34;
 	width=&#34;634&#34;
 	height=&#34;523&#34;
-	srcset=&#34;https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-3_hu16009700299957611757.png 480w, https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-3_hu17098290657405704171.png 1024w&#34;
+	srcset=&#34;https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-3_hu_be18567b7f45423e.png 480w, https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-3_hu_2c28228fe72608fd.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;alt text&#34;
@@ -221,7 +439,7 @@
 &lt;img src=&#34;https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-1.png&#34;
 	width=&#34;662&#34;
 	height=&#34;301&#34;
-	srcset=&#34;https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-1_hu370281415510223488.png 480w, https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-1_hu10231790194951019399.png 1024w&#34;
+	srcset=&#34;https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-1_hu_322b376071eeb90f.png 480w, https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-1_hu_51fd3d1d6d7c4262.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;alt text&#34;
@@ -240,7 +458,7 @@
 每个动作的奖励分布随着时间变化，例如某个臂某段时间内表现好，某段时间表现差，因此机制复杂。也就是说\(q_{*}(a)\)是关于时间的函数，我们更关注最近的样本。&lt;br&gt;&lt;/p&gt;
 &lt;h2 id=&#34;多臂赌博机-非平稳问题&#34;&gt;多臂赌博机-非平稳问题
 &lt;/h2&gt;&lt;p&gt;从平稳问题的视角来看，某个臂的期望奖励是固定的，而从非平稳问题的视角来看，赌博机的收益概率随时间变化，取平均方法不可用，那我们是如何改进的呢？&lt;/p&gt;
-&lt;h3 id=&#34;基础-非平稳下的行为估值br&#34;&gt;基础-非平稳下的行为估值&lt;br&gt;
+&lt;h3 id=&#34;基础-非平稳下的行为估值&#34;&gt;基础-非平稳下的行为估值&lt;br&gt;
 &lt;/h3&gt;&lt;p&gt;我们可以引入\(α\)，使每个行为的权值都不再相等。&lt;br&gt;
 \(Q_{n+1}=Q_n+α[R_n-Q_n]\) \(α &amp;in; [0,1]\)&lt;br&gt;
 \(Q_{n+1}\)成为对过去的收益和初始的估计\(Q_1\)的加权平均&lt;br&gt;
@@ -268,7 +486,7 @@
 &lt;img src=&#34;https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image.png&#34;
 	width=&#34;625&#34;
 	height=&#34;276&#34;
-	srcset=&#34;https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image_hu11324991071178999865.png 480w, https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image_hu5517646830536578878.png 1024w&#34;
+	srcset=&#34;https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image_hu_6178f4745379d86.png 480w, https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image_hu_9561f9a6b76e58f8.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;alt text&#34;
@@ -279,7 +497,7 @@
 		data-flex-basis=&#34;543px&#34;
 	
 &gt;&lt;/p&gt;
-&lt;h2 id=&#34;ucb行为选择策略&#34;&gt;\(UCB\)行为选择策略
+&lt;h2 id=&#34;行为选择策略&#34;&gt;\(UCB\)行为选择策略
 &lt;/h2&gt;\[
 a_t = \arg\max_{i \in \{1, 2, \dots, K\}} \left( Q_t(a) + c \sqrt{\frac{\ln t}{N_t(a)}} \right)
 \]&lt;p&gt;
@@ -289,7 +507,7 @@ a_t = \arg\max_{i \in \{1, 2, \dots, K\}} \left( Q_t(a) + c \sqrt{\frac{\ln t}{N
 &lt;img src=&#34;https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-4.png&#34;
 	width=&#34;609&#34;
 	height=&#34;233&#34;
-	srcset=&#34;https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-4_hu2311328956770086695.png 480w, https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-4_hu3637641226048031829.png 1024w&#34;
+	srcset=&#34;https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-4_hu_b7c013c7d02d9ff9.png 480w, https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-4_hu_9f535590ea0571d4.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;alt text&#34;
@@ -404,7 +622,7 @@ OCR文件夹的结构如下&lt;br&gt;
 &lt;img src=&#34;https://zhangherbal.github.io/p/xcpc%E7%AE%97%E6%B3%95%E7%AB%9E%E8%B5%9B-%E6%90%9C%E7%B4%A2%E7%AF%87/image1.jpg&#34;
 	width=&#34;1116&#34;
 	height=&#34;623&#34;
-	srcset=&#34;https://zhangherbal.github.io/p/xcpc%E7%AE%97%E6%B3%95%E7%AB%9E%E8%B5%9B-%E6%90%9C%E7%B4%A2%E7%AF%87/image1_hu8958161067793499222.jpg 480w, https://zhangherbal.github.io/p/xcpc%E7%AE%97%E6%B3%95%E7%AB%9E%E8%B5%9B-%E6%90%9C%E7%B4%A2%E7%AF%87/image1_hu12516348181635164926.jpg 1024w&#34;
+	srcset=&#34;https://zhangherbal.github.io/p/xcpc%E7%AE%97%E6%B3%95%E7%AB%9E%E8%B5%9B-%E6%90%9C%E7%B4%A2%E7%AF%87/image1_hu_2d5e81cfdc7ab2af.jpg 480w, https://zhangherbal.github.io/p/xcpc%E7%AE%97%E6%B3%95%E7%AB%9E%E8%B5%9B-%E6%90%9C%E7%B4%A2%E7%AF%87/image1_hu_dbdc25f6459ec2bf.jpg 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;alt text&#34;
@@ -494,7 +712,7 @@ BFS搜索顺序{{E,B,G,A,D,F,I,C,H}}&lt;/p&gt;
 &lt;img src=&#34;https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image1.png&#34;
 	width=&#34;620&#34;
 	height=&#34;200&#34;
-	srcset=&#34;https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image1_hu1351982106612280065.png 480w, https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image1_hu4371385821505748623.png 1024w&#34;
+	srcset=&#34;https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image1_hu_77282708cb4e1566.png 480w, https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image1_hu_1e1abf8abc2c2c24.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;alt text&#34;
@@ -537,7 +755,7 @@ BFS搜索顺序{{E,B,G,A,D,F,I,C,H}}&lt;/p&gt;
 &lt;img src=&#34;https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image2.png&#34;
 	width=&#34;1412&#34;
 	height=&#34;662&#34;
-	srcset=&#34;https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image2_hu4778031569442016601.png 480w, https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image2_hu12172636537052933245.png 1024w&#34;
+	srcset=&#34;https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image2_hu_10d1e2d252bb9c6d.png 480w, https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image2_hu_24bc17d048261e12.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;alt text&#34;
@@ -564,7 +782,7 @@ BFS搜索顺序{{E,B,G,A,D,F,I,C,H}}&lt;/p&gt;
 &lt;/h4&gt;&lt;p&gt;&lt;img src=&#34;https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image5.png&#34;
 	width=&#34;570&#34;
 	height=&#34;411&#34;
-	srcset=&#34;https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image5_hu9209690453702848560.png 480w, https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image5_hu15183132805961146882.png 1024w&#34;
+	srcset=&#34;https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image5_hu_cb5f267de7c7e304.png 480w, https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image5_hu_25585d3f7b184158.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -695,7 +913,7 @@ $$&lt;p&gt;
 &lt;img src=&#34;https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image3.png&#34;
 	width=&#34;1388&#34;
 	height=&#34;678&#34;
-	srcset=&#34;https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image3_hu11103290048620439160.png 480w, https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image3_hu9029925249424189085.png 1024w&#34;
+	srcset=&#34;https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image3_hu_1b30dfcc99b705d.png 480w, https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image3_hu_4b7236580c758be0.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;alt text&#34;
@@ -711,7 +929,7 @@ $$&lt;p&gt;
 &lt;/h4&gt;&lt;p&gt;&lt;img src=&#34;https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image4.png&#34;
 	width=&#34;571&#34;
 	height=&#34;239&#34;
-	srcset=&#34;https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image4_hu278838057141749296.png 480w, https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image4_hu10015664186025117585.png 1024w&#34;
+	srcset=&#34;https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image4_hu_94d19a2e00f876f0.png 480w, https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/image4_hu_662c0c00f8e2bf9c.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 	
@@ -1044,7 +1262,7 @@ g(x) \leq 0, \quad a \geq 0, \quad a \cdot g(x) = 0
 &lt;img src=&#34;https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/image.png&#34;
 	width=&#34;348&#34;
 	height=&#34;249&#34;
-	srcset=&#34;https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/image_hu9006986759882617678.png 480w, https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/image_hu17398794476000836033.png 1024w&#34;
+	srcset=&#34;https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/image_hu_4a371906e500e8d8.png 480w, https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/image_hu_8ed6188286548f52.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;alt text&#34;
@@ -1060,7 +1278,7 @@ g(x) \leq 0, \quad a \geq 0, \quad a \cdot g(x) = 0
 &lt;img src=&#34;https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/image2.jpg&#34;
 	width=&#34;500&#34;
 	height=&#34;395&#34;
-	srcset=&#34;https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/image2_hu3035024813569727855.jpg 480w, https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/image2_hu14719782905743434002.jpg 1024w&#34;
+	srcset=&#34;https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/image2_hu_291bd2cd114fb2a4.jpg 480w, https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/image2_hu_be5635310270105e.jpg 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;alt text&#34;
@@ -1101,7 +1319,7 @@ d= \frac{|w_1 x_0 + w_2 y_0 + b|}{\sqrt{w_1^2 + w_2^2}}\)&lt;br&gt;
 &lt;img src=&#34;https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/image4.png&#34;
 	width=&#34;381&#34;
 	height=&#34;272&#34;
-	srcset=&#34;https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/image4_hu1385936760502371435.png 480w, https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/image4_hu3123343270305811976.png 1024w&#34;
+	srcset=&#34;https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/image4_hu_3df6a67c599973e.png 480w, https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/image4_hu_a8f6dec2a45c557d.png 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;alt text&#34;
@@ -1150,7 +1368,7 @@ $$&lt;p&gt;
 &lt;img src=&#34;https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/image5.jpg&#34;
 	width=&#34;779&#34;
 	height=&#34;676&#34;
-	srcset=&#34;https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/image5_hu16261833024279252221.jpg 480w, https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/image5_hu1360069595390600958.jpg 1024w&#34;
+	srcset=&#34;https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/image5_hu_4c9929d9c890e3c4.jpg 480w, https://zhangherbal.github.io/p/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/image5_hu_5c6de903edf10ca1.jpg 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;alt text&#34;
@@ -1265,13 +1483,12 @@ SVM精妙之处将被引出：
 不告而别的你 就算为了我着想&lt;br&gt;
 这么沉痛的呵护 我怎么能翱翔&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.youtube.com/watch?v=3aypp_YlBzI&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
-    &gt;最暖的憂傷 - 田馥甄&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
+    &gt;最暖的憂傷 - 田馥甄&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;h2 id=&#34;图片&#34;&gt;图片
 &lt;/h2&gt;&lt;p&gt;&lt;img src=&#34;https://zhangherbal.github.io/p/test-chinese/florian-klauer-nptLmg6jqDo-unsplash.jpg&#34;
 	width=&#34;667&#34;
 	height=&#34;1000&#34;
-	srcset=&#34;https://zhangherbal.github.io/p/test-chinese/florian-klauer-nptLmg6jqDo-unsplash_hu13768363498926278726.jpg 480w, https://zhangherbal.github.io/p/test-chinese/florian-klauer-nptLmg6jqDo-unsplash_hu13380208884366868750.jpg 1024w&#34;
+	srcset=&#34;https://zhangherbal.github.io/p/test-chinese/florian-klauer-nptLmg6jqDo-unsplash_hu_e98fca2b4272416e.jpg 480w, https://zhangherbal.github.io/p/test-chinese/florian-klauer-nptLmg6jqDo-unsplash_hu_e3d37c9ded115b12.jpg 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Photo by Florian Klauer on Unsplash&#34;
@@ -1284,7 +1501,7 @@ SVM精妙之处将被引出：
 &gt;  &lt;img src=&#34;https://zhangherbal.github.io/p/test-chinese/luca-bravo-alS7ewQ41M8-unsplash.jpg&#34;
 	width=&#34;1000&#34;
 	height=&#34;667&#34;
-	srcset=&#34;https://zhangherbal.github.io/p/test-chinese/luca-bravo-alS7ewQ41M8-unsplash_hu1712544344331247820.jpg 480w, https://zhangherbal.github.io/p/test-chinese/luca-bravo-alS7ewQ41M8-unsplash_hu12475395149584884402.jpg 1024w&#34;
+	srcset=&#34;https://zhangherbal.github.io/p/test-chinese/luca-bravo-alS7ewQ41M8-unsplash_hu_e13c58d5189f892c.jpg 480w, https://zhangherbal.github.io/p/test-chinese/luca-bravo-alS7ewQ41M8-unsplash_hu_8fc948b7ee525251.jpg 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Photo by Luca Bravo on Unsplash&#34;
@@ -1298,7 +1515,7 @@ SVM精妙之处将被引出：
 &lt;p&gt;&lt;img src=&#34;https://zhangherbal.github.io/p/test-chinese/helena-hertz-wWZzXlDpMog-unsplash.jpg&#34;
 	width=&#34;1000&#34;
 	height=&#34;750&#34;
-	srcset=&#34;https://zhangherbal.github.io/p/test-chinese/helena-hertz-wWZzXlDpMog-unsplash_hu8363585391189779282.jpg 480w, https://zhangherbal.github.io/p/test-chinese/helena-hertz-wWZzXlDpMog-unsplash_hu15102473124145023839.jpg 1024w&#34;
+	srcset=&#34;https://zhangherbal.github.io/p/test-chinese/helena-hertz-wWZzXlDpMog-unsplash_hu_503c0ebcc5245e10.jpg 480w, https://zhangherbal.github.io/p/test-chinese/helena-hertz-wWZzXlDpMog-unsplash_hu_48c98de55fb3c999.jpg 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Photo by Helena Hertz on Unsplash&#34;
@@ -1311,7 +1528,7 @@ SVM精妙之处将被引出：
 &gt;  &lt;img src=&#34;https://zhangherbal.github.io/p/test-chinese/hudai-gayiran-3Od_VKcDEAA-unsplash.jpg&#34;
 	width=&#34;667&#34;
 	height=&#34;1000&#34;
-	srcset=&#34;https://zhangherbal.github.io/p/test-chinese/hudai-gayiran-3Od_VKcDEAA-unsplash_hu15886963791847885497.jpg 480w, https://zhangherbal.github.io/p/test-chinese/hudai-gayiran-3Od_VKcDEAA-unsplash_hu11726476772237334826.jpg 1024w&#34;
+	srcset=&#34;https://zhangherbal.github.io/p/test-chinese/hudai-gayiran-3Od_VKcDEAA-unsplash_hu_f81a3588c5c4a663.jpg 480w, https://zhangherbal.github.io/p/test-chinese/hudai-gayiran-3Od_VKcDEAA-unsplash_hu_1c52ba2a4ad7b9a0.jpg 1024w&#34;
 	loading=&#34;lazy&#34;
 	
 		alt=&#34;Photo by Hudai Gayiran on Unsplash&#34;
@@ -1361,13 +1578,11 @@ SVM精妙之处将被引出：
 &lt;h4 id=&#34;blockquote-without-attribution&#34;&gt;Blockquote without attribution
 &lt;/h4&gt;&lt;blockquote&gt;
 &lt;p&gt;Tiam, ad mint andaepu dandae nostion secatur sequo quae.
-&lt;strong&gt;Note&lt;/strong&gt; that you can use &lt;em&gt;Markdown syntax&lt;/em&gt; within a blockquote.&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;strong&gt;Note&lt;/strong&gt; that you can use &lt;em&gt;Markdown syntax&lt;/em&gt; within a blockquote.&lt;/p&gt;&lt;/blockquote&gt;
 &lt;h4 id=&#34;blockquote-with-attribution&#34;&gt;Blockquote with attribution
 &lt;/h4&gt;&lt;blockquote&gt;
 &lt;p&gt;Don&amp;rsquo;t communicate by sharing memory, share memory by communicating.&lt;br&gt;
-— &lt;cite&gt;Rob Pike&lt;sup id=&#34;fnref:1&#34;&gt;&lt;a href=&#34;#fn:1&#34; class=&#34;footnote-ref&#34; role=&#34;doc-noteref&#34;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/cite&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
+— &lt;cite&gt;Rob Pike&lt;sup id=&#34;fnref:1&#34;&gt;&lt;a href=&#34;#fn:1&#34; class=&#34;footnote-ref&#34; role=&#34;doc-noteref&#34;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/cite&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;h2 id=&#34;tables&#34;&gt;Tables
 &lt;/h2&gt;&lt;p&gt;Tables aren&amp;rsquo;t part of the core Markdown spec, but Hugo supports supports them out-of-the-box.&lt;/p&gt;
 &lt;table&gt;

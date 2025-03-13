@@ -56,7 +56,7 @@
                     
                     
                         
-                        <img src="/img/avatar_hu14322915909999105942.png" width="300"
+                        <img src="/img/avatar_hu_2a385d4febd08cc1.png" width="300"
                             height="300" class="site-logo" loading="lazy" alt="Avatar">
                     
                 
@@ -282,7 +282,7 @@
     </li>
     <li><a href="#开发-试探平衡">开发-试探平衡</a>
       <ol>
-        <li><a href="#epsilon贪心方法">贪心方法</a>
+        <li><a href="#贪心方法">贪心方法</a>
           <ol>
             <li><a href="#举例">举例</a></li>
             <li><a href="#改进-增量式实现">改进-增量式实现</a></li>
@@ -293,7 +293,7 @@
     </li>
     <li><a href="#多臂赌博机-非平稳问题">多臂赌博机-非平稳问题</a>
       <ol>
-        <li><a href="#基础-非平稳下的行为估值br">基础-非平稳下的行为估值<br></a>
+        <li><a href="#基础-非平稳下的行为估值">基础-非平稳下的行为估值<br></a>
           <ol>
             <li><a href="#收敛条件">收敛条件</a></li>
           </ol>
@@ -301,7 +301,7 @@
       </ol>
     </li>
     <li><a href="#乐观初值法">乐观初值法</a></li>
-    <li><a href="#ucb行为选择策略">行为选择策略</a></li>
+    <li><a href="#行为选择策略">行为选择策略</a></li>
   </ol>
 </nav>
         </div>
@@ -366,7 +366,7 @@
 <img src="/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-5.png"
 	width="544"
 	height="349"
-	srcset="/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-5_hu9486346748799315069.png 480w, /p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-5_hu7449452040634016328.png 1024w"
+	srcset="/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-5_hu_ff475bc76599b859.png 480w, /p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-5_hu_81dd97069d36ca24.png 1024w"
 	loading="lazy"
 	
 		alt="alt text"
@@ -412,14 +412,14 @@
 <h2 id="开发-试探平衡">开发-试探平衡
 </h2><p>至此，我们已经解决了估计动作价值的问题，那么在估计完成后，我们要思考，怎么进行选择呢。最简单是我们每一轮都选最大的，但是每一轮都选最大的不一定是最优的。也有可能我们去试探，能试探出更优的行为，因此我们要平衡和开发和试探。
 我们将引出一些方法。</p>
-<h3 id="epsilon贪心方法">\(\epsilon\)贪心方法
+<h3 id="贪心方法">\(\epsilon\)贪心方法
 </h3><p>以一个很小的概率\(\epsilon\)去做试探，那么次数无限多的情况下，每个动作都会被采样无限次，那么估计值将遵循大数定律逼近均值\(q_{*}(a)\)</p>
 <h4 id="举例">举例
 </h4><p>假设有\(10\)个臂，每个臂的期望奖励从一个均值为\(0\)，方差为\(1\)的正态分布中得到。在第\(t\)轮中选择行为\(A_t\)获得奖励服从均值为\(q_{*}(A_t)\),方差为\(1\)的正态分布。
 <img src="/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-2.png"
 	width="669"
 	height="399"
-	srcset="/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-2_hu8922681758800833809.png 480w, /p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-2_hu18335926872897226828.png 1024w"
+	srcset="/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-2_hu_11ff5f08b0732962.png 480w, /p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-2_hu_2d7c0c0d57721108.png 1024w"
 	loading="lazy"
 	
 		alt="alt text"
@@ -435,7 +435,7 @@
 <img src="/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-3.png"
 	width="634"
 	height="523"
-	srcset="/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-3_hu16009700299957611757.png 480w, /p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-3_hu17098290657405704171.png 1024w"
+	srcset="/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-3_hu_be18567b7f45423e.png 480w, /p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-3_hu_2c28228fe72608fd.png 1024w"
 	loading="lazy"
 	
 		alt="alt text"
@@ -464,7 +464,7 @@
 <img src="/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-1.png"
 	width="662"
 	height="301"
-	srcset="/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-1_hu370281415510223488.png 480w, /p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-1_hu10231790194951019399.png 1024w"
+	srcset="/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-1_hu_322b376071eeb90f.png 480w, /p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-1_hu_51fd3d1d6d7c4262.png 1024w"
 	loading="lazy"
 	
 		alt="alt text"
@@ -483,7 +483,7 @@
 每个动作的奖励分布随着时间变化，例如某个臂某段时间内表现好，某段时间表现差，因此机制复杂。也就是说\(q_{*}(a)\)是关于时间的函数，我们更关注最近的样本。<br></p>
 <h2 id="多臂赌博机-非平稳问题">多臂赌博机-非平稳问题
 </h2><p>从平稳问题的视角来看，某个臂的期望奖励是固定的，而从非平稳问题的视角来看，赌博机的收益概率随时间变化，取平均方法不可用，那我们是如何改进的呢？</p>
-<h3 id="基础-非平稳下的行为估值br">基础-非平稳下的行为估值<br>
+<h3 id="基础-非平稳下的行为估值">基础-非平稳下的行为估值<br>
 </h3><p>我们可以引入\(α\)，使每个行为的权值都不再相等。<br>
 \(Q_{n+1}=Q_n+α[R_n-Q_n]\) \(α &in; [0,1]\)<br>
 \(Q_{n+1}\)成为对过去的收益和初始的估计\(Q_1\)的加权平均<br>
@@ -511,7 +511,7 @@
 <img src="/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image.png"
 	width="625"
 	height="276"
-	srcset="/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image_hu11324991071178999865.png 480w, /p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image_hu5517646830536578878.png 1024w"
+	srcset="/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image_hu_6178f4745379d86.png 480w, /p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image_hu_9561f9a6b76e58f8.png 1024w"
 	loading="lazy"
 	
 		alt="alt text"
@@ -522,7 +522,7 @@
 		data-flex-basis="543px"
 	
 ></p>
-<h2 id="ucb行为选择策略">\(UCB\)行为选择策略
+<h2 id="行为选择策略">\(UCB\)行为选择策略
 </h2>\[
 a_t = \arg\max_{i \in \{1, 2, \dots, K\}} \left( Q_t(a) + c \sqrt{\frac{\ln t}{N_t(a)}} \right)
 \]<p>
@@ -532,7 +532,7 @@ a_t = \arg\max_{i \in \{1, 2, \dots, K\}} \left( Q_t(a) + c \sqrt{\frac{\ln t}{N
 <img src="/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-4.png"
 	width="609"
 	height="233"
-	srcset="/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-4_hu2311328956770086695.png 480w, /p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-4_hu3637641226048031829.png 1024w"
+	srcset="/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-4_hu_b7c013c7d02d9ff9.png 480w, /p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E5%A4%9A%E8%87%82%E8%B5%8C%E5%8D%9A%E6%9C%BA/image-4_hu_9f535590ea0571d4.png 1024w"
 	loading="lazy"
 	
 		alt="alt text"
@@ -569,7 +569,9 @@ a_t = \arg\max_{i \in \{1, 2, \dots, K\}} \left( Q_t(a) + c \sqrt{\frac{\ln t}{N
     <section class="copyright">
         &copy; 
         
-        2024 Herb
+            2024 - 
+        
+        2025 Herb
     </section>
     
     <section class="powerby">

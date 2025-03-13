@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="时序差分学习 基本概念及其背景 \u200b\t时序差分算法\\(（Temporal Difference, TD）\\)是一种强化学习方法，结合了蒙特卡洛方法和动态规划的优点，用于估计状态值函数。时序差分方法也可以直接从环境互动的经验中学习策略，而不需要构建关于环境动态特性的模型。\n">
+<title>强化学习-时序差分学习</title>
+
+<link rel='canonical' href='https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E6%97%B6%E5%BA%8F%E5%B7%AE%E5%88%86%E5%AD%A6%E4%B9%A0/'>
+
+<link rel="stylesheet" href="/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css"><meta property='og:title' content="强化学习-时序差分学习">
+<meta property='og:description' content="时序差分学习 基本概念及其背景 \u200b\t时序差分算法\\(（Temporal Difference, TD）\\)是一种强化学习方法，结合了蒙特卡洛方法和动态规划的优点，用于估计状态值函数。时序差分方法也可以直接从环境互动的经验中学习策略，而不需要构建关于环境动态特性的模型。\n">
+<meta property='og:url' content='https://zhangherbal.github.io/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E6%97%B6%E5%BA%8F%E5%B7%AE%E5%88%86%E5%AD%A6%E4%B9%A0/'>
+<meta property='og:site_name' content='Herb'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-03-12T18:55:16&#43;08:00'/><meta property='article:modified_time' content='2025-03-12T18:55:16&#43;08:00'/>
+<meta name="twitter:title" content="强化学习-时序差分学习">
+<meta name="twitter:description" content="时序差分学习 基本概念及其背景 \u200b\t时序差分算法\\(（Temporal Difference, TD）\\)是一种强化学习方法，结合了蒙特卡洛方法和动态规划的优点，用于估计状态值函数。时序差分方法也可以直接从环境互动的经验中学习策略，而不需要构建关于环境动态特性的模型。\n">
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu_2a385d4febd08cc1.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🍥</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Herb</a></h1>
+            <h2 class="site-description">拨雪寻春，烧灯续昼</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/CaiJimmy/hugo-theme-stack'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://twitter.com'
+                        target="_blank"
+                        title="Twitter"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-twitter" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M22 4.01c-1 .49 -1.98 .689 -3 .99c-1.121 -1.265 -2.783 -1.335 -4.38 -.737s-2.643 2.06 -2.62 3.737v1c-3.245 .083 -6.135 -1.395 -8 -4c0 0 -4.182 7.433 4 11c-1.872 1.247 -3.739 2.088 -6 2c3.308 1.803 6.913 2.423 10.034 1.517c3.58 -1.04 6.522 -3.723 7.651 -7.742a13.84 13.84 0 0 0 .497 -3.753c-.002 -.249 1.51 -2.772 1.818 -4.013z" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%85%B3%E4%BA%8E/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/links/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>Links</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#基本概念及其背景">基本概念及其背景</a>
+      <ol>
+        <li><a href="#自举思想">自举思想</a></li>
+        <li><a href="#在线学习">在线学习</a></li>
+        <li><a href="#离线学习">离线学习</a></li>
+        <li><a href="#同轨策略">同轨策略</a></li>
+        <li><a href="#离轨策略">离轨策略</a></li>
+      </ol>
+    </li>
+    <li><a href="#td">TD</a></li>
+    <li><a href="#td算法引出">TD算法引出</a>
+      <ol>
+        <li><a href="#与蒙特卡洛的区别">与蒙特卡洛的区别</a></li>
+        <li><a href="#td0算法">TD(0)算法</a>
+          <ol>
+            <li><a href="#td0的最优性">TD(0)的最优性</a></li>
+          </ol>
+        </li>
+        <li><a href="#-同轨策略下的时序差分控制"> : 同轨策略下的时序差分控制</a>
+          <ol>
+            <li><a href="#更新公式">更新公式</a></li>
+          </ol>
+        </li>
+        <li><a href="#q学习离轨策略下的时序差分控制">Q学习：离轨策略下的时序差分控制</a>
+          <ol>
+            <li><a href="#q学习的更新公式">Q学习的更新公式</a></li>
+            <li><a href="#q学习的算法流程">Q学习的算法流程</a></li>
+          </ol>
+        </li>
+        <li><a href="#期望sarsa">期望Sarsa</a>
+          <ol>
+            <li><a href="#期望sarsa的更新公式">期望Sarsa的更新公式</a></li>
+          </ol>
+        </li>
+        <li><a href="#双q学习">双Q学习</a>
+          <ol>
+            <li><a href="#传统q学习的过估计问题">传统Q学习的过估计问题</a></li>
+            <li><a href="#双q学习的核心思想">双Q学习的核心思想</a></li>
+            <li><a href="#算法流程">算法流程</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E6%97%B6%E5%BA%8F%E5%B7%AE%E5%88%86%E5%AD%A6%E4%B9%A0/">强化学习-时序差分学习</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">2025-03-12</time>
+            </div>
+        
+
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h1 id="时序差分学习">时序差分学习
+</h1><h2 id="基本概念及其背景">基本概念及其背景
+</h2><p>​	时序差分算法\(（Temporal Difference, TD）\)是一种强化学习方法，结合了蒙特卡洛方法和动态规划的优点，用于估计状态值函数。时序差分方法也可以直接从环境互动的经验中学习策略，而不需要构建关于环境动态特性的模型。</p>
+<h3 id="自举思想">自举思想
+</h3><p>​	自举意味着当前状态的价值估计依赖于未来状态的估计值，而不是直接依赖真实的最终回报。这种方式使得\(TD\)方法在不需要完整回报（如蒙特卡洛方法）的情况下，仍能进行学习和更新。</p>
+<h3 id="在线学习">在线学习
+</h3><p>​	在线学习是指在强化学习中，智能体在与环境交互的过程中，实时更新自己的策略和价值函数。在这个过程中，智能体不需要等待所有数据收集完毕，而是通过每一步的反馈（奖励和状态转移），在学习过程中逐步改进其行为。也就是说模型在接收到数据后立即进行更新。</p>
+<h3 id="离线学习">离线学习
+</h3><p>​	离线学习是指智能体在一个固定的数据集（通常是收集到的历史数据或模拟数据）上进行学习，而不依赖实时的环境交互过程。离线学习更适合大规模的训练。</p>
+<h3 id="同轨策略">同轨策略
+</h3><p>​	在同轨策略的强化学习中，学习过程中使用的策略是与行为策略（即选择动作的策略）相同的。也就是说，智能体在环境中执行动作的策略和它用来学习的策略是一致的。</p>
+<h3 id="离轨策略">离轨策略
+</h3><p>​	在离轨策略的强化学习中，学习策略和行为策略是不同的。智能体在执行动作时使用的策略（行为策略）与用于学习和更新价值函数的策略是分开的。</p>
+<h2 id="td">TD
+</h2><h2 id="td算法引出">TD算法引出
+</h2><h3 id="与蒙特卡洛的区别">与蒙特卡洛的区别
+</h3><p>​	在谈到<em>TD</em>算法时就不得忽视蒙特卡洛算法，毕竟<em>TD</em>算法是结合了蒙特卡洛方法和动态规划方法的优点。</p>
+<div class="table-wrapper"><table>
+  <thead>
+      <tr>
+          <th>特性</th>
+          <th><strong>时序差分（TD）</strong></th>
+          <th><strong>蒙特卡洛（MC）</strong></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>更新方式</strong></td>
+          <td>每个时间步都更新</td>
+          <td>只有在回合结束后更新</td>
+      </tr>
+      <tr>
+          <td><strong>是否使用自举（Bootstrapping）</strong></td>
+          <td>是（依赖自身估计的值）</td>
+          <td>否（依赖完整回报）</td>
+      </tr>
+      <tr>
+          <td><strong>收敛速度</strong></td>
+          <td><strong>更快</strong>（每步更新）</td>
+          <td><strong>更慢</strong>（需要完整回合）</td>
+      </tr>
+      <tr>
+          <td><strong>数据需求</strong></td>
+          <td><strong>适用于持续任务</strong>，不需要终止状态</td>
+          <td><strong>必须等待回合终止</strong></td>
+      </tr>
+      <tr>
+          <td><strong>偏差与方差</strong></td>
+          <td><strong>有偏估计（Bias）</strong>，但方差较小</td>
+          <td><strong>无偏估计（Unbiased）</strong>，但方差较大</td>
+      </tr>
+      <tr>
+          <td><strong>计算效率</strong></td>
+          <td><strong>高</strong>（单步更新）</td>
+          <td><strong>较低</strong>（需要回合结束）</td>
+      </tr>
+      <tr>
+          <td><strong>适用场景</strong></td>
+          <td>适用于长期任务、在线学习</td>
+          <td>适用于回合制任务、离线学习</td>
+      </tr>
+  </tbody>
+</table></div>
+$$
+V(S_t) = V(S_t) + \alpha[G_t-V(S_t)] 
+$$$$
+G_t: 时刻t的真实回报 \\
+\alpha:常量步长参数 \\
+V():状态价值函数
+$$<p>
+蒙特卡洛方法必须等到一幕的末尾才能确定对\( V(S_t) \)的增量，因为这时\(G_t \) 才是已知的,而\(TD\)方法只需要等到下一个时刻就行。</p>
+<h3 id="td0算法">TD(0)算法
+</h3><p>首先我们引出第一个概念\(TD\)误差：</p>
+$$
+\delta_t = R_{t+1} + \gamma V(S_{t+1}) - V(S_t)
+$$<p>
+其中，\(R_{t+1}\) 是在时刻 \(t+1\) 获得的奖励，\(\gamma\) 是折扣因子，\(V(S_t)\) 和 \(V(S_{t+1})\) 分别是时刻 \(t\) 和 \(t+1\) 时状态 \(S_t\) 和 \(S_{t+1}\) 的价值估计。</p>
+<p>接着我们给出更新规则：</p>
+$$
+V(S_t) \leftarrow V(S_t) + \alpha \delta_t
+$$<p>
+其中，\(\alpha\) 是学习率，控制每次更新的步长。由此就得到了\(TD(0)\)的算法框架。</p>
+<h4 id="td0的最优性">TD(0)的最优性
+</h4><h3 id="-同轨策略下的时序差分控制">\(Sarsa\) : 同轨策略下的时序差分控制
+</h3><p>是一种同轨策略\(（On-Policy）\)的强化学习算法。它通过实时与环境的交互，学习一个行为策略，并根据该策略更新Q值（状态-动作价值函数），从而使智能体在环境中获得最大回报。接下来我们将给出其工作原理：</p>
+<p>首先我们要学习的是动作价值函数而不是状态价值函数，对于同轨策略方法，我们必须对所有状态\(S\)以及动作\(a\)，估计出在当前的行动策略下所有对应的\(q(s,a)\)</p>
+<p>\(Sarsa\) 算法的核心思想是根据当前选择的动作和下一状态下选择的动作来更新\(Q\)值。它是一个在线学习算法，通过与环境的交互来不断更新状态-动作价值函数。在\(TD(0)\)算法中我们学习了状态之间的转移以及状态的价值。在\(Sarsa\)中我们讨论的是状态-动作二元组之间的转移，在数学形式上这两者是相同的，他们都是带有收益的马尔科夫链，因此\(TD（0）\)的收敛定理也适用于\(Sarsa\)，因此我们可以引出更新公式。</p>
+<h4 id="更新公式">更新公式
+</h4><p>首先定义一个五元组\((S_t,A_t，S_{t+1},A_{t+1}，R_{t+1})\)</p>
+$$
+Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha \left[ R_{t+1} + \gamma Q(S_{t+1}, A_{t+1}) - Q(S_t, A_t) \right]
+$$<p>
+其中：</p>
+<ul>
+<li>\(S_t\) 是当前状态。</li>
+<li>\(A_t\) 是在状态\(S_t\)下选择的动作。</li>
+<li>\(R_{t+1}\) 是执行动作\(A_t\)后得到的奖励。</li>
+<li>\(S_{t+1}\) 是执行动作\(A_t\)后的下一个状态。</li>
+<li>\(A_{t+1}\) 是在状态\(S_{t+1}\)下选择的下一个动作。</li>
+<li>\(\gamma\) 是折扣因子，表示未来奖励的权重。</li>
+<li>\(\alpha\) 是学习率，表示每次更新的步长。</li>
+</ul>
+<p>\(Sarsa\)的算法流程如下：
+<img src="/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E6%97%B6%E5%BA%8F%E5%B7%AE%E5%88%86%E5%AD%A6%E4%B9%A0/image1.jpg"
+	width="1110"
+	height="541"
+	srcset="/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E6%97%B6%E5%BA%8F%E5%B7%AE%E5%88%86%E5%AD%A6%E4%B9%A0/image1_hu_fa0e10d41b9d5763.jpg 480w, /p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E6%97%B6%E5%BA%8F%E5%B7%AE%E5%88%86%E5%AD%A6%E4%B9%A0/image1_hu_a46bfaf5a7bf456d.jpg 1024w"
+	loading="lazy"
+	
+		alt="Sarsa"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="205"
+		data-flex-basis="492px"
+	
+><br></p>
+<h3 id="q学习离轨策略下的时序差分控制">Q学习：离轨策略下的时序差分控制
+</h3><p>\(Q\)学习\(（Q-learning）\)是一种基于 离轨策略\(（Off-Policy）\) 的强化学习算法，旨在学习一个最优策略，通过不断与环境交互，估计每个状态-动作对的价值（Q值）。</p>
+<h4 id="q学习的更新公式">Q学习的更新公式
+</h4>$$
+Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha \left[ R_{t+1} + \gamma \max_a Q(S_{t+1}, a) - Q(S_t, A_t) \right]
+$$<p>
+其中：</p>
+<ul>
+<li>
+<p>\(S_t\)：当前状态。</p>
+</li>
+<li>
+<p>\(A_t\)：在状态 $S_t$ 下选择的动作。</p>
+</li>
+<li>
+<p>\(R_{t+1}\)：执行动作 $A_t$ 后获得的即时奖励。</p>
+</li>
+<li>
+<p>\(S_{t+1}\)：执行动作后到达的下一个状态。</p>
+</li>
+<li>
+<p>\(\max_a Q(S_{t+1}, a)\)：状态\(S_{t+1}\) 下所有可能动作的最大Q值，代表目标策略（即最优策略）。</p>
+</li>
+<li>
+<p>\(\gamma\)：折扣因子，用于权衡当前奖励和未来奖励的影响。</p>
+</li>
+<li>
+<p>\(\alpha\)：学习率，表示每次更新的步长。</p>
+</li>
+</ul>
+<h4 id="q学习的算法流程">Q学习的算法流程
+</h4><p><img src="/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E6%97%B6%E5%BA%8F%E5%B7%AE%E5%88%86%E5%AD%A6%E4%B9%A0/image2.png"
+	width="1111"
+	height="501"
+	srcset="/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E6%97%B6%E5%BA%8F%E5%B7%AE%E5%88%86%E5%AD%A6%E4%B9%A0/image2_hu_c23992104efe4a59.png 480w, /p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E6%97%B6%E5%BA%8F%E5%B7%AE%E5%88%86%E5%AD%A6%E4%B9%A0/image2_hu_f50507a9d7833156.png 1024w"
+	loading="lazy"
+	
+		alt="Q学习"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="221"
+		data-flex-basis="532px"
+	
+><br></p>
+<h3 id="期望sarsa">期望Sarsa
+</h3><p>期望\(Sarsa\)是对\(Sarsa\)算法的扩展，它与\(Q\)学习十分类似，但把对于下一个“状态-动作”二元组取最大值这一步换成取期望，使得更新不依赖于实际采取的动作，而是基于在给定状态下所有可能动作的期望\(Q\)值。具体来说，期望\(Sarsa\)考虑了在下一个状态中所有可能动作的加权平均值，权重由行为策略给出。</p>
+<h4 id="期望sarsa的更新公式">期望Sarsa的更新公式
+</h4>$$
+Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha \left[ R_{t+1} + \gamma \sum_{a'} \pi(a'|S_{t+1}) Q(S_{t+1}, a') - Q(S_t, A_t) \right]
+$$<p>
+其中：</p>
+<ul>
+<li>\(\pi(a'|S_{t+1})\) 是行为策略下在状态 \(S_{t+1}\)下选择动作\(a'\)的概率。</li>
+<li>\(\sum_{a'} \pi(a'|S_{t+1}) Q(S_{t+1}, a')\) 表示在状态\(S_{t+1}\)下，所有可能动作的Q值的期望值（加权平均）。</li>
+</ul>
+<p>​	与\(Sarsa\)不同的是，在期望\(Sarsa\)中，更新不仅仅依赖于下一个状态的实际选择的动作，而是依赖于所有可能的动作的期望\(Q\)值，这使得期望\(Sarsa\)在一定程度上更加稳定。</p>
+<h3 id="双q学习">双Q学习
+</h3><p>双\(Q\)学习\(（Double Q-learning)\)是强化学习中的一种方法，旨在克服传统\(Q\)学习\(（Q-learning）\)中常见的过估计问题。传统Q学习算法在更新\(Q\)值时，通常会遇到过估计的问题，即在更新\(Q\)值时，算法会倾向于高估最优动作的价值，尤其是在动作值较为接近的情况下。这个问题会导致学习过程中策略不稳定，收敛速度变慢。</p>
+<p>双\(Q\)学习通过引入两个独立的Q值函数来缓解这一问题，从而提高\(Q\)学习算法的性能。</p>
+<h4 id="传统q学习的过估计问题">传统Q学习的过估计问题
+</h4>$$
+Q(S_t, A_t) \leftarrow Q(S_t, A_t) + \alpha \left[ R_{t+1} + \gamma \max_{a'} Q(S_{t+1}, a') - Q(S_t, A_t) \right]
+$$<p>
+传统\(Q\)学习存在过估计问题，也叫最大化偏差问题，</p>
+<h4 id="双q学习的核心思想">双Q学习的核心思想
+</h4><p>双\(Q\)学习通过两个\(Q\)值函数来减轻过估计问题。在双\(Q\)学习中，算法维护两个\(Q\)值函数\(Q_1\)和\(Q_2\)，并通过交替更新这两个\(Q\)值函数来避免过度依赖单一的\(Q\)值估计。具体来说，更新过程中，不再直接使用一个\(Q\)值函数来选择和评估最优动作，而是使用两个独立的\(Q\)值函数交替进行。</p>
+<h5 id="双q学习的更新公式">双Q学习的更新公式
+</h5>$$
+Q_1(S_t, A_t) \leftarrow Q_1(S_t, A_t) + \alpha \left[ R_{t+1} + \gamma Q_2(S_{t+1}, \arg\max_{a'} Q_1(S_{t+1}, a')) - Q_1(S_t, A_t) \right]
+$$<p>
+在这个更新公式中：</p>
+<ul>
+<li>\(Q_1(S_t, A_t)\) 和 \(Q_2(S_t, A_t)\) 是两个独立的Q值函数。</li>
+<li>\(\arg\max_{a'} Q_1(S_{t+1}, a')\) 是根据\(Q_1\)选择的最优动作。</li>
+<li>然后，使用\(Q_2\)来评估该动作的价值。</li>
+<li>通过这种方式，双\(Q\)学习避免了传统\(Q\)学习中的过估计问题，因为每次更新时，评估最优动作价值的\(Q\)值函数与选择最优动作的\(Q\)值函数是不同的。</li>
+</ul>
+<h4 id="算法流程">算法流程
+</h4><p><img src="/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E6%97%B6%E5%BA%8F%E5%B7%AE%E5%88%86%E5%AD%A6%E4%B9%A0/image3.png"
+	width="1118"
+	height="683"
+	srcset="/p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E6%97%B6%E5%BA%8F%E5%B7%AE%E5%88%86%E5%AD%A6%E4%B9%A0/image3_hu_d2c519493e1a26f0.png 480w, /p/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0-%E6%97%B6%E5%BA%8F%E5%B7%AE%E5%88%86%E5%AD%A6%E4%B9%A0/image3_hu_ebdc5c7cb6f880ea.png 1024w"
+	loading="lazy"
+	
+		alt="双Q学习"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="163"
+		data-flex-basis="392px"
+	
+><br></p>
+
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2024 - 
+        
+        2025 Herb
+    </section>
+    
+    <section class="powerby">
+        使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.27.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+    <script type="text/javascript"
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
