@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="Transformer代码学习 transformer笔记学习 \\(transformer\\)在宏观上由\\(encoder\\)和\\(decoder\\)组成，该部分结合台大李宏毅老师的网课理解。\n\\(encoder\\) 在\\(transformer\\)中，\\(encoder\\)主要负责将输入序列转换为一种中间表示，去用于\\(Decoder\\)生成输出序列。在\\(encoder\\)的位置往底层看，\\(encoder\\)可以细分为几个部分。\n">
+<title>Transformer</title>
+
+<link rel='canonical' href='https://zhangherbal.github.io/p/transformer/'>
+
+<link rel="stylesheet" href="/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css"><meta property='og:title' content="Transformer">
+<meta property='og:description' content="Transformer代码学习 transformer笔记学习 \\(transformer\\)在宏观上由\\(encoder\\)和\\(decoder\\)组成，该部分结合台大李宏毅老师的网课理解。\n\\(encoder\\) 在\\(transformer\\)中，\\(encoder\\)主要负责将输入序列转换为一种中间表示，去用于\\(Decoder\\)生成输出序列。在\\(encoder\\)的位置往底层看，\\(encoder\\)可以细分为几个部分。\n">
+<meta property='og:url' content='https://zhangherbal.github.io/p/transformer/'>
+<meta property='og:site_name' content='Herb'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2025-03-23T14:37:39&#43;08:00'/><meta property='article:modified_time' content='2025-03-23T14:37:39&#43;08:00'/>
+<meta name="twitter:title" content="Transformer">
+<meta name="twitter:description" content="Transformer代码学习 transformer笔记学习 \\(transformer\\)在宏观上由\\(encoder\\)和\\(decoder\\)组成，该部分结合台大李宏毅老师的网课理解。\n\\(encoder\\) 在\\(transformer\\)中，\\(encoder\\)主要负责将输入序列转换为一种中间表示，去用于\\(Decoder\\)生成输出序列。在\\(encoder\\)的位置往底层看，\\(encoder\\)可以细分为几个部分。\n">
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "auto");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu_2a385d4febd08cc1.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🍥</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">Herb</a></h1>
+            <h2 class="site-description">拨雪寻春，烧灯续昼</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://github.com/CaiJimmy/hugo-theme-stack'
+                        target="_blank"
+                        title="GitHub"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://twitter.com'
+                        target="_blank"
+                        title="Twitter"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-twitter" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M22 4.01c-1 .49 -1.98 .689 -3 .99c-1.121 -1.265 -2.783 -1.335 -4.38 -.737s-2.643 2.06 -2.62 3.737v1c-3.245 .083 -6.135 -1.395 -8 -4c0 0 -4.182 7.433 4 11c-1.872 1.247 -3.739 2.088 -6 2c3.308 1.803 6.913 2.423 10.034 1.517c3.58 -1.04 6.522 -3.723 7.651 -7.742a13.84 13.84 0 0 0 .497 -3.753c-.002 -.249 1.51 -2.772 1.818 -4.013z" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%85%B3%E4%BA%8E/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>Archives</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>Search</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/links/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>Links</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#transformer笔记学习">transformer笔记学习</a>
+      <ol>
+        <li></li>
+        <li></li>
+        <li><a href="#和的连接">和的连接</a>
+          <ol>
+            <li></li>
+          </ol>
+        </li>
+        <li><a href="#注意力机制的原理">注意力机制的原理</a>
+          <ol>
+            <li><a href="#计算">计算</a></li>
+            <li><a href="#-输入映射为">: 输入映射为 </a></li>
+            <li><a href="#-计算注意力权重">: 计算注意力权重</a></li>
+            <li><a href="#-输出加权求和">: 输出加权求和</a></li>
+            <li></li>
+            <li></li>
+            <li><a href="#多头注意力机制">多头注意力机制</a></li>
+          </ol>
+        </li>
+        <li><a href="#相关疑惑及其解答不定期加入">相关疑惑及其解答（不定期加入）</a>
+          <ol>
+            <li><a href="#-为什么在和的连接中用的">: 为什么在和的连接中，用的?</a></li>
+            <li><a href="#为什么使用">:为什么使用？</a></li>
+            <li><a href="#矩阵及其作用">:矩阵及其作用</a></li>
+            <li><a href="#中前馈神经网络的作用">:中前馈神经网络的作用</a></li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+    <li><a href="#模型架构">模型架构</a>
+      <ol>
+        <li></li>
+        <li></li>
+      </ol>
+    </li>
+    <li><a href="#编码器">编码器</a>
+      <ol>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li><a href="#位置前馈网络">位置前馈网络</a></li>
+        <li><a href="#嵌入">嵌入</a></li>
+        <li><a href="#位置编码">位置编码</a></li>
+      </ol>
+    </li>
+    <li><a href="#完整模型">完整模型</a></li>
+    <li></li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="main-article">
+    <header class="article-header">
+
+    <div class="article-details">
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/transformer/">Transformer</a>
+        </h2>
+    
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">2025-03-23</time>
+            </div>
+        
+
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h1 id="transformer代码学习">Transformer代码学习
+</h1><h2 id="transformer笔记学习">transformer笔记学习
+</h2><p>\(transformer\)在宏观上由\(encoder\)和\(decoder\)组成，该部分结合台大李宏毅老师的网课理解。</p>
+<h3 id="">\(encoder\)
+</h3><p>在\(transformer\)中，\(encoder\)主要负责将输入序列转换为一种中间表示，去用于\(Decoder\)生成输出序列。在\(encoder\)的位置往底层看，\(encoder\)可以细分为几个部分。</p>
+<p>\(1\).输入层：得到输入序列进行\(embedding\)。</p>
+<p>\(2\).位置编码：位置编码层将每一个词的位置信息编码为一个向量并加入到词嵌入，这样就给了每一个词一个位置信息。</p>
+<p>\(3\).层堆叠：由多个\(block\)连接，每个\(block\)中包含：\(self-attention,feed forward,residual,norm\)。</p>
+<p>\(4\).多头注意力机制：负责计算输入序列中每个词与其他词之间的相关性，并生成权重分布。</p>
+<p>\(5\).\(MLP\)：紧随多头注意力子层，捕获复杂特征。</p>
+<p>\(6\).残差连接和规范化层：在每个子层之后都有一个残差连接和一个规范化层。残差连接负责将子层的输入与输出相加，以避免梯度消失和表示瓶颈问题。规范化层则负责对子层的输出进行规范化处理，以加速模型的收敛速度。</p>
+<p>下图为\(block\)的步骤：
+<img src="/p/transformer/image1.png"
+	width="561"
+	height="619"
+	srcset="/p/transformer/image1_hu_c8eb2179ca59acb.png 480w, /p/transformer/image1_hu_ec5bc34be43bac15.png 1024w"
+	loading="lazy"
+	
+		alt="alt text"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="90"
+		data-flex-basis="217px"
+	
+></p>
+<h3 id="">\(decoder\)
+</h3><p><img src="/p/transformer/image2.png"
+	width="173"
+	height="425"
+	srcset="/p/transformer/image2_hu_f78ec1e7f8a99b64.png 480w, /p/transformer/image2_hu_9dde0185b7b93888.png 1024w"
+	loading="lazy"
+	
+		alt="alt text"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="40"
+		data-flex-basis="97px"
+	
+></p>
+<p>与\(encoder\)相比，\(decoder\)的多头注意力机制有一个\(masked self-attention\),然后多了一个\(cross-attention\)的模块</p>
+<h3 id="和的连接">\(encoder\)和\(decoder\)的连接
+</h3><p>从宏观上可以理解，\(encoder\)将源语言序列编码为上下文向量，而\(decoder\)利用\(encoder\)输出的上下文向量和上一时刻的输出预测目标语言序列中的下一个词，从而实现了整个机器翻译的过程。那么\(decoder\)和\(encoder\)是怎样连接的呢？在\(decoder\)的架构中可以观察\(encoder\)伸出来的两个小爪爪进入了一个模块，这一部分是\(cross-attention\)。</p>
+<h4 id="">\(cross-attention\)
+</h4><p>首先介绍一下什么是\(cross-attention\)，它将编码器提供的上下文信息与解码器生成的序列进行关联，计算当前时刻的输出与\(Encoder\)输出的上下文向量之间的注意力权重，然后将这些权重应用于上下文向量，以获取一个加权的上下文表示。这个加权的上下文表示将作为\(Decoder\)下一个时刻的输入，帮助\(Decoder\)更好地生成目标语言序列。</p>
+<h3 id="注意力机制的原理">注意力机制的原理
+</h3><p>首先引入李宏毅老师上课的一个场景。
+<img src="/p/transformer/image3.png"
+	width="607"
+	height="394"
+	srcset="/p/transformer/image3_hu_54fab799ed4c9bc8.png 480w, /p/transformer/image3_hu_22b8d8d61f184720.png 1024w"
+	loading="lazy"
+	
+		alt="alt text"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="154"
+		data-flex-basis="369px"
+	
+></p>
+<p>在机器翻译的时候，模型是怎样区分两个\(saw\)的呢？显然我们需要\(self-attention\)去照顾完整的\(sequence\),在每个\(saw\)的具体时刻考虑上下文。</p>
+<h4 id="计算">\(self-attention\)计算
+</h4><p>首先给出\(transformer\)论文中的计算过程：</p>
+<h4 id="-输入映射为">\(Step 1\): 输入映射为 \(Q、K、V\)
+</h4><p>将输入矩阵 \(X \in \mathbb{R}^{n \times d}\) 通过可学习的参数矩阵 \(W_Q、W_K、W_V\) 投影为：</p>
+<p>查询向量\(（Query, Q）\)</p>
+<p>键向量\(（Key, K）\)</p>
+<p>值向量\(（Value, V）\)
+\(
+Q = XW_Q, \quad K = XW_K, \quad V = XW_V
+\)
+其中：</p>
+<p>\(W_Q, W_K, W_V \in \mathbb{R}^{d \times d_k}\) 是可训练参数</p>
+<p>\(d_k\) 是每个头的维度</p>
+<h4 id="-计算注意力权重">\(Step 2\): 计算注意力权重
+</h4>$$
+\text{Attention}(Q, K, V) = \text{Softmax} \left( \frac{QK^\top}{\sqrt{d_k}} \right) V
+$$<p>\(QK^\top\) 计算每个查询与所有键的相似度（形状为 \(n \times n\)）。</p>
+<p>\(\frac{1}{\sqrt{d_k}}\) 是缩放因子，防止数值过大导致梯度消失或爆炸。</p>
+<p>\(Softmax\) 将分数归一化，生成每个 \(token\) 的注意力分布。</p>
+<h4 id="-输出加权求和">\(Step 3\): 输出加权求和
+</h4><p>将注意力分布与值向量 \(V\) 进行加权求和，得到每个输入位置的全局信息。</p>
+<p>接下来继续讲解:</p>
+<p><img src="/p/transformer/image4.png"
+	width="600"
+	height="420"
+	srcset="/p/transformer/image4_hu_f4ce1dbb82a5500c.png 480w, /p/transformer/image4_hu_6ee660cc4c6fcaf1.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="142"
+		data-flex-basis="342px"
+	
+></p>
+<p>每一个输出向量\(b\)都是考虑了一整个\(sequence\)，例如\(b^1\),我们将观察\(b^1\)的输出过程。</p>
+<h4 id="">\(step1\)
+</h4><p>我们要找出\(a^1\)相关的向量，并衡量这个所谓的相关的程度。我们使用点积（还有别的方法）进行计算。</p>
+<p><img src="/p/transformer/image5.png"
+	width="268"
+	height="341"
+	srcset="/p/transformer/image5_hu_ece5e7b83ecf2997.png 480w, /p/transformer/image5_hu_88305127952f06ab.png 1024w"
+	loading="lazy"
+	
+		alt="点积"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="78"
+		data-flex-basis="188px"
+	
+></p>
+<p>这个输出的α就是相关的程度。</p>
+<p>我们可以观察\(q^1,k^1\)是怎样得来的，然后\(q^1\)与其他向量的\(k\)进行相乘得出所有α，然后就知道谁跟\(a^1\)的相关程度最大。</p>
+<p><img src="/p/transformer/image6.png"
+	width="837"
+	height="610"
+	srcset="/p/transformer/image6_hu_d1ade0f1e597e3b8.png 480w, /p/transformer/image6_hu_286dbb2b16893a74.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="137"
+		data-flex-basis="329px"
+	
+></p>
+<h4 id="">\(step2\)
+</h4><p>现在我们要思考\(b^1\)是怎样得出来的。如图所示：</p>
+<p><img src="/p/transformer/image11.png"
+	width="715"
+	height="410"
+	srcset="/p/transformer/image11_hu_c7abcc87ca4de419.png 480w, /p/transformer/image11_hu_736993f4bbc8845d.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="174"
+		data-flex-basis="418px"
+	
+></p>
+<h4 id="多头注意力机制">多头注意力机制
+</h4><p>可能需要不同的\(self-attention\)模块学习不同种类的相关性。</p>
+<p><img src="/p/transformer/image7.png"
+	width="812"
+	height="591"
+	srcset="/p/transformer/image7_hu_63fc21fe115e8879.png 480w, /p/transformer/image7_hu_f4db706eab6847e3.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="137"
+		data-flex-basis="329px"
+	
+></p>
+<p>多头注意力机制的头的数量根据任务而定，比如\(stable-diffusion\)中需要\(20\)头。</p>
+<h3 id="相关疑惑及其解答不定期加入">相关疑惑及其解答（不定期加入）
+</h3><h4 id="-为什么在和的连接中用的">\(Problem1\): 为什么在\(encoder\)和\(decoder\)的连接中，用\(encoder\)的\(key,value\)?
+</h4><p>在 \(Transformer\) 中，\(Cross-Attention\)（交叉注意力） 连接了编码器和解码器，是解码器生成目标序列的关键环节。\(key\)提供源序列的位置和语义信息，用于与解码器的\(query\)计算注意力分数，找到关键内容，\(value\)存储源序列的具体特征和上下文，可以根据注意力分数加权求和输出重要信息。</p>
+<h4 id="为什么使用">\(Problem2\):为什么使用\(Layer Normalization\)？
+</h4><h4 id="矩阵及其作用">\(Problem3\):\(QKV\)矩阵及其作用
+</h4><h4 id="中前馈神经网络的作用">\(Problem4\):\(Transformer\)中前馈神经网络的作用
+</h4><h2 id="模型架构">模型架构
+</h2><p><img src="/p/transformer/image8.png"
+	width="477"
+	height="580"
+	srcset="/p/transformer/image8_hu_23fd06349a95b1e8.png 480w, /p/transformer/image8_hu_334218dd4742c174.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="82"
+		data-flex-basis="197px"
+	
+></p>
+<p>在\(transfomer\)的模型架构图中，宏观上我们可以看到\(transfomer\)是由\(encoder\)和\(decoder\)以及\(Linear+softmax\)组成。</p>
+<h3 id="">\(EncoderDecoder\)
+</h3><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class EncoderDecoder(nn.Module):
+</span></span><span class="line"><span class="cl">    def __init__(EncoderDecoder,self,encoder,decoder,src_embed,tgt_embed,generator):
+</span></span><span class="line"><span class="cl">        super(EncoderDecoder,self).__init__()
+</span></span><span class="line"><span class="cl">        self.encoder = encoder //编码器
+</span></span><span class="line"><span class="cl">        self.decoder = decoder//解码器
+</span></span><span class="line"><span class="cl">        self.src_embed = src_embed//将源序列转为高维向量
+</span></span><span class="line"><span class="cl">        self.tgt_embed = tgt_embed//将目标序列转为高维向量
+</span></span><span class="line"><span class="cl">        self.generator = generator//结果的输出层
+</span></span><span class="line"><span class="cl">    def forward(self,src,src_mask,tgt,tgt_mask):
+</span></span><span class="line"><span class="cl">        return self.decode(self.encode(src,src_mask),src_mask,tgt,tgt_mask)
+</span></span><span class="line"><span class="cl">        //先编码再解码
+</span></span><span class="line"><span class="cl">    def encode(self,src,src_mask):
+</span></span><span class="line"><span class="cl">        return self.encoder(self.src_embed(src),src_mask)
+</span></span><span class="line"><span class="cl">    def decode(self,tgt,tgt_mask,memory,src_mask):
+</span></span><span class="line"><span class="cl">        return self.decoder(self.tgt_embed(tgt),memory,src_mask,tgt_mask)
+</span></span><span class="line"><span class="cl">class Generator(nn.Module):
+</span></span><span class="line"><span class="cl">    def __init__(self,d_model,vocab):
+</span></span><span class="line"><span class="cl">        super(Generator,self).__init__()
+</span></span><span class="line"><span class="cl">        self.proj = nn.Linear(d_model,vocab)
+</span></span><span class="line"><span class="cl">    def forward(self,x):
+</span></span><span class="line"><span class="cl">        return F.log_softmax(self.proj(x),dim = -1)
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>\(src \_m ask\):源序列掩码，用于处理 填充（\(padding\)），防止模型注意到无效信息。将填充值的位置设置为 \(-inf\)，让注意力分数接近 \(0\)。</p>
+<p>\(tgt\_mask\)：目标序列掩码，确保解码器只能看见已生成的部分。</p>
+<p>\(memory\)：来自编码器的上下文表示，包含了源序列的全局信息。</p>
+<h3 id="">\(Generator\)
+</h3><p>容易理解的\(Linear+softmax\)直接编写即可</p>
+<h2 id="编码器">编码器
+</h2><p>首先要写一个\(clone\)函数，因为\(decoder\)和\(encoder\)都有\(N\)个,我们要生成\(N\)个相同的子模块。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def clones(module, N):
+</span></span><span class="line"><span class="cl">    return nn.ModuleList([copy.deepcopy(module) for _ in range(N)])
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="">\(Encoder\)
+</h3><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class Encoder(nn.Module):
+</span></span><span class="line"><span class="cl">    def __init__(self, layer, N):
+</span></span><span class="line"><span class="cl">        super(Encoder, self).__init__()
+</span></span><span class="line"><span class="cl">        self.layers = clones(layer, N)
+</span></span><span class="line"><span class="cl">        self.norm = LayerNorm(layer.size)
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">    def forward(self, x, mask):
+</span></span><span class="line"><span class="cl">        for layer in self.layers:
+</span></span><span class="line"><span class="cl">            x = layer(x, mask)
+</span></span><span class="line"><span class="cl">        return self.norm(x)
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>学习这段代码的时候，我在思考为什么多头注意力机制没了？但是接着学习的时候会发现：\(Encoder\)是一个编码器，这个\(Encoder\)包含了很多\(Layer\)，也就是后面的\(EncoderLayer\),注意力机制等在\(EncoderLayer\)中定义，\(Encoder\)主要起一个堆叠的作用，定义一个整体的架构，然后输入一层一层的进行前向传播后到\(self.norm\)实现输出。</p>
+<h3 id="">\(LayerNorm\)
+</h3><p>数学上的知识。</p>
+$$
+\text{LayerNorm}(x) = \gamma \times \frac{x - \mu}{\sigma + \epsilon} + \beta
+$$<p>
+\(\mu = \text{mean}(x)\) —— 沿着最后一个维度求均值（每个样本内部特征的均值）</p>
+<p>\(\sigma = \text{std}(x)\) —— 标准差，衡量特征的离散程度</p>
+<p>\(\epsilon\) —— 避免除以零的小常数，防止数值不稳定</p>
+<p>\(\gamma\) 和 \(\beta\) 是 可训练 的缩放和平移参数，分别初始化为 1 和 0。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class LayerNorm(nn.Module):
+</span></span><span class="line"><span class="cl">    def __init__(self, features, eps=1e-6):
+</span></span><span class="line"><span class="cl">        super(LayerNorm, self).__init__()
+</span></span><span class="line"><span class="cl">        self.a_2 = nn.Parameter(torch.ones(features)) γ
+</span></span><span class="line"><span class="cl">        self.b_2 = nn.Parameter(torch.zeros(features)) β
+</span></span><span class="line"><span class="cl">        self.eps = eps # 避免除0
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def forward(self, x):
+</span></span><span class="line"><span class="cl">        mean = x.mean(-1, keepdim=True) #对最后一个维度求均值
+</span></span><span class="line"><span class="cl">        std = x.std(-1, keepdim=True)  #对最后一个维度求标准差
+</span></span><span class="line"><span class="cl">        return self.a_2 * (x - mean) / (std + self.eps) + self.b_2
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="">\(EncoderLayer + SublayerConnection\)
+</h3><p><img src="/p/transformer/image9.png"
+	width="114"
+	height="27"
+	srcset="/p/transformer/image9_hu_4ea76c0c311c47b3.png 480w, /p/transformer/image9_hu_f4f6f128e489214d.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="422"
+		data-flex-basis="1013px"
+	
+></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class SublayerConnection(nn.Module):
+</span></span><span class="line"><span class="cl">    def __init__(self, size, dropout):
+</span></span><span class="line"><span class="cl">        super(SublayerConnection, self).__init__()
+</span></span><span class="line"><span class="cl">        self.norm = LayerNorm(size)
+</span></span><span class="line"><span class="cl">        self.dropout = nn.Dropout(dropout)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def forward(self, x, sublayer):
+</span></span><span class="line"><span class="cl">        return x + self.dropout(sublayer(self.norm(x))
+</span></span><span class="line"><span class="cl">class EncoderLayer(nn.Module):
+</span></span><span class="line"><span class="cl">    def __init__(self, size, self_attn, feed_forward, dropout):
+</span></span><span class="line"><span class="cl">        super(EncoderLayer, self).__init__()
+</span></span><span class="line"><span class="cl">        self.self_attn = self_attn
+</span></span><span class="line"><span class="cl">        self.feed_forward = feed_forward
+</span></span><span class="line"><span class="cl">        self.sublayer = clones(SublayerConnection(size, dropout), 2)
+</span></span><span class="line"><span class="cl">        self.size = size
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def forward(self, x, mask):
+</span></span><span class="line"><span class="cl">        x = self.sublayer[0](x, lambda x: self.self_attn(x, x, x, mask))
+</span></span><span class="line"><span class="cl">        return self.sublayer[1](x, self.feed_forward)
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>\(Encoder\)表明了一个\(layer\)有两部份，一部份是多头注意力机制加残差连接，另一部份是前馈神经网络。注意力机制在后面的代码中额外实现。</p>
+<h3 id="">\(decoder\)
+</h3><p>解码器的构造与\(encoder\)类似</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class Decoder(nn.Module):
+</span></span><span class="line"><span class="cl">    def __init__(self, layer, N):
+</span></span><span class="line"><span class="cl">        super(Decoder, self).__init__()
+</span></span><span class="line"><span class="cl">        self.layers = clones(layer, N)
+</span></span><span class="line"><span class="cl">        self.norm = LayerNorm(layer.size)
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">    def forward(self, x, memory, src_mask, tgt_mask):
+</span></span><span class="line"><span class="cl">        for layer in self.layers:
+</span></span><span class="line"><span class="cl">            x = layer(x, memory, src_mask, tgt_mask)
+</span></span><span class="line"><span class="cl">        return self.norm(x)
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>参数\(memory\)是经过\(N\)层后\(encoder\)最终的输出。</p>
+<h3 id="">\(DecoderLayer\)
+</h3><p><img src="/p/transformer/image10.png"
+	width="186"
+	height="301"
+	srcset="/p/transformer/image10_hu_aa2add3993f2f9ee.png 480w, /p/transformer/image10_hu_a5813512bd23092d.png 1024w"
+	loading="lazy"
+	
+	
+		class="gallery-image" 
+		data-flex-grow="61"
+		data-flex-basis="148px"
+	
+></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class DecoderLayer(nn.Module):
+</span></span><span class="line"><span class="cl">    def __init__(self, size, self_attn, src_attn, feed_forward, dropout):
+</span></span><span class="line"><span class="cl">        super(DecoderLayer, self).__init__()
+</span></span><span class="line"><span class="cl">        self.size = size
+</span></span><span class="line"><span class="cl">        self.self_attn = self_attn
+</span></span><span class="line"><span class="cl">        self.src_attn = src_attn
+</span></span><span class="line"><span class="cl">        self.feed_forward = feed_forward
+</span></span><span class="line"><span class="cl">        self.sublayer = clones(SublayerConnection(size, dropout), 3)
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">    def forward(self, x, memory, src_mask, tgt_mask):
+</span></span><span class="line"><span class="cl">        &#34;Follow Figure 1 (right) for connections.&#34;
+</span></span><span class="line"><span class="cl">        m = memory
+</span></span><span class="line"><span class="cl">        x = self.sublayer[0](x, lambda x: self.self_attn(x, x, x, tgt_mask))
+</span></span><span class="line"><span class="cl">        x = self.sublayer[1](x, lambda x: self.src_attn(x, m, m, src_mask))
+</span></span><span class="line"><span class="cl">        return self.sublayer[2](x, self.feed_forward)
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="">\(subsequent\_mask\)
+</h3><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def subsequent_mask(size):
+</span></span><span class="line"><span class="cl">    attn_shape = (1, size, size)  # 生成一个 (1, size, size) 的注意力形状
+</span></span><span class="line"><span class="cl">    subsequent_mask = np.triu(np.ones(attn_shape), k=1).astype(&#39;uint8&#39;)  # 生成上三角矩阵，主对角线以上为1，以下为0
+</span></span><span class="line"><span class="cl">    return torch.from_numpy(subsequent_mask) == 0  # 转换为torch张量，True表示未被mask的位置
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="位置前馈网络">位置前馈网络
+</h3><p>一个多层感知机</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class PositionwiseFeedForward(nn.Module):
+</span></span><span class="line"><span class="cl">    def __init__(self, d_model, d_ff, dropout=0.1):
+</span></span><span class="line"><span class="cl">        super(PositionwiseFeedForward, self).__init__()
+</span></span><span class="line"><span class="cl">        self.w_1 = nn.Linear(d_model, d_ff)
+</span></span><span class="line"><span class="cl">        self.w_2 = nn.Linear(d_ff, d_model)
+</span></span><span class="line"><span class="cl">        self.dropout = nn.Dropout(dropout)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def forward(self, x):
+</span></span><span class="line"><span class="cl">        return self.w_2(self.dropout(F.relu(self.w_1(x))))
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="嵌入">嵌入
+</h3><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class Embeddings(nn.Module):
+</span></span><span class="line"><span class="cl">    def __init__(self, d_model, vocab):
+</span></span><span class="line"><span class="cl">        super(Embeddings, self).__init__()
+</span></span><span class="line"><span class="cl">        self.lut = nn.Embedding(vocab, d_model)
+</span></span><span class="line"><span class="cl">        self.d_model = d_model
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    def forward(self, x):
+</span></span><span class="line"><span class="cl">        return self.lut(x) * math.sqrt(self.d_model)
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="位置编码">位置编码
+</h3><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">class PositionalEncoding(nn.Module):
+</span></span><span class="line"><span class="cl">    def __init__(self, d_model, dropout, max_len=5000):
+</span></span><span class="line"><span class="cl">        super(PositionalEncoding, self).__init__()
+</span></span><span class="line"><span class="cl">        self.dropout = nn.Dropout(p=dropout)
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">        pe = torch.zeros(max_len, d_model)
+</span></span><span class="line"><span class="cl">        position = torch.arange(0, max_len).unsqueeze(1)
+</span></span><span class="line"><span class="cl">        div_term = torch.exp(torch.arange(0, d_model, 2) *
+</span></span><span class="line"><span class="cl">                             -(math.log(10000.0) / d_model))
+</span></span><span class="line"><span class="cl">        pe[:, 0::2] = torch.sin(position * div_term)
+</span></span><span class="line"><span class="cl">        pe[:, 1::2] = torch.cos(position * div_term)
+</span></span><span class="line"><span class="cl">        pe = pe.unsqueeze(0)
+</span></span><span class="line"><span class="cl">        self.register_buffer(&#39;pe&#39;, pe)
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">    def forward(self, x):
+</span></span><span class="line"><span class="cl">        x = x + Variable(self.pe[:, :x.size(1)], 
+</span></span><span class="line"><span class="cl">                         requires_grad=False)
+</span></span><span class="line"><span class="cl">        return self.dropout(x)
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="完整模型">完整模型
+</h2><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">def make_model(src_vocab, tgt_vocab, N=6, 
+</span></span><span class="line"><span class="cl">               d_model=512, d_ff=2048, h=8, dropout=0.1):
+</span></span><span class="line"><span class="cl">    c = copy.deepcopy
+</span></span><span class="line"><span class="cl">    attn = MultiHeadedAttention(h, d_model)
+</span></span><span class="line"><span class="cl">    ff = PositionwiseFeedForward(d_model, d_ff, dropout)
+</span></span><span class="line"><span class="cl">    position = PositionalEncoding(d_model, dropout)
+</span></span><span class="line"><span class="cl">    model = EncoderDecoder(
+</span></span><span class="line"><span class="cl">        Encoder(EncoderLayer(d_model, c(attn), c(ff), dropout), N),
+</span></span><span class="line"><span class="cl">        Decoder(DecoderLayer(d_model, c(attn), c(attn), 
+</span></span><span class="line"><span class="cl">                             c(ff), dropout), N),
+</span></span><span class="line"><span class="cl">        nn.Sequential(Embeddings(d_model, src_vocab), c(position)),
+</span></span><span class="line"><span class="cl">        nn.Sequential(Embeddings(d_model, tgt_vocab), c(position)),
+</span></span><span class="line"><span class="cl">        Generator(d_model, tgt_vocab))
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    for p in model.parameters():
+</span></span><span class="line"><span class="cl">        if p.dim() &gt; 1:
+</span></span><span class="line"><span class="cl">            nn.init.xavier_uniform(p)
+</span></span><span class="line"><span class="cl">    return model
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="">\(training\)
+</h2>
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+            2024 - 
+        
+        2025 Herb
+    </section>
+    
+    <section class="powerby">
+        使用 <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> 构建 <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.27.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计
+    </section>
+    <script type="text/javascript"
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
